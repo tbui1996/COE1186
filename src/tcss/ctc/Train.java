@@ -2,7 +2,7 @@ package tcss.ctc;
 
 public class Train {
 
-    private String name;
+    public String name;
     private double SS;
     private int auth;
 
