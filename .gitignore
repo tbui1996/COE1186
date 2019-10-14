@@ -1,10 +1,6 @@
 
+out/
+
 .idea/
-
-*.class
-
-out/production/COE1186/sample/
-
-out/production/COE1186/UserSelection/UserSelection.css
-
-out/production/COE1186/UserSelection/UserSelection.fxml
+/.idea/
+'.idea/workspace.xml' 
