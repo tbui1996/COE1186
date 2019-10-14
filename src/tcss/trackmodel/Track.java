@@ -37,7 +37,8 @@ public class Track {
 
     private boolean initTrain(double suggSpeed, int auth, int id){
         TrainModel train = new TrainModel();
-        track.get(0).setTrain(new TrainModel());
+        track.get(0).setTrain(train);
+        trains.add(train);
         return true;
     }
 

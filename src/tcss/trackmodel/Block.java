@@ -19,6 +19,7 @@ public class Block{
 
     private Switch sw;
     private Station station;
+    private RXR rxr;
     private TrainModel train;
 
     public Block(){
@@ -37,6 +38,7 @@ public class Block{
         
         setSwitch(null);
         setStation(null);
+        setRXR(null);
         setTrain(null);
     }
 
@@ -88,6 +90,10 @@ public class Block{
 
     public Station getStation(){
         return station;
+    }
+
+    public RXR getRXR(){
+        return rxr;
     }
 
     public TrainModel getTrain(){
@@ -146,5 +152,9 @@ public class Block{
 
     public void setTrain(TrainModel t){
         train = t;
+    }
+
+    public void setRXR(RXR r){
+        rxr = r;
     }
 }
