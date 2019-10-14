@@ -9,6 +9,7 @@ public class TrainModel {
     private TrainController controller;
     float suggestedSpeed;
     int authority;
+    int id;
 
     public TrainModel() {
         controller = new TrainController(this);
@@ -18,6 +19,10 @@ public class TrainModel {
         suggestedSpeed = sSpeed;
         authority = auth;
         controller.updateModel(sSpeed, auth);
+    }
+
+    public int getID() {
+        return id;
     }
 
 }
