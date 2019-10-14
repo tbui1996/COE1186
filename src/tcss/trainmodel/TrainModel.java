@@ -1,31 +1,37 @@
 package tcss.trainmodel;
 
-//import tcss.traincontroller.*;
+import tcss.traincontroller.*;
 
 public class TrainModel {
 
     // Instance variables
-//    private TrainController controller;
+    private TrainController controller;
     private float suggestedSpeed;
     private int authority;
     private int id;
+    private float speedLimit;
 
-//    public TrainModel() {
-//        controller = new TrainController(this);
-//    }
+    public TrainModel(float suggestedSpeed, int authority, int id, float speedLimit) {
+        controller = new TrainController(this);
+        this.suggestedSpeed = suggestedSpeed;
+        this.authority = authority;
+        this.id = id;
+        this.speedLimit = speedLimit;
+        controller.setSpeedLimit(speedLimit);
+    }
 
     public void passCommands(float sSpeed, int auth) {
         suggestedSpeed = sSpeed;
         authority = auth;
-//        controller.updateModel(sSpeed, auth);
-
-//        updateUI();
-
-
+        controller.passCommands(auth, sSpeed);
     }
 
     public int getID() {
         return id;
+    }
+
+    public void update() {
+
     }
 
 //    @FXML
