@@ -10,10 +10,10 @@ public class Dispatch {
         this.auth = 0;
     }
 
-    public Dispatch(float SS, int auth, String trainName) {
+    public Dispatch(float SS, int auth, Train train) {
         this.SS = SS;
         this.auth = auth;
-        train.name = trainName;
+        this.train = train;
     }
 
     public void setSS(float SS) {

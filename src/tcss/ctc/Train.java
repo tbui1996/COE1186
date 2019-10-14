@@ -6,7 +6,8 @@ public class Train {
     private double SS;
     private int auth;
 
-    public Train(String name) {
+    public Train(String name, int ID) {
         this.name = name;
+        this.ID = ID;
     }
 }
