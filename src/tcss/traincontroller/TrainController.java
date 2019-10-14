@@ -1,20 +1,22 @@
-package tcss.trainController;
+package tcss.traincontroller;
 
 import tcss.trainmodel.*;
-import java.time.Clock;
+//import java.time.Clock;
 
-public class trainController {
+public class TrainController {
     //Instance Variables
     public int id;
     private TrainModel model;
-    float suggestedSpeed;
-    float setpointSpeed;
-    float vSpeed;
+    private float suggestedSpeed;
+    private float setpointSpeed;
+    private float vSpeed;
     int opMode = 0; //default to automatic
     private int time;
     int authority;
+    private int ki;
+    private int kp;
 
-    public trainController(TrainModel m){
+    public TrainController(TrainModel m){
         this.model = m;
         //this.id = model.getID();
         this.updateStatus();
