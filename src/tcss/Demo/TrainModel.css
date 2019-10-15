@@ -1,0 +1,15 @@
+* {
+    -fx-text-fill: #DFDFDF;
+    -fx-font-family: 'Calibri';
+    -fx-font-size: 30px;
+}
+
+.label {
+    -fx-padding: 5 0;
+}
+
+.body {
+
+    -fx-background-color: rgb(43, 39, 49);
+
+}
