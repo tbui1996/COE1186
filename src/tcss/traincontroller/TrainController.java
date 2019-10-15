@@ -35,7 +35,8 @@ public class TrainController {
      */
     public void updateStatus(){
         this.model.update();
-//        this.currentSpeed = model.getCurrSpeed();
+
+        //this.currentSpeed = model.getCurrSpeed();
         this.commandedSpeed = this.setpointSpeed < this.suggestedSpeed ? this.setpointSpeed : this.suggestedSpeed;
         this.commandedSpeed = this.setpointSpeed < this.speedLimit ? this.setpointSpeed : this.speedLimit;
     }
