@@ -9,10 +9,10 @@ public class Block{
     private int blockNum;
     private int length;
 
-    private double grade;
-    private double speedLimit;
-    private double elevation;
-    private double cumulativeElevation;
+    private float grade;
+    private float speedLimit;
+    private float elevation;
+    private float cumulativeElevation;
 
     private boolean underground;
     private boolean occupied;
@@ -60,19 +60,19 @@ public class Block{
         return length;
     }
 
-    public double getGrade(){
+    public float getGrade(){
         return grade;
     }
 
-    public double getSpeedLimit(){
+    public float getSpeedLimit(){
         return speedLimit;
     }
 
-    public double getElevation(){
+    public float getElevation(){
         return elevation;
     }
 
-    public double getCumulativeElevation(){
+    public float getCumulativeElevation(){
         return cumulativeElevation;
     }
 
@@ -118,19 +118,19 @@ public class Block{
         length = l;
     }
 
-    public void setGrade(double g){
+    public void setGrade(float g){
         grade = g;
     }
 
-    public void setSpeedLimit(double sl){
+    public void setSpeedLimit(float sl){
         speedLimit = sl;
     }
 
-    public void setElevation(double e){
+    public void setElevation(float e){
         elevation = e;
     }
 
-    public void setCumulativeElevation(double ce){
+    public void setCumulativeElevation(float ce){
         cumulativeElevation = ce;
     }
 
