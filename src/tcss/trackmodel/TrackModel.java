@@ -1,7 +1,5 @@
 package tcss.trackmodel;
 
-import tcss.trainmodel.TrainModel;
-
 import java.io.File;
 
 public class TrackModel {
