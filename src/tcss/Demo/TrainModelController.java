@@ -38,6 +38,8 @@ public class TrainModelController implements Initializable {
                 System.out.println(trainChoice.getItems().get((Integer) number2));
             }
         });
+
+
 //        idLabel.setText("ID: ");
 //        sSpeedLabel.setText("Suggested Speed: 0 mph");
 //        authLabel.setText("Authority: 0 Blocks");

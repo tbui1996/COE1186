@@ -12,7 +12,7 @@ public class TrackController {
     int auth;
 
 
-    public TrackController(TrackController m){
+    public TrackController(){
 
     }
     public void getNextStop(float SS, int auth, int ID) {

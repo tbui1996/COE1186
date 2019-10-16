@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class ModuleSelectionController implements Initializable {
 
     @FXML private ChoiceBox rate;
     @FXML private Button trainModelButton;
