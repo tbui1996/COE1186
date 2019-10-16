@@ -1,5 +1,4 @@
 
-out/
-.idea/
-/.idea/
-'.idea/workspace.xml' 
+/out
+/.idea
+'/.idea/workspace.xml' 
