@@ -34,6 +34,18 @@ public class TrainModel {
 
     }
 
+    public float getSSpeed() {
+        return suggestedSpeed;
+    }
+
+    public int getAuthority() {
+        return authority;
+    }
+
+    public float getSpeedLimit() {
+        return speedLimit;
+    }
+
 //    @FXML
 //    private void updateUI() {
 //        idLabel.setText("ID: " + id);
