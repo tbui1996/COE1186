@@ -5,7 +5,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -20,9 +22,14 @@ public class TrainModelController implements Initializable {
     @FXML private Label authLabel;
     @FXML private Label speedLimitLabel;
     @FXML private AnchorPane pane;
+    @FXML private ChoiceBox trainChoice;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        trainChoice.getItems().add("Select Train");
+        trainChoice.setValue("Select Train");
+        trainChoice.setTooltip(new Tooltip("Select a train to view"));
 //        idLabel.setText("ID: ");
 //        sSpeedLabel.setText("Suggested Speed: 0 mph");
 //        authLabel.setText("Authority: 0 Blocks");

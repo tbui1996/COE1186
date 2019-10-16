@@ -61,6 +61,6 @@
          </font>
       </Text>
       <Button fx:id="trainModelButton" layoutX="406.0" layoutY="71.0" mnemonicParsing="false" onAction="#viewTrainModel" prefHeight="100.0" prefWidth="175.0" styleClass="userButton" text="Train Model" />
-      <Button fx:id="quitB" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" styleClass="exit-button" text="Button" />
+      <Button fx:id="quitB" ellipsisString="" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" styleClass="exit-button" text="Button" />
    </children>
 </AnchorPane>
