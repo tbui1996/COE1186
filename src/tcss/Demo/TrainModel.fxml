@@ -11,7 +11,10 @@
    <children>
       <VBox alignment="CENTER_LEFT" layoutY="87.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <ChoiceBox fx:id="trainChoice" minHeight="2.0" minWidth="2.0" prefHeight="35.0" prefWidth="154.0" />
+            <ChoiceBox fx:id="trainChoice" minHeight="2.0" minWidth="2.0" prefHeight="35.0" prefWidth="154.0">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin></ChoiceBox>
             <Label fx:id="idLabel" text="ID:">
                <VBox.margin>
                   <Insets />
