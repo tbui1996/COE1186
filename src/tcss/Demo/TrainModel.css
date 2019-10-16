@@ -8,6 +8,14 @@
     -fx-padding: 5 0;
 }
 
+.button {
+    -fx-text-fill: #120A22;
+}
+
+.button:hover {
+    -fx-cursor: hand;
+}
+
 .body {
 
     -fx-background-color: rgb(43, 39, 49);
