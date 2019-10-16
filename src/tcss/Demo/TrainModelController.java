@@ -1,5 +1,7 @@
 package tcss.Demo;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,6 +32,12 @@ public class TrainModelController implements Initializable {
         trainChoice.getItems().add("Select Train");
         trainChoice.setValue("Select Train");
         trainChoice.setTooltip(new Tooltip("Select a train to view"));
+        trainChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+                System.out.println(trainChoice.getItems().get((Integer) number2));
+            }
+        });
 //        idLabel.setText("ID: ");
 //        sSpeedLabel.setText("Suggested Speed: 0 mph");
 //        authLabel.setText("Authority: 0 Blocks");
