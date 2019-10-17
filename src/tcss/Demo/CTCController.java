@@ -12,6 +12,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import tcss.ctc.Dispatch;
+import tcss.trainmodel.TrainModel;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -35,12 +38,17 @@ public class CTCController implements Initializable{
     }
 
     public void sendDispatch(ActionEvent actionEvent) throws Exception {
-        Main.ctc.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()));
+        TrainModel temp = new TrainModel(SS, auth, trainList.size(), 55);
+        Main.ctc.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), temp);
+        Main.trains.add(temp);
         dispatch.setText("DISPATCH");
     }
 
     public void getDispatches() {
         @FXML Label currDispatch;
+        Dispatch currDispatch = Main.ctc.getFirstDispatch();
+        currDispatch = new Label(currDispatch.toString());
+        dispatchList.addChild(currDispatch);
 
         //dispatchList = 0;
     }
