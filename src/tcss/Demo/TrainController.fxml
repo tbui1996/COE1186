@@ -13,22 +13,47 @@
 
 <AnchorPane fx:id="pane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@TrainController.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.Demo.TrainControllerController">
    <children>
-      <VBox alignment="CENTER_LEFT" layoutY="87.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <HBox prefHeight="460.0" prefWidth="609.0">
          <children>
-            <ChoiceBox fx:id="trainChoice" minHeight="2.0" minWidth="2.0" prefHeight="35.0" prefWidth="154.0" />
-            <Label fx:id="idLabel" text="ID:">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </Label>
-            <Label id="sSpeedLabel" fx:id="sSpeedLabel" text="Suggested Speed:" />
-            <Label id="authLabel" fx:id="authLabel" text="Authority:" />
-            <Label fx:id="speedLimitLabel" text="Speed Limit:" />
+            <VBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="404.0">
+               <children>
+                  <ChoiceBox fx:id="trainChoice" minHeight="2.0" minWidth="2.0" prefHeight="35.0" prefWidth="154.0" />
+                  <Label fx:id="idLabel" text="ID:">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Label>
+                  <Label text="Speed Limit: " />
+                  <Label id="sSpeedLabel" fx:id="sSpeedLabel" text="Suggested Speed:" />
+                  <HBox prefHeight="47.0" prefWidth="376.0">
+                     <children>
+                        <Label fx:id="speedLimitLabel" text="Setpoint Speed: " />
+                        <TextField fx:id="setpointinput" prefHeight="27.0" prefWidth="102.0">
+                           <HBox.margin>
+                              <Insets top="10.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Button fx:id="confirmSetpoint" mnemonicParsing="false" onAction="#confirmSetpoint" text="OK">
+                           <HBox.margin>
+                              <Insets left="4.0" top="10.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <Label id="authLabel" fx:id="authLabel" text="Authority:" />
+                  <Label text="Underground: " />
+               </children>
+               <padding>
+                  <Insets left="25.0" />
+               </padding>
+            </VBox>
+            <ToggleButton fx:id="eBreakToggle" mnemonicParsing="false" onAction="#toggleEbreak" text="Emergency Break">
+               <HBox.margin>
+                  <Insets left="25.0" top="75.0" />
+               </HBox.margin>
+            </ToggleButton>
          </children>
-         <padding>
-            <Insets left="25.0" />
-         </padding>
-      </VBox>
+      </HBox>
       <Button fx:id="backButton" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#goBack" prefHeight="55.0" prefWidth="70.0" styleClass="backButton" text="BACK" />
    </children>
 </AnchorPane>

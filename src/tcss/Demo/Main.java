@@ -14,6 +14,7 @@ public class Main extends Application {
     // Testing Train Model UI
     static ArrayList<TrainModel> trains = new ArrayList<TrainModel>();
 
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
