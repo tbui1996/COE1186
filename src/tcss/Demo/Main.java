@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import tcss.ctc.CTC;
 import tcss.trackmodel.TrackModel;
 import tcss.trackmodel.Track;
 import tcss.trackmodel.Block;
@@ -24,6 +25,7 @@ public class Main extends Application {
     static Track track;
 
     static TrackController tc;
+    static CTC ctc;
 
     @Override
     public void start(Stage primaryStage) throws Exception{

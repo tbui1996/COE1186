@@ -15,8 +15,6 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import tcss.ctc.CTC;
-
 
 
 public class CTCController implements Initializable{
@@ -37,11 +35,13 @@ public class CTCController implements Initializable{
     }
 
     public void sendDispatch(ActionEvent actionEvent) throws Exception {
-        //CTC.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()));
+        Main.ctc.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()));
         dispatch.setText("DISPATCH");
     }
 
     public void getDispatches() {
+        @FXML Label currDispatch;
+
         //dispatchList = 0;
     }
 
