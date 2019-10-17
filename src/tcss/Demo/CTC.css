@@ -10,6 +10,24 @@
 
 }
 
+.v-box * {
+    -fx-padding: 30 0;
+}
+
+.text {
+    -fx-padding: 5 0;
+    -fx-text-fill: #DFDFDF;
+    -fx-font-family: 'Calibri';
+    -fx-font-size: 20px;
+}
+
+.button {
+    -fx-text-fill: #120A22;
+}
+
+.button:hover {
+    -fx-cursor: hand;
+}
 
 
 
