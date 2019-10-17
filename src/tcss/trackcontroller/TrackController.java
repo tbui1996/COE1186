@@ -8,7 +8,6 @@ public class TrackController {
     TrackModel TrackModel;
     RXR RXR;
     CTC CTC;
-    ArrayList<WaysideController> waysideController = new ArrayList<WaysideController>(1);
     float ss;
     int id;
     int auth;
@@ -74,7 +73,9 @@ public class TrackController {
         return lights;
     }
 
-
+    //how to send track model data
+    //getTrack() which returns track
+    //then call inittrain()
 
 
 }
