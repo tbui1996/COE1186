@@ -11,6 +11,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import tcss.trainmodel.TrainModel;
 
@@ -24,11 +25,45 @@ public class TrainModelController implements Initializable {
     @FXML private Label sSpeedLabel;
     @FXML private Label authLabel;
     @FXML private Label speedLimitLabel;
+    @FXML private Label gradeLabel;
+    @FXML private Label cmdSpeed;
+    @FXML private Label underground;
+    @FXML private Label eBrake;
+    @FXML private Label eBrakeStatus;
+    @FXML private Label underStatus;
     @FXML private AnchorPane pane;
     @FXML private ChoiceBox trainChoice;
 
+    // Testing input filter
+//    @FXML private TextField tField;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+
+        // Testing input filter
+//        DecimalFormat format = new DecimalFormat( "#.0" );
+//
+//        tField.setTextFormatter(new TextFormatter<Object>(c ->
+//           {
+//               if ( c.getControlNewText().isEmpty() )
+//                {
+//                    return c;
+//                }
+//
+//                ParsePosition parsePosition = new ParsePosition( 0 );
+//                Object object = format.parse( c.getControlNewText(), parsePosition );
+//
+//                if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() )
+//                {
+//                    return null;
+//                }
+//                else
+//                {
+//                    return c;
+//                }
+//           }));
+
 
         trainChoice.getItems().add("Select Train");
 
@@ -52,6 +87,22 @@ public class TrainModelController implements Initializable {
                     sSpeedLabel.setText("Suggested Speed: " + cur.getSSpeed());
                     authLabel.setText("Authority: " + cur.getAuthority());
                     speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit());
+                    gradeLabel.setText("Grade: " + cur.getGrade());
+                    cmdSpeed.setText("Commanded Speed: " + cur.getCmdSpeed());
+                    if(cur.getUnderground() == true) {
+                        underStatus.setText("True");
+                        underStatus.setTextFill(Color.GREEN);
+                    } else {
+                        underStatus.setText("False");
+                        underStatus.setTextFill(Color.RED);
+                    }
+                    if(cur.getEBrake() == true) {
+                        eBrakeStatus.setText("True");
+                        eBrakeStatus.setTextFill(Color.GREEN);
+                    } else {
+                        eBrakeStatus.setText("False");
+                        eBrakeStatus.setTextFill(Color.RED);
+                    }
 
                 } else {
                     idLabel.setText("ID: ");
