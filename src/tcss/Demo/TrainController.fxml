@@ -23,12 +23,12 @@
                         <Insets />
                      </VBox.margin>
                   </Label>
-                  <Label text="Speed Limit: " />
+                  <Label fx:id="speedLimitLabel" text="Speed Limit: " />
                   <Label id="sSpeedLabel" fx:id="sSpeedLabel" text="Suggested Speed:" />
                   <HBox prefHeight="47.0" prefWidth="376.0">
                      <children>
-                        <Label fx:id="speedLimitLabel" text="Setpoint Speed: " />
-                        <TextField fx:id="setpointinput" prefHeight="27.0" prefWidth="102.0">
+                        <Label text="Setpoint Speed: " />
+                        <TextField fx:id="setPointInput" prefHeight="27.0" prefWidth="102.0">
                            <HBox.margin>
                               <Insets top="10.0" />
                            </HBox.margin>
@@ -44,7 +44,7 @@
                   <HBox prefHeight="43.0" prefWidth="379.0">
                      <children>
                         <Label text="Underground: " />
-                        <Label fx:id="undegroundDisplay" />
+                        <Label fx:id="undergroundDisplay" />
                      </children>
                   </HBox>
                </children>
@@ -52,7 +52,7 @@
                   <Insets left="25.0" />
                </padding>
             </VBox>
-            <ToggleButton fx:id="eBreakToggle" mnemonicParsing="false" onAction="#toggleEbreak" text="Emergency Break">
+            <ToggleButton fx:id="eBrakeToggle" mnemonicParsing="false" onAction="#toggleEBrake" text="Emergency Break">
                <HBox.margin>
                   <Insets left="25.0" top="75.0" />
                </HBox.margin>

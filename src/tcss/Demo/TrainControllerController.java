@@ -15,7 +15,11 @@ import tcss.traincontroller.TrainController;
 import tcss.trainmodel.TrainModel;
 
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TrainControllerController implements Initializable {
 
@@ -27,13 +31,28 @@ public class TrainControllerController implements Initializable {
     @FXML private TextField setPointInput;
     @FXML private Button confirmSetpoint;
     @FXML private Label authLabel;
-    @FXML private Label undergroundLabel;
     @FXML private AnchorPane pane;
-    @FXML private Button eBreakToggle;
+    @FXML private ToggleButton eBrakeToggle;
     @FXML private Label undergroundDisplay;
+
+    private TrainController temp;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        DecimalFormat format = new DecimalFormat( "#.0" );
+        setPointInput.setTextFormatter( new TextFormatter<>(c -> {
+            if ( c.getControlNewText().isEmpty() ) {
+                return c;
+            }
+            ParsePosition parsePosition = new ParsePosition( 0 );
+            Object object = format.parse( c.getControlNewText(), parsePosition );
+            if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() ){
+                return null;
+            } else {
+                return c;
+            }
+        }));
+        eBrakeToggle.setDisable(true);
         trainChoice.getItems().add("Select Train");
         // Testing
         for(TrainModel t: Main.trains) {
@@ -46,14 +65,16 @@ public class TrainControllerController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
                 if((Integer) number2 > 0) {
+                    eBrakeToggle.setDisable(false);
                     TrainController cur = Main.trains.get((Integer)number2-1).getTControl();
-
+                    cur.updateStatus();
+                    temp = cur;
                     idLabel.setText("ID: " + cur.getID());
                     sSpeedLabel.setText("Suggested Speed: " + cur.getSSpeed());
                     speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit());
-                    setPointInput.setPromptText("" + cur.getSetpointSpeed());
+                    setPointInput.setText("");
+                    setPointInput.setPromptText("" + cur.getsetpointSpeed());
                     authLabel.setText("Authority: " + cur.getAuthority());
-                    undergroundLabel.setText("Undergound: ");
                     if (cur.getUnderground() == true){
                         undergroundDisplay.setText("True");
                         undergroundDisplay.setTextFill(Color.GREEN);
@@ -61,21 +82,23 @@ public class TrainControllerController implements Initializable {
                         undergroundDisplay.setText("False");
                         undergroundDisplay.setTextFill(Color.RED);
                     }
-                    if (cur.getEBrake() == true){
-                        eBreakToggle.fire();
+                    eBrakeToggle.setSelected(cur.getEBrake());
+                    if(cur.getEBrake()) {
+                        eBrakeToggle.setStyle("-fx-background-color: red; -fx-text-fill: #dfdfdf");
                     } else {
-                        eBreakToggle.fire();
+                        eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
                     }
                 } else {
+                    temp = null; //deselect train
                     idLabel.setText("ID: ");
                     sSpeedLabel.setText("Suggested Speed: ");
                     authLabel.setText("Authority: ");
                     speedLimitLabel.setText("Speed Limit: ");
                     setPointInput.setPromptText("");
-                    undergroundLabel.setText("Undergound: ");
-                    undergroundDisplay.setText("N/A");
-                    undergroundDisplay.setTextFill(Color.YELLOW);
-                    eBreakToggle.setDisable(true);
+                    //undergroundDisplay.setText("N/A");
+                    //undergroundDisplay.setTextFill(Color.YELLOW);
+                    eBrakeToggle.setDisable(true);
+                    eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
                 }
             }
         });
@@ -90,6 +113,32 @@ public class TrainControllerController implements Initializable {
     }
 
     public void confirmSetpoint(ActionEvent actionEvent) throws Exception{
+       try {
+           try {
+               float newSPSpeed = Float.parseFloat(setPointInput.getText());
+               temp.setSetpointSpeed(newSPSpeed);
+               temp.updateStatus();
+               temp.updateModelCommandedSpeed();
+               setPointInput.setText("");
+               setPointInput.setPromptText("" + temp.getsetpointSpeed());
+           } catch (NumberFormatException e) {
+               System.out.println("nfe found");
+           }
+       } catch (NullPointerException e){
+           System.out.println("Train is not selected!");
+       }
+    }
 
+    public void toggleEBrake(ActionEvent actionEvent) throws Exception {
+        boolean brakeStatus = eBrakeToggle.isSelected(); //get brake status - what we want to set it to
+        temp.setEBrake(brakeStatus);
+        temp.updateModelEBrake();
+        if (brakeStatus) {
+            eBrakeToggle.setStyle("-fx-background-color: red; -fx-text-fill: #dfdfdf");
+            //eBrakeStatus.set(true);
+        } else {
+            eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49);");
+            //eBrakeStatus.set(false);
+        }
     }
 }

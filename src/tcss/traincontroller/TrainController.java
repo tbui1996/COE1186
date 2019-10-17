@@ -19,7 +19,7 @@ public class TrainController {
     private int ki;
     private int kp;
     private boolean underground;
-    private boolean eBreak;
+    private boolean eBrake;
 
     //Constructor method for the TrainController when instantiated with a train model
     /*
@@ -28,6 +28,11 @@ public class TrainController {
     public TrainController(TrainModel m){
         this.model = m;
         this.id = model.getID();
+        this.authority = model.getAuthority();
+        this.suggestedSpeed = model.getSSpeed();
+        this.setpointSpeed = 0;
+        //this.underground = model.getUnderground();
+        this.eBrake = model.getEBrake();
         this.updateStatus();
     }
 
@@ -37,10 +42,17 @@ public class TrainController {
      */
     public void updateStatus(){
         this.model.update();
-
         //this.currentSpeed = model.getCurrSpeed();
         this.commandedSpeed = this.setpointSpeed < this.suggestedSpeed ? this.setpointSpeed : this.suggestedSpeed;
         this.commandedSpeed = this.setpointSpeed < this.speedLimit ? this.setpointSpeed : this.speedLimit;
+    }
+
+    public void updateModelEBrake(){
+        this.model.setEBrake(this.eBrake);
+    }
+
+    public void updateModelCommandedSpeed(){
+        this.model.setCmdSpeed(this.commandedSpeed);
     }
 
     public void passCommands(int a, float ss){
@@ -56,7 +68,7 @@ public class TrainController {
         return this.suggestedSpeed;
     }
 
-    public float getSetpointSpeed(){
+    public float getsetpointSpeed(){
         return this.setpointSpeed;
     }
 
@@ -73,10 +85,19 @@ public class TrainController {
     }
 
     public boolean getEBrake(){
-        return this.eBreak;
+        return this.eBrake;
     }
     public void setSpeedLimit(float sl){
         this.speedLimit = sl;
+    }
+
+    public void setEBrake(boolean b){
+        this.eBrake = b;
+        //this.model.setEBrake(b);
+    }
+
+    public void setSetpointSpeed(float sps){
+        this.setpointSpeed = sps;
     }
 
 }
