@@ -38,7 +38,8 @@ public class Track {
     private boolean initTrain(float suggestedSpeed, int auth, int id){
         Block startBlock = track.get(0);
         TrainModel train = new TrainModel(suggestedSpeed, auth, id, startBlock.getSpeedLimit());
-        track.get(0).setTrain(train);
+        startBlock.setTrain(train);
+        startBlock.setOccupied(true);
         trains.add(train);
         return true;
     }

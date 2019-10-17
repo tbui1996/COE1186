@@ -7,9 +7,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-<<<<<<< Bui-1
     <orderEntry type="library" name="lib" level="project" />
-=======
->>>>>>> Fixing IntelliJ
   </component>
 </module>

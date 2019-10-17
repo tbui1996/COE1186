@@ -10,6 +10,10 @@ public class TrainModel {
     private int authority;
     private int id;
     private float speedLimit;
+    private Boolean eBrake;
+    private float grade;
+    private float cmdSpeed;
+    private Boolean underground;
 
     public TrainModel(float suggestedSpeed, int authority, int id, float speedLimit) {
         controller = new TrainController(this);
@@ -18,6 +22,9 @@ public class TrainModel {
         this.id = id;
         this.speedLimit = speedLimit;
         controller.setSpeedLimit(speedLimit);
+
+        this.eBrake = false;
+        this.underground = false;
     }
 
     public void passCommands(float sSpeed, int auth) {
@@ -34,6 +41,26 @@ public class TrainModel {
 
     }
 
+    public void setEBrake(Boolean brake) {
+        eBrake = brake;
+    }
+
+    public Boolean getEBrake() {
+        return eBrake;
+    }
+
+    public float getGrade() {
+        return grade;
+    }
+
+    public float getCmdSpeed() {
+        return cmdSpeed;
+    }
+
+    public Boolean getUnderground() {
+        return underground;
+    }
+
     public float getSSpeed() {
         return suggestedSpeed;
     }
@@ -44,6 +71,10 @@ public class TrainModel {
 
     public float getSpeedLimit() {
         return speedLimit;
+    }
+
+    public TrainController getTControl() {
+        return this.controller;
     }
 
 //    @FXML

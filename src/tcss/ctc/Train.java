@@ -5,7 +5,6 @@ public class Train {
     public String name;
     private double SS;
     private int auth;
-    private int ID;
 
     public Train(String name, int ID) {
         this.name = name;

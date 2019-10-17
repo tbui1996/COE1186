@@ -29,6 +29,8 @@ public class Main extends Application {
         trains.add(t1);
         trains.add(t2);
 
+        t1.setEBrake(true);
+
 
     }
 
