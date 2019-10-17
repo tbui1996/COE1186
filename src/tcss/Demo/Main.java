@@ -5,6 +5,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import tcss.trackmodel.TrackModel;
+import tcss.trackmodel.Track;
+import tcss.trackmodel.Block;
+
 import tcss.trainmodel.TrainModel;
 
 import java.util.ArrayList;
@@ -13,6 +18,10 @@ public class Main extends Application {
 
     // Testing Train Model UI
     static ArrayList<TrainModel> trains = new ArrayList<TrainModel>();
+
+    // Testing Track Model UI
+    static ArrayList<Block> blocks = new ArrayList<Block>();
+    static Track track;
 
 
     @Override
@@ -29,7 +38,13 @@ public class Main extends Application {
         trains.add(t1);
         trains.add(t2);
 
-        t1.setEBrake(true);
+        // Testing TrackModel UI
+        TrackModel tm = new TrackModel();
+        track = tm.getTrack();
+        Block b1 = track.getBlock(1);
+        Block b2 = track.getBlock(2);
+        blocks.add(b1);
+        blocks.add(b2);
 
     }
 
