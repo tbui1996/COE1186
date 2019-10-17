@@ -6,7 +6,7 @@ import java.util.*;
 public class TrackController {
     TrackModel TrackModel;
     CTC CTC;
-    ArrayList<WaysideController> waysideController = new ArrayList<WaysideController>();
+    //ArrayList<WaysideController> waysideController = new ArrayList<WaysideController>();
     float ss;
     int id;
     int auth;

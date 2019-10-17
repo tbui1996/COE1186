@@ -16,6 +16,10 @@ public class TrackModel {
         buildTrack(trackFile);
     }
 
+    public Track getTrack(){
+        return track;
+    }
+
     public void buildTrack(File trackFile){
         track = new Track();
     }
