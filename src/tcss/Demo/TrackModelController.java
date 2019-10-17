@@ -22,12 +22,25 @@ import java.util.ResourceBundle;
 public class TrackModelController implements Initializable {
 
     // UI variables
-    @FXML private Label idLabel;
+    @FXML private AnchorPane pane;
+
+    @FXML private ChoiceBox blockChoice;
+
+    @FXML private Label blockNumLabel;
+    @FXML private Label sectionLabel;
     @FXML private Label sSpeedLabel;
     @FXML private Label authLabel;
+    @FXML private Label lengthLabel;
+    @FXML private Label gradeLabel;
     @FXML private Label speedLimitLabel;
-    @FXML private AnchorPane pane;
-    @FXML private ChoiceBox blockChoice;
+    @FXML private Label elevLabel;
+    @FXML private Label cumulativeElevLabel;
+    @FXML private Label undergroundLabel;
+    @FXML private Label occupiedLabel;
+    @FXML private Label stationLabel;
+    @FXML private Label switchLabel;
+    @FXML private Label rxrLabel;
+    @FXML private Label beaconLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -50,22 +63,95 @@ public class TrackModelController implements Initializable {
 
                     Block cur = Main.blocks.get((Integer)number2-1);
 
-                    idLabel.setText("Block #: " + cur.getBlockNum());
-                    sSpeedLabel.setText("Suggested Speed: " + track.getSuggestedSpeed());
+                    blockNumLabel.setText("Block #: " + cur.getBlockNum());
+                    sectionLabel.setText("Section #: " + cur.getSection());
+                    sSpeedLabel.setText("Suggested Speed: " + track.getSuggestedSpeed() + " mph");
                     authLabel.setText("Authority: " + track.getAuthority());
-                    speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit());
+                    lengthLabel.setText("Length: " + cur.getLength() + " m");
+                    gradeLabel.setText("Grade: " + cur.getGrade() + "%");
+                    speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit() + " mph");
+                    elevLabel.setText("Elevation: " + cur.getElevation() + " m");
+                    cumulativeElevLabel.setText("Cumulative Elevation: " + cur.getCumulativeElevation() + " m");
+                    undergroundLabel.setText("Underground: " + updateUnderground(cur));
+                    occupiedLabel.setText("Occupied: " + updateOccupied(cur));
+                    stationLabel.setText("Station: " + updateStation(cur));
+                    switchLabel.setText("Switch: " + updateSwitch(cur));
+                    rxrLabel.setText("RXR: " + updateRXR(cur));
+                    beaconLabel.setText("Beacon: " + updateBeacon(cur));
 
                 } else {
-                    idLabel.setText("Block #: ");
+                    blockNumLabel.setText("Block #: ");
+                    sectionLabel.setText("Section #: ");
                     sSpeedLabel.setText("Suggested Speed: ");
                     authLabel.setText("Authority: ");
+                    gradeLabel.setText("Grade: ");
                     speedLimitLabel.setText("Speed Limit: ");
+                    elevLabel.setText("Elevation: ");
+                    cumulativeElevLabel.setText("Cumulative Elevation: ");
+                    undergroundLabel.setText("Underground: ");
+                    beaconLabel.setText("Beacon: ");
+                    stationLabel.setText("Station: ");
+                    switchLabel.setText("Switch: ");
+                    rxrLabel.setText("RXR: ");
                 }
             }
         });
+    }
 
+    public String updateUnderground(Block cur){
+        if(cur.isUnderground()){
+            return "Yes";
+        }else{
+            return "No";
+        }
+    }
 
+    public String updateOccupied(Block cur){
+        if(cur.isOccupied()){
+            return "Train " + cur.getTrain().getID();
+        }else{
+            return "No";
+        }
+    }
 
+    public String updateStation(Block cur){
+        if(cur.getStation() == null) {
+            return "N/A";
+        }else{
+            return cur.getStation().getName();
+        }
+    }
+
+    public String updateSwitch(Block cur){
+        if(cur.getSwitch() == null){
+            return "N/A";
+        }else{
+            if(cur.getSwitch().getOrientation()){
+                return "Straight";
+            }else{
+                return "Branched";
+            }
+        }
+    }
+
+    public String updateRXR(Block cur){
+        if(cur.getRXR() == null){
+            return "N/A";
+        }else{
+            if(cur.getRXR().isDown()){
+                return "Down";
+            }else{
+                return "Up";
+            }
+        }
+    }
+
+    public String updateBeacon(Block cur){
+        if(cur.getBeacon() == null){
+            return "N/A";
+        }else{
+            return cur.getBeacon().getData().toString();
+        }
     }
 
     public void goBack(ActionEvent actionEvent) throws Exception {
