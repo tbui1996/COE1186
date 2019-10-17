@@ -27,6 +27,7 @@ public class CTCController implements Initializable{
     @FXML private TextField SS;
     @FXML private TextField auth;
     @FXML private VBox dispatchList;
+    @FXML Label dispatch1;
     @FXML private AnchorPane pane;
 
     @Override
@@ -38,17 +39,17 @@ public class CTCController implements Initializable{
     }
 
     public void sendDispatch(ActionEvent actionEvent) throws Exception {
-        TrainModel temp = new TrainModel(SS, auth, trainList.size(), 55);
+        TrainModel temp = new TrainModel(Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), Main.ctc.trainList.size(), 55);
         Main.ctc.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), temp);
         Main.trains.add(temp);
         dispatch.setText("DISPATCH");
+        Main.tc.initTrain();
     }
 
     public void getDispatches() {
-        @FXML Label currDispatch;
         Dispatch currDispatch = Main.ctc.getFirstDispatch();
-        currDispatch = new Label(currDispatch.toString());
-        dispatchList.addChild(currDispatch);
+        dispatch1 = new Label(currDispatch.toString());
+        dispatchList.getChildren().add(dispatch1);
 
         //dispatchList = 0;
     }

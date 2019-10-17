@@ -27,14 +27,17 @@ public class TrackController {
     Switch aSwitch;
     Station station;
     Track track;
+    int trackNum;
+
 
     public TrackController(){
+
         this.TrackModel = TrackModel;
         this.RXR = RXR;
     }
 
     public void getNextStop(float SS, int auth, int ID) {
-        this.ss = ss;
+        this.ss = SS;
         this.id = ID;
         this.auth = auth;
     }
@@ -52,15 +55,33 @@ public class TrackController {
         rxr.setDown(railroadcrossing);
         return this.railroadcrossing;
     }
-    public float setSS()
+    public void setSS(float SS)
     {
-        return this.ss;
+         this.ss = SS;
     }
+    public void setTrack(Track t){
+        this.track = t;
+    }
+
 
     public boolean setOccupancy(){
         return this.occupancy;
     }
 
+    public float getSs(){
+        return this.ss;
+    }
+    public int getTrackNum() {
+        return this.trackNum;
+    }
+
+    public int getAuth() {
+        return this.auth;
+    }
+
+    public void setAuth(int auht) {
+        this.auth = auht;
+    }
 
 
     //GETTERS
@@ -94,36 +115,14 @@ public class TrackController {
         return lights;
     }
 
-    //how to send track model data
-    //getTrack() which returns track
-    //then call inittrain()
 
     public Track getTrack(){
         this.track = this.TrackModel.getTrack();
-        return track;
+        return this.track;
     }
 
     public void initTrain(){
-        Track t = new Track();
-        Method m = null;
-        try {
-             m = Track.class.getDeclaredMethod("initTrain", float.class, int.class, int.class);
-        } catch (NoSuchMethodException e){
-            e.printStackTrace();
-        } catch (SecurityException e){
-            e.printStackTrace();
-        }
-        m.setAccessible(true);
-        Object b;
-        try {
-            b = m.invoke(this.ss, this.auth, this.id);
-        } catch (IllegalAccessException e){
-            e.printStackTrace();
-        } catch (IllegalArgumentException e){
-            e.printStackTrace();
-        } catch (InvocationTargetException e){
-            e.printStackTrace();
-        }
+        track.initTrain(this.ss, this.auth, this.id);
     }
 
 

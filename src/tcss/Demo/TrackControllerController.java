@@ -22,7 +22,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class TrackControllerController implements Initializable{
-    @FXML private Label idLabel;
     @FXML private Label sSpeedLabel;
     @FXML private Label authLabel;
     @FXML private AnchorPane pane;
@@ -32,20 +31,30 @@ public class TrackControllerController implements Initializable{
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         TrackController tc = Main.tc;
+
         trackChoice.getItems().add("Select Block");
         trackChoice.setValue("Select Block");
         trackChoice.setTooltip(new Tooltip("Select a block to view"));
+
+
+            trackChoice.getItems().add("Track Controller " + tc.getTrackNum());
+
+
         trackChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+
+                TrackController cur = Main.ctc.getTrackController((Integer)number2-1);
                 if((Integer) number2 > 0) {
-                    sSpeedLabel.setText("Suggested Speed: " + tc.setSS() + " mph");
+                    System.out.println(cur.getSs());
+                    sSpeedLabel.setText("Suggested Speed: " + cur.getSs() + " mph");
                     occupiedLabel.setText("Occupancy: "+ updateOccupied(tc));
-                    idLabel.setText("Id: "+ tc.setID());
+                    authLabel.setText("Authority: "+ cur.getAuth());
+
                 }
                 else{
                     sSpeedLabel.setText("Suggested Speed: ");
                     occupiedLabel.setText("Occupancy: ");
-                    idLabel.setText("Id: ");
+                    authLabel.setText("Authority: ");
                 }
             }
         });
@@ -57,6 +66,8 @@ public class TrackControllerController implements Initializable{
             return "Not Occupied";
         }
     }
+
+
 
     public void goBack(ActionEvent actionEvent) throws Exception {
 //        Parent trainModelParent = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));

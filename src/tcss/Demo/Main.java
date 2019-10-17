@@ -29,6 +29,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        tc = new TrackController();
+        ctc = new CTC(tc);
         Parent root = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
         primaryStage.setTitle("Module Selection");
         primaryStage.setScene(new Scene(root));
@@ -44,10 +46,12 @@ public class Main extends Application {
         // Testing TrackModel UI
         TrackModel tm = new TrackModel();
         track = tm.getTrack();
-        Block b1 = track.getBlock(1);
+        tc.setTrack(track);
+
+        /*Block b1 = track.getBlock(1);
         Block b2 = track.getBlock(2);
         blocks.add(b1);
-        blocks.add(b2);
+        blocks.add(b2);*/
 
     }
 

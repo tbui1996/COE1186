@@ -16,14 +16,9 @@
         <VBox alignment="CENTER_LEFT" layoutY="87.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <ChoiceBox fx:id="trackChoice" minHeight="2.0" minWidth="2.0" prefHeight="35.0" prefWidth="154.0" />
-                <Label fx:id="idLabel" text="ID:">
-                    <VBox.margin>
-                        <Insets />
-                    </VBox.margin>
-                </Label>
-                <Label id="sSpeedLabel" fx:id="sSpeedLabel" text="Suggested Speed:" />
                 <Label id="authLabel" fx:id="authLabel" text="Authority:" />
-                <Label fx:id="occupancy" text="Occupancy:" />
+                <Label fx:id="occupiedLabel" text="Occupancy:" />
+            <Label fx:id="sSpeedLabel" text="Suggested Speed:" />
             </children>
             <padding>
                 <Insets left="25.0" />

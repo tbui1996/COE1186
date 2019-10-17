@@ -45,10 +45,10 @@ public class TrackModelController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         blockChoice.getItems().add("Select Block");
-        Track track = Main.track;
+        Track t = Main.track;
 
         // Testing
-        for(Block b: Main.blocks) {
+        for(Block b: t.getBlockList()) {
             blockChoice.getItems().add("Block " + b.getBlockNum());
         }
 
@@ -61,12 +61,12 @@ public class TrackModelController implements Initializable {
 //                    System.out.println(trainChoice.getItems().get((Integer) number2));
 //                    System.out.println("ID: " + Main.trains.get((Integer)number2 - 1).getID());
 
-                    Block cur = Main.blocks.get((Integer)number2-1);
+                    Block cur = t.getBlockList().get((Integer) number2-1);
 
                     blockNumLabel.setText("Block #: " + cur.getBlockNum());
                     sectionLabel.setText("Section #: " + cur.getSection());
-                    sSpeedLabel.setText("Suggested Speed: " + track.getSuggestedSpeed() + " mph");
-                    authLabel.setText("Authority: " + track.getAuthority());
+                    sSpeedLabel.setText("Suggested Speed: " + t.getSuggestedSpeed() + " mph");
+                    authLabel.setText("Authority: " + t.getAuthority());
                     lengthLabel.setText("Length: " + cur.getLength() + " m");
                     gradeLabel.setText("Grade: " + cur.getGrade() + "%");
                     speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit() + " mph");
@@ -108,7 +108,7 @@ public class TrackModelController implements Initializable {
 
     public String updateOccupied(Block cur){
         if(cur.isOccupied()){
-            return "Train " + cur.getTrain().getID();
+            return "Yes";
         }else{
             return "No";
         }

@@ -37,12 +37,12 @@ public class TrainModel {
         this.authority = authority;
         this.id = id;
         this.speedLimit = block.getSpeedLimit();
-        controller = new TrainController(this);
-        controller.setSpeedLimit(speedLimit);
-
         this.eBrake = false;
         this.underground = block.isUnderground();
         this.grade = block.getGrade();
+
+        controller = new TrainController(this);
+        controller.setSpeedLimit(speedLimit);
     }
 
     public void passCommands(float sSpeed, int auth) {
