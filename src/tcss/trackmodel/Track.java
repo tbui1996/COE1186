@@ -7,24 +7,26 @@ import java.util.ArrayList;
 
 public class Track {
 
-    private LinkedList<Block> track;
+    private LinkedList<Block> trackList;
     private ArrayList<TrainModel> trains;
+    private float suggestedSpeed;
+    private int authority;
 
     public Track(){
-        track = new LinkedList<Block>();
+        trackList = new LinkedList<Block>();
         int[] iProperties = {0, 0, 1, 50};
         float[] fProperties = {0.5f, 40.0f, 0.0f, 0.0f};
 
-        track.add(newBlock(iProperties, fProperties));
-        track.add(newBlock(iProperties, fProperties));
-        track.get(1).setStation(new Station("Dormont"));
+        trackList.add(newBlock(iProperties, fProperties, 1));
+        trackList.add(newBlock(iProperties, fProperties, 2));
+        trackList.get(1).setStation(new Station("Dormont"));
     }
 
-    private Block newBlock(int[] iProps, float[] fProps){
+    private Block newBlock(int[] iProps, float[] fProps, int blockNum){
         Block b = new Block();
         b.setLine(iProps[0]);
         b.setSection(iProps[1]);
-        b.setBlockNum(iProps[2]);
+        b.setBlockNum(blockNum);
         b.setLength(iProps[3]);
 
         b.setGrade(fProps[0]);
@@ -36,12 +38,24 @@ public class Track {
     }
 
     private boolean initTrain(float suggestedSpeed, int auth, int id){
-        Block startBlock = track.get(0);
+        Block startBlock = trackList.get(0);
         TrainModel train = new TrainModel(suggestedSpeed, auth, id, startBlock.getSpeedLimit());
         startBlock.setTrain(train);
         startBlock.setOccupied(true);
         trains.add(train);
         return true;
+    }
+
+    public Block getBlock(int blockNum){
+        return trackList.get(blockNum-1);
+    }
+
+    public float getSuggestedSpeed(){
+        return suggestedSpeed;
+    }
+
+    public int getAuthority(){
+        return authority;
     }
 
     private Block getNextBlock(Block b){
