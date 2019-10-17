@@ -1,6 +1,6 @@
 package tcss.traincontroller;
 
-import tcss.trainmodel.*;
+import tcss.trainmodel.TrainModel;
 //import java.time.Clock;
 
 public class TrainController {

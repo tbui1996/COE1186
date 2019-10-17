@@ -12,12 +12,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import tcss.trainmodel.TrainModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class TrainModelController implements Initializable {
+public class TrainControllerController implements Initializable {
 
     // UI variables
     @FXML private Label idLabel;
@@ -31,39 +30,20 @@ public class TrainModelController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         trainChoice.getItems().add("Select Train");
-
-        // Testing
-        for(TrainModel t: Main.trains) {
-            trainChoice.getItems().add("Train " + t.getID());
-        }
-
         trainChoice.setValue("Select Train");
         trainChoice.setTooltip(new Tooltip("Select a train to view"));
         trainChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-                if((Integer) number2 > 0) {
-//                    System.out.println(trainChoice.getItems().get((Integer) number2));
-//                    System.out.println("ID: " + Main.trains.get((Integer)number2 - 1).getID());
-
-                    TrainModel cur = Main.trains.get((Integer)number2-1);
-
-                    idLabel.setText("ID: " + cur.getID());
-                    sSpeedLabel.setText("Suggested Speed: " + cur.getSSpeed());
-                    authLabel.setText("Authority: " + cur.getAuthority());
-                    speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit());
-
-                } else {
-                    idLabel.setText("ID: ");
-                    sSpeedLabel.setText("Suggested Speed: ");
-                    authLabel.setText("Authority: ");
-                    speedLimitLabel.setText("Speed Limit: ");
-                }
+                System.out.println(trainChoice.getItems().get((Integer) number2));
             }
         });
 
 
-
+//        idLabel.setText("ID: ");
+//        sSpeedLabel.setText("Suggested Speed: 0 mph");
+//        authLabel.setText("Authority: 0 Blocks");
+//        speedLimitLabel.setText("Speed Limit: 0 mph");
     }
 
     public void goBack(ActionEvent actionEvent) throws Exception {

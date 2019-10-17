@@ -10,4 +10,11 @@ public class Train {
         this.name = name;
         this.ID = ID;
     }
+
+    public int getID() {
+        return this.ID;
+    }
+
+
+
 }
