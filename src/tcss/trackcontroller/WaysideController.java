@@ -1,4 +1,4 @@
-package tcss.TrackController;
+package tcss.trackcontroller;
 
 public class WaysideController {
     int line;
