@@ -8,12 +8,13 @@ public class Train {
 
     public Train(String name, int ID) {
         this.name = name;
-        this.ID = ID;
+        //this.ID = ID;
     }
 
+    /*
     public int getID() {
         return this.ID;
-    }
+    }*/
 
 
 

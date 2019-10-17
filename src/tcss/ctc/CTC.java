@@ -15,7 +15,7 @@ public class CTC {
     public void createDispatch(String name) {
         this.trainList.add(new Train(name, trainList.size()));
         this.dispatchList.add(new Dispatch(32, 5, this.trainList.get(this.trainList.size()-1)));
-        sendNextStop(32, 5, this.trainList.get(this.trainList.size()-1).getID());
+        //sendNextStop(32, 5, this.trainList.get(this.trainList.size()-1).getID());
     }
 
     public void sendNextStop(float SS, int auth, int ID) {
