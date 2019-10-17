@@ -18,24 +18,26 @@ public class TrainModel {
     private Boolean underground;
 
     public TrainModel(float suggestedSpeed, int authority, int id, float speedLimit) {
-
         this.suggestedSpeed = suggestedSpeed;
         this.authority = authority;
         this.id = id;
         this.speedLimit = speedLimit;
         this.eBrake = false;
         this.underground = false;
+
         controller = new TrainController(this);
         controller.setSpeedLimit(speedLimit);
+
+
     }
 
     public TrainModel(float suggestedSpeed, int authority, int id, Block block) {
-        controller = new TrainController(this);
         this.block = block;
         this.suggestedSpeed = suggestedSpeed;
         this.authority = authority;
         this.id = id;
         this.speedLimit = block.getSpeedLimit();
+        controller = new TrainController(this);
         controller.setSpeedLimit(speedLimit);
 
         this.eBrake = false;
@@ -54,11 +56,12 @@ public class TrainModel {
     }
 
     public void update() {
-
+        //this.controller.passCommands(this.authority, this.suggestedSpeed);
     }
 
     public void setEBrake(Boolean brake) {
         eBrake = brake;
+        this.controller.setEBrake(brake);
     }
 
     public Boolean getEBrake() {
