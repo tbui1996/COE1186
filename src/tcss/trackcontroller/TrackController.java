@@ -63,16 +63,18 @@ public class TrackController {
         this.track = t;
     }
 
-
-    public boolean setOccupancy(){
-        return this.occupancy;
+    public void setOccupancy(boolean occupancy){
+        this.occupancy = occupancy;
+    }
+    public boolean getOccupancy(){
+        return this.track.getBlockList().get(0).isOccupied();
     }
 
     public float getSs(){
         return this.ss;
     }
     public int getTrackNum() {
-        return this.trackNum;
+        return 1;
     }
 
     public int getAuth() {
