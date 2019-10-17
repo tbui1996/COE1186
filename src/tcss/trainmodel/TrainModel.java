@@ -18,15 +18,15 @@ public class TrainModel {
     private Boolean underground;
 
     public TrainModel(float suggestedSpeed, int authority, int id, float speedLimit) {
-        controller = new TrainController(this);
+
         this.suggestedSpeed = suggestedSpeed;
         this.authority = authority;
         this.id = id;
         this.speedLimit = speedLimit;
-        controller.setSpeedLimit(speedLimit);
-
         this.eBrake = false;
         this.underground = false;
+        controller = new TrainController(this);
+        controller.setSpeedLimit(speedLimit);
     }
 
     public TrainModel(float suggestedSpeed, int authority, int id, Block block) {
