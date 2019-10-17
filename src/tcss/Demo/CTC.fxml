@@ -17,6 +17,7 @@
                   <Text layoutX="48.0" layoutY="127.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Suggested Speed: " />
                   <TextField fx:id="auth" layoutX="158.0" layoutY="159.0" promptText="blocks" />
                   <Text layoutX="96.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Authority: " />
+                  <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" styleClass="backButton" text="Button" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="118.0" />

@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -24,6 +25,7 @@ public class CTCController implements Initializable{
     @FXML private Button dispatch;
     @FXML private TextField SS;
     @FXML private TextField auth;
+    @FXML private VBox dispatchList;
     @FXML private AnchorPane pane;
 
     @Override
@@ -35,7 +37,12 @@ public class CTCController implements Initializable{
     }
 
     public void sendDispatch(ActionEvent actionEvent) throws Exception {
-        CTC.createDispatch("train 1", SS.getText(), auth.getText());
+        //CTC.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()));
+        dispatch.setText("DISPATCH");
+    }
+
+    public void getDispatches() {
+        //dispatchList = 0;
     }
 
     public void goBack(ActionEvent actionEvent) throws Exception {
@@ -51,6 +58,5 @@ public class CTCController implements Initializable{
         Stage window = (Stage) pane.getScene().getWindow();
         window.setScene(moduleSelect);
         window.setTitle("Module Selection");
-
     }
 }
