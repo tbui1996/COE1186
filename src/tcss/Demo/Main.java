@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import tcss.trackmodel.TrackModel;
 import tcss.trackmodel.Track;
 import tcss.trackmodel.Block;
-
+import tcss.trackcontroller.TrackController;
 import tcss.trainmodel.TrainModel;
 
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ public class Main extends Application {
     static ArrayList<Block> blocks = new ArrayList<Block>();
     static Track track;
 
+    static TrackController tc;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
