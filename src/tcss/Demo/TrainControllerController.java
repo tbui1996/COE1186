@@ -9,7 +9,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import tcss.traincontroller.TrainController;
 import tcss.trainmodel.TrainModel;
 
 import java.net.URL;
@@ -28,6 +30,7 @@ public class TrainControllerController implements Initializable {
     @FXML private Label undergroundLabel;
     @FXML private AnchorPane pane;
     @FXML private Button eBreakToggle;
+    @FXML private Label undergroundDisplay;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -43,35 +46,36 @@ public class TrainControllerController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
                 if((Integer) number2 > 0) {
-//                    System.out.println(trainChoice.getItems().get((Integer) number2));
-//                    System.out.println("ID: " + Main.trains.get((Integer)number2 - 1).getID());
-
                     TrainController cur = Main.trains.get((Integer)number2-1).getTControl();
 
                     idLabel.setText("ID: " + cur.getID());
                     sSpeedLabel.setText("Suggested Speed: " + cur.getSSpeed());
                     speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit());
-                    setPointInput.setTooltip("")
+                    setPointInput.setPromptText("" + cur.getSetpointSpeed());
                     authLabel.setText("Authority: " + cur.getAuthority());
-
-                    setPointInput.setText(cur.g"")
-
-                    @FXML private ChoiceBox trainChoice;
-                    @FXML private Label idLabel;
-                    @FXML private Label speedLimitLabel;
-                    @FXML private Label sSpeedLabel;
-                    @FXML private TextField setPointInput;
-                    @FXML private Button confirmSetpoint;
-                    @FXML private Label authLabel;
-                    @FXML private Label undergroundLabel;
-                    @FXML private AnchorPane pane;
-                    @FXML private Button eBreakToggle;
-
+                    undergroundLabel.setText("Undergound: ");
+                    if (cur.getUnderground() == true){
+                        undergroundDisplay.setText("True");
+                        undergroundDisplay.setTextFill(Color.GREEN);
+                    } else {
+                        undergroundDisplay.setText("False");
+                        undergroundDisplay.setTextFill(Color.RED);
+                    }
+                    if (cur.getEBreak() == true){
+                        eBreakToggle.fire();
+                    } else {
+                        eBreakToggle.fire();
+                    }
                 } else {
                     idLabel.setText("ID: ");
                     sSpeedLabel.setText("Suggested Speed: ");
                     authLabel.setText("Authority: ");
                     speedLimitLabel.setText("Speed Limit: ");
+                    setPointInput.setPromptText("");
+                    undergroundLabel.setText("Undergound: ");
+                    undergroundDisplay.setText("N/A");
+                    undergroundDisplay.setTextFill(Color.YELLOW);
+                    eBreakToggle.setDisable(true);
                 }
             }
         });

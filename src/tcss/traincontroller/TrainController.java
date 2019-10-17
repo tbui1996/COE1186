@@ -18,6 +18,7 @@ public class TrainController {
     int authority;
     private int ki;
     private int kp;
+    private boolean underground;
 
     //Constructor method for the TrainController when instantiated with a train model
     /*
@@ -44,6 +45,22 @@ public class TrainController {
     public void passCommands(int a, float ss){
         this.authority = a;
         this.suggestedSpeed = ss;
+    }
+
+    public int getID(){
+        return this.id;
+    }
+
+    public float getSSpeed(){
+        return this.suggestedSpeed;
+    }
+
+    public float getSetpointSpeed(){
+        return this.setpointSpeed;
+    }
+
+    public int getAuthority() {
+        return authority;
     }
 
     public float getSpeedLimit(){

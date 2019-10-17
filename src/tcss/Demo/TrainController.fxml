@@ -41,7 +41,12 @@
                      </children>
                   </HBox>
                   <Label id="authLabel" fx:id="authLabel" text="Authority:" />
-                  <Label text="Underground: " />
+                  <HBox prefHeight="43.0" prefWidth="379.0">
+                     <children>
+                        <Label text="Underground: " />
+                        <Label fx:id="undegroundDisplay" />
+                     </children>
+                  </HBox>
                </children>
                <padding>
                   <Insets left="25.0" />
