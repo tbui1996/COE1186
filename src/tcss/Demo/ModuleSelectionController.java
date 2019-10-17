@@ -40,20 +40,6 @@ public class ModuleSelectionController implements Initializable {
     }
 
     public void viewTrainModel(ActionEvent actionEvent) throws Exception {
-//        Parent trainModelParent = FXMLLoader.load(getClass().getResource("TrainModel.fxml"));
-//        Scene trainModelView = new Scene(trainModelParent);
-//
-//        // Get stage info
-//        Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-//        window.setScene(trainModelView);
-//        window.show();
-
-        // Change window contents
-//        AnchorPane p = FXMLLoader.load(getClass().getResource("TrainModel.fxml"));
-//        pane.getChildren().setAll(p);
-//        Stage window = (Stage) pane.getScene().getWindow();
-//        window.setWidth(p.getWidth());
-
         Scene trainModelView = new Scene(FXMLLoader.load(getClass().getResource("TrainModel.fxml")));
         Stage window = (Stage) pane.getScene().getWindow();
         window.setScene(trainModelView);
