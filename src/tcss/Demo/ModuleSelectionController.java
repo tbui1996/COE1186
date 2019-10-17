@@ -53,4 +53,11 @@ public class ModuleSelectionController implements Initializable {
         window.setTitle("Track Model");
     }
 
+    public void viewTrackController(ActionEvent actionEvent) throws Exception {
+        Scene trackModelView = new Scene(FXMLLoader.load(getClass().getResource("TrackController.fxml")));
+        Stage window = (Stage) pane.getScene().getWindow();
+        window.setScene(trackModelView);
+        window.setTitle("Track Controller");
+    }
+
 }
