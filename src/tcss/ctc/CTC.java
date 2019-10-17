@@ -1,12 +1,12 @@
 package tcss.ctc;
 
 import java.util.*;
-//import tcss.trackcontroller.TrackController;
+import tcss.trainmodel.TrainModel;
 
 public class CTC {
     //TrackController TC1;
     ArrayList<Dispatch> dispatchList = new ArrayList<Dispatch>(); /*Number of Trains*/
-    ArrayList<Train> trainList = new ArrayList<Train>(); /*Number of Trains*/
+    ArrayList<TrainModel> trainList = new ArrayList<TrainModel>(); /*Number of Trains*/
 
     public CTC() {
 
@@ -14,8 +14,10 @@ public class CTC {
 
     }
 
-    public void createDispatch(String name, float SS, int auth) {
-        this.trainList.add(new Train(name, trainList.size()));
+    public void createDispatch(String name, float SS, int auth, TrainModel train) {
+        //TrainModel temp = new TrainModel(SS, auth, trainList.size(), 55);
+        //this.trainList.add(new TrainModel(name, trainList.size()));
+        this.trainList.add(train);
         this.dispatchList.add(new Dispatch(SS, auth, this.trainList.get(this.trainList.size()-1)));
         //sendNextStop(32, 5, this.trainList.get(this.trainList.size()-1).ID);
     }
