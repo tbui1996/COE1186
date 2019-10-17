@@ -71,11 +71,12 @@ public class TrainControllerController implements Initializable {
                     temp = cur;
                     idLabel.setText("ID: " + cur.getID());
                     sSpeedLabel.setText("Suggested Speed: " + cur.getSSpeed());
+                    System.out.println("" + cur.getSSpeed() + " with model: ");
                     speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit());
                     setPointInput.setText("");
                     setPointInput.setPromptText("" + cur.getsetpointSpeed());
                     authLabel.setText("Authority: " + cur.getAuthority());
-                    if (cur.getUnderground() == true){
+                    if (cur.getUnderground()){
                         undergroundDisplay.setText("True");
                         undergroundDisplay.setTextFill(Color.GREEN);
                     } else {
