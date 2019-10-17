@@ -61,7 +61,7 @@ public class TrainControllerController implements Initializable {
                         undergroundDisplay.setText("False");
                         undergroundDisplay.setTextFill(Color.RED);
                     }
-                    if (cur.getEBreak() == true){
+                    if (cur.getEBrake() == true){
                         eBreakToggle.fire();
                     } else {
                         eBreakToggle.fire();

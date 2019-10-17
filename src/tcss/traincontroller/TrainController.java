@@ -19,6 +19,7 @@ public class TrainController {
     private int ki;
     private int kp;
     private boolean underground;
+    private boolean eBreak;
 
     //Constructor method for the TrainController when instantiated with a train model
     /*
@@ -67,6 +68,13 @@ public class TrainController {
         return this.speedLimit;
     }
 
+    public boolean getUnderground(){
+        return this.underground;
+    }
+
+    public boolean getEBrake(){
+        return this.eBreak;
+    }
     public void setSpeedLimit(float sl){
         this.speedLimit = sl;
     }

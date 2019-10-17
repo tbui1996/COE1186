@@ -59,6 +59,6 @@
             </ToggleButton>
          </children>
       </HBox>
-      <Button fx:id="backButton" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#goBack" prefHeight="55.0" prefWidth="70.0" styleClass="backButton" text="BACK" />
+      <Button fx:id="backButton" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#goBack" prefHeight="55.0" prefWidth="70.0" styleClass="backButton" />
    </children>
 </AnchorPane>
