@@ -1,11 +1,13 @@
 package tcss.trainmodel;
 
+import tcss.trackmodel.Block;
 import tcss.traincontroller.*;
 
 public class TrainModel {
 
     // Instance variables
     private TrainController controller;
+    private Block block;
     private float suggestedSpeed;
     private int authority;
     private int id;
@@ -25,6 +27,20 @@ public class TrainModel {
 
         this.eBrake = false;
         this.underground = false;
+    }
+
+    public TrainModel(float suggestedSpeed, int authority, int id, Block block) {
+        controller = new TrainController(this);
+        this.block = block;
+        this.suggestedSpeed = suggestedSpeed;
+        this.authority = authority;
+        this.id = id;
+        this.speedLimit = block.getSpeedLimit();
+        controller.setSpeedLimit(speedLimit);
+
+        this.eBrake = false;
+        this.underground = block.isUnderground();
+        this.grade = block.getGrade();
     }
 
     public void passCommands(float sSpeed, int auth) {
@@ -57,6 +73,10 @@ public class TrainModel {
         return cmdSpeed;
     }
 
+    public void setCmdSpeed(float s) {
+        cmdSpeed = s;
+    }
+
     public Boolean getUnderground() {
         return underground;
     }
@@ -76,11 +96,4 @@ public class TrainModel {
     public TrainController getTControl() {
         return this.controller;
     }
-
-//    @FXML
-//    private void updateUI() {
-//        idLabel.setText("ID: " + id);
-//        sSpeedLabel.setText("Suggested Speed: " + suggestedSpeed);
-//        authLabel.setText("Authority: " + authority);
-//    }
 }

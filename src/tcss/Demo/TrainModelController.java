@@ -40,31 +40,6 @@ public class TrainModelController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-
-        // Testing input filter
-//        DecimalFormat format = new DecimalFormat( "#.0" );
-//
-//        tField.setTextFormatter(new TextFormatter<Object>(c ->
-//           {
-//               if ( c.getControlNewText().isEmpty() )
-//                {
-//                    return c;
-//                }
-//
-//                ParsePosition parsePosition = new ParsePosition( 0 );
-//                Object object = format.parse( c.getControlNewText(), parsePosition );
-//
-//                if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() )
-//                {
-//                    return null;
-//                }
-//                else
-//                {
-//                    return c;
-//                }
-//           }));
-
-
         trainChoice.getItems().add("Select Train");
 
         // Testing
@@ -87,7 +62,7 @@ public class TrainModelController implements Initializable {
                     sSpeedLabel.setText("Suggested Speed: " + cur.getSSpeed());
                     authLabel.setText("Authority: " + cur.getAuthority());
                     speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit());
-                    gradeLabel.setText("Grade: " + cur.getGrade());
+                    gradeLabel.setText("Grade: " + cur.getGrade() + "%");
                     cmdSpeed.setText("Commanded Speed: " + cur.getCmdSpeed());
                     if(cur.getUnderground() == true) {
                         underStatus.setText("True");
