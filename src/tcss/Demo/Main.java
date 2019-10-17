@@ -23,6 +23,7 @@ public class Main extends Application {
     static ArrayList<Block> blocks = new ArrayList<Block>();
     static Track track;
 
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
@@ -44,7 +45,6 @@ public class Main extends Application {
         Block b2 = track.getBlock(2);
         blocks.add(b1);
         blocks.add(b2);
-
 
     }
 
