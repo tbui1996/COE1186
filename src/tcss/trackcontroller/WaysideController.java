@@ -9,4 +9,5 @@ public class WaysideController {
     boolean lights;
     boolean occupancy;
     boolean heat;
+
 }
