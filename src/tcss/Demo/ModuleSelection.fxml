@@ -10,14 +10,14 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@ModuleSelection.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.Demo.Controller">
+<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@ModuleSelection.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.Demo.ModuleSelectionController">
    <children>
       <Button layoutX="38.0" layoutY="71.0" mnemonicParsing="false" prefHeight="85.0" prefWidth="137.0" styleClass="userButton" text="CTC" textFill="#120a22">
          <tooltip>
             <Tooltip autoHide="true" text="Testing" />
          </tooltip>
       </Button>
-      <Button layoutX="132.0" layoutY="206.0" mnemonicParsing="false" styleClass="userButton" text="Train Controller">
+      <Button layoutX="327.0" layoutY="213.0" mnemonicParsing="false" onAction="#viewTrainController" styleClass="userButton" text="Train Controller">
          <font>
             <Font size="11.0" />
          </font></Button>
@@ -25,7 +25,7 @@
          <font>
             <Font size="4.0" />
          </font></Button>
-      <Button layoutX="314.0" layoutY="206.0" mnemonicParsing="false" styleClass="userButton" text="Track Model" />
+      <Button layoutX="411.0" layoutY="71.0" mnemonicParsing="false" onAction="#viewTrackModel" styleClass="userButton" text="Track Model" />
       <Pane layoutY="376.0" prefHeight="85.0" prefWidth="600.0" styleClass="timebar">
          <children>
             <Button id="playpausebutton" fx:id="playpause" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" layoutX="275.0" layoutY="18.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="play">
@@ -60,7 +60,7 @@
             <Font name="Calibri" size="30.0" />
          </font>
       </Text>
-      <Button fx:id="trainModelButton" layoutX="406.0" layoutY="71.0" mnemonicParsing="false" onAction="#viewTrainModel" prefHeight="100.0" prefWidth="175.0" styleClass="userButton" text="Train Model" />
-      <Button fx:id="quitB" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" styleClass="exit-button" text="Button" />
+      <Button fx:id="trainModelButton" layoutX="132.0" layoutY="213.0" mnemonicParsing="false" onAction="#viewTrainModel" prefHeight="100.0" prefWidth="175.0" styleClass="userButton" text="Train Model" />
+      <Button fx:id="quitB" ellipsisString="" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" styleClass="exit-button" text="Button" />
    </children>
 </AnchorPane>

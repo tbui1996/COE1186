@@ -20,6 +20,7 @@ public class Block{
     private Switch sw;
     private Station station;
     private RXR rxr;
+    private Beacon beacon;
     private TrainModel train;
 
     public Block(){
@@ -39,6 +40,7 @@ public class Block{
         setSwitch(null);
         setStation(null);
         setRXR(null);
+        setBeacon(null);
         setTrain(null);
     }
 
@@ -96,6 +98,10 @@ public class Block{
         return rxr;
     }
 
+    public Beacon getBeacon(){
+        return beacon;
+    }
+
     public TrainModel getTrain(){
         return train;
     }
@@ -150,11 +156,17 @@ public class Block{
         station = s;
     }
 
+    public void setRXR(RXR r){
+        rxr = r;
+    }
+
+    public void setBeacon(Beacon b){
+        beacon = b;
+    }
+
     public void setTrain(TrainModel t){
         train = t;
     }
 
-    public void setRXR(RXR r){
-        rxr = r;
-    }
+
 }
