@@ -38,10 +38,10 @@ public class Main extends Application {
 
 
         // Testing Train Model UI
-        TrainModel t1 = new TrainModel(22.0f, 2, 4, 25.0f);
-        TrainModel t2 = new TrainModel(17.0f, 13, 82, 43.5f);
-        trains.add(t1);
-        trains.add(t2);
+//        TrainModel t1 = new TrainModel(22.0f, 2, 4, 25.0f);
+//        TrainModel t2 = new TrainModel(17.0f, 13, 82, 43.5f);
+//        trains.add(t1);
+//        trains.add(t2);
 
         // Testing TrackModel UI
         TrackModel tm = new TrackModel();
