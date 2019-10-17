@@ -13,6 +13,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import tcss.trackcontroller.TrackController;
+import tcss.trackmodel.Block;
+import tcss.trackmodel.Track;
+import tcss.trackcontroller.TrackController;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -23,17 +27,35 @@ public class TrackControllerController implements Initializable{
     @FXML private Label authLabel;
     @FXML private AnchorPane pane;
     @FXML private ChoiceBox trackChoice;
+    @FXML private Label occupiedLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        TrackController tc = Main.tc;
         trackChoice.getItems().add("Select Block");
-        trackChoice.setValue("Select Train");
+        trackChoice.setValue("Select Block");
         trackChoice.setTooltip(new Tooltip("Select a block to view"));
         trackChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-                System.out.println(trackChoice.getItems().get((Integer) number2));
+                if((Integer) number2 > 0) {
+                    sSpeedLabel.setText("Suggested Speed: " + tc.setSS() + " mph");
+                    occupiedLabel.setText("Occupancy: "+ updateOccupied(tc));
+                    idLabel.setText("Id: "+ tc.setID());
+                }
+                else{
+                    sSpeedLabel.setText("Suggested Speed: ");
+                    occupiedLabel.setText("Occupancy: ");
+                    idLabel.setText("Id: ");
+                }
             }
         });
+    }
+    public String updateOccupied(TrackController tc){
+        if(tc.setOccupancy()){
+            return "Occupied";
+        } else{
+            return "Not Occupied";
+        }
     }
 
     public void goBack(ActionEvent actionEvent) throws Exception {

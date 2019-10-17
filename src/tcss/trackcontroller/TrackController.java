@@ -38,11 +38,29 @@ public class TrackController {
         this.id = ID;
         this.auth = auth;
     }
-
-    //SETTERS
-    public void isRailroadcrossingUpOrDown(RXR rxr){
-        rxr.setDown(railroadcrossing);
+    //set
+    public void setRXR(){
+        this.railroadcrossing = isRailroadcrossingUpOrDown(RXR);
     }
+    public int setID(){
+        return this.id;
+    }
+
+    //get
+    public boolean isRailroadcrossingUpOrDown(RXR rxr){
+
+        rxr.setDown(railroadcrossing);
+        return this.railroadcrossing;
+    }
+    public float setSS()
+    {
+        return this.ss;
+    }
+
+    public boolean setOccupancy(){
+        return this.occupancy;
+    }
+
 
 
     //GETTERS
