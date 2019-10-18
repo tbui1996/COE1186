@@ -14,6 +14,7 @@ public class Track {
 
     public Track(){
         trackList = new LinkedList<Block>();
+        trains = new ArrayList<TrainModel>();
         int[] iProperties = {0, 0, 1, 50};
         float[] fProperties = {0.5f, 40.0f, 0.0f, 0.0f};
 
@@ -37,13 +38,16 @@ public class Track {
         return b;
     }
 
-    private boolean initTrain(float suggestedSpeed, int auth, int id){
+    public boolean initTrain(float ss, int auth, int id){
 
         Block startBlock = trackList.get(0);
-        TrainModel train = new TrainModel(suggestedSpeed, auth, id, startBlock);
+        TrainModel train = new TrainModel(ss, auth, id, startBlock);
         startBlock.setTrain(train);
         startBlock.setOccupied(true);
         trains.add(train);
+        System.out.println(ss + auth);
+        setSuggestedSpeed(ss);
+        setAuthority(auth);
         return true;
     }
 
@@ -59,7 +63,19 @@ public class Track {
         return authority;
     }
 
+    public void setSuggestedSpeed(float ss){
+        suggestedSpeed = ss;
+    }
+
+    public void setAuthority(int a){
+        authority = a;
+    }
+
     private Block getNextBlock(Block b){
         return b;
+    }
+
+    public LinkedList<Block> getBlockList(){
+        return trackList;
     }
 }

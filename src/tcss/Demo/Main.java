@@ -6,10 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import tcss.ctc.CTC;
 import tcss.trackmodel.TrackModel;
 import tcss.trackmodel.Track;
 import tcss.trackmodel.Block;
-
+import tcss.trackcontroller.TrackController;
 import tcss.trainmodel.TrainModel;
 
 import java.util.ArrayList;
@@ -23,8 +24,13 @@ public class Main extends Application {
     static ArrayList<Block> blocks = new ArrayList<Block>();
     static Track track;
 
+    static TrackController tc;
+    static CTC ctc;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
+        tc = new TrackController();
+        ctc = new CTC(tc);
         Parent root = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
         primaryStage.setTitle("Module Selection");
         primaryStage.setScene(new Scene(root));
@@ -32,19 +38,20 @@ public class Main extends Application {
 
 
         // Testing Train Model UI
-        TrainModel t1 = new TrainModel(22.0f, 2, 4, 25.0f);
-        TrainModel t2 = new TrainModel(17.0f, 13, 82, 43.5f);
-        trains.add(t1);
-        trains.add(t2);
+//        TrainModel t1 = new TrainModel(22.0f, 2, 4, 25.0f);
+//        TrainModel t2 = new TrainModel(17.0f, 13, 82, 43.5f);
+//        trains.add(t1);
+//        trains.add(t2);
 
         // Testing TrackModel UI
         TrackModel tm = new TrackModel();
         track = tm.getTrack();
-        Block b1 = track.getBlock(1);
+        tc.setTrack(track);
+
+        /*Block b1 = track.getBlock(1);
         Block b2 = track.getBlock(2);
         blocks.add(b1);
-        blocks.add(b2);
-
+        blocks.add(b2);*/
 
     }
 
