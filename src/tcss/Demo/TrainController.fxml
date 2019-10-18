@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="pane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@TrainController.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.Demo.TrainControllerController">
+   <children>
+      <HBox prefHeight="460.0" prefWidth="609.0">
+         <children>
+            <VBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="404.0">
+               <children>
+                  <ChoiceBox fx:id="trainChoice" minHeight="2.0" minWidth="2.0" prefHeight="35.0" prefWidth="154.0" />
+                  <Label fx:id="idLabel" text="ID:">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Label>
+                  <Label fx:id="speedLimitLabel" text="Speed Limit: " />
+                  <Label id="sSpeedLabel" fx:id="sSpeedLabel" text="Suggested Speed:" />
+                  <HBox prefHeight="47.0" prefWidth="376.0">
+                     <children>
+                        <Label text="Setpoint Speed: " />
+                        <TextField fx:id="setPointInput" prefHeight="27.0" prefWidth="102.0">
+                           <HBox.margin>
+                              <Insets top="10.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Button fx:id="confirmSetpoint" mnemonicParsing="false" onAction="#confirmSetpoint" text="OK">
+                           <HBox.margin>
+                              <Insets left="4.0" top="10.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <Label id="authLabel" fx:id="authLabel" text="Authority:" />
+                  <HBox prefHeight="43.0" prefWidth="379.0">
+                     <children>
+                        <Label text="Underground: " />
+                        <Label fx:id="undergroundDisplay" />
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets left="25.0" />
+               </padding>
+            </VBox>
+            <ToggleButton fx:id="eBrakeToggle" mnemonicParsing="false" onAction="#toggleEBrake" text="Emergency Break">
+               <HBox.margin>
+                  <Insets left="25.0" top="75.0" />
+               </HBox.margin>
+            </ToggleButton>
+         </children>
+      </HBox>
+      <Button fx:id="backButton" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#goBack" prefHeight="55.0" prefWidth="70.0" styleClass="backButton" />
+   </children>
+</AnchorPane>

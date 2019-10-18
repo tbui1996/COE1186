@@ -1,16 +1,18 @@
 package tcss.ctc;
 
+import tcss.trainmodel.TrainModel;
+
 public class Dispatch {
-    private double SS;
+    private float SS;
     private int auth;
-    private Train train;
+    private TrainModel train;
 
     public Dispatch() {
         this.SS = 0;
         this.auth = 0;
     }
 
-    public Dispatch(float SS, int auth, Train train) {
+    public Dispatch(float SS, int auth, TrainModel train) {
         this.SS = SS;
         this.auth = auth;
         this.train = train;
@@ -26,5 +28,16 @@ public class Dispatch {
 
     public void sendNextStop() {
 
+    }
+    public float getSS(){
+        return this.SS;
+    }
+    public int getAuth() {
+        return this.auth;
+    }
+
+
+    public String toString() {
+        return "ID: " + this.train.getID() + "\nSuggested Speed: " + this.train.getSSpeed() + "\nAuthority: " + this.train.getAuthority();
     }
 }
