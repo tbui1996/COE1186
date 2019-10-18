@@ -39,7 +39,7 @@ public class CTCController implements Initializable{
     }
 
     public void sendDispatch(ActionEvent actionEvent) throws Exception {
-        TrainModel temp = new TrainModel(Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), Main.ctc.trainList.size(), 55);
+        TrainModel temp = new TrainModel(Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), Main.ctc.trainList.size(), 40);
         Main.ctc.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), temp);
         Main.trains.add(temp);
         dispatch.setText("DISPATCH");
