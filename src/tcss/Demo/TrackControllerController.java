@@ -47,7 +47,7 @@ public class TrackControllerController implements Initializable{
                 if((Integer) number2 > 0) {
                     System.out.println(cur.getSs());
                     sSpeedLabel.setText("Suggested Speed: " + cur.getSs() + " mph");
-                    occupiedLabel.setText("Occupancy: "+ updateOccupied(tc));
+                    occupiedLabel.setText("Occupancy: "+ updateOccupied(cur));
                     authLabel.setText("Authority: "+ cur.getAuth());
 
                 }
@@ -60,7 +60,7 @@ public class TrackControllerController implements Initializable{
         });
     }
     public String updateOccupied(TrackController tc){
-        if(tc.setOccupancy()){
+        if(tc.getOccupancy()){
             return "Occupied";
         } else{
             return "Not Occupied";

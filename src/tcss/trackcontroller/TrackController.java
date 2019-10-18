@@ -42,18 +42,18 @@ public class TrackController {
         this.auth = auth;
     }
     //set
-    public void setRXR(){
-        this.railroadcrossing = isRailroadcrossingUpOrDown(RXR);
+    public void setRXR(boolean railroad){
+        this.railroadcrossing = railroad;
     }
     public int setID(){
         return this.id;
     }
 
-    //get
-    public boolean isRailroadcrossingUpOrDown(RXR rxr){
-
-        rxr.setDown(railroadcrossing);
+    //set
+    public boolean setRailRoadCrossing(boolean railroad){
+        RXR.setDown(railroad);
         return this.railroadcrossing;
+
     }
     public void setSS(float SS)
     {
@@ -63,16 +63,18 @@ public class TrackController {
         this.track = t;
     }
 
-
-    public boolean setOccupancy(){
-        return this.occupancy;
+    public void setOccupancy(boolean occupancy){
+        this.occupancy = occupancy;
+    }
+    public boolean getOccupancy(){
+        return this.track.getBlockList().get(0).isOccupied();
     }
 
     public float getSs(){
         return this.ss;
     }
     public int getTrackNum() {
-        return this.trackNum;
+        return 1;
     }
 
     public int getAuth() {
