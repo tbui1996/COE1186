@@ -27,7 +27,7 @@ public class CTCController implements Initializable{
     @FXML private TextField SS;
     @FXML private TextField auth;
     @FXML private VBox dispatchList;
-    @FXML Label dispatch1;
+    @FXML private Label dispatch1;
     @FXML private AnchorPane pane;
 
     @Override
