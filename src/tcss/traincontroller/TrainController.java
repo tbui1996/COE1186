@@ -43,14 +43,13 @@ public class TrainController {
         this.lastmuk = new float[]{0, 0, 0};
         this.PWRCMD = 0;
         this.oldsps = 0;
-        this.updateStatus();
     }
 
     /*
     Method responsible for updating calculations for safe travel and operation
     determines new commanded speed and
      */
-    public void updateStatus(){
+    public void update(){
         model.update();
         commandedSpeed = setpointSpeed < suggestedSpeed ? setpointSpeed : suggestedSpeed;
         commandedSpeed = commandedSpeed < speedLimit ? commandedSpeed : speedLimit;
@@ -196,5 +195,9 @@ public class TrainController {
 
     public void setOpMode(boolean opMode) {
         this.opMode = opMode;
+    }
+
+    public String toString(){
+        return(this.id + " at " + this.setpointSpeed);
     }
 }

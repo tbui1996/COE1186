@@ -68,7 +68,7 @@ public class TrainControllerController implements Initializable {
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
                 if((Integer) number2 > 0) {
                     TrainController cur = Main.trains.get((Integer)number2-1).getTControl();
-                    cur.updateStatus();
+                    cur.update();
                     tc = cur;
                     update();
                 } else {
@@ -89,6 +89,7 @@ public class TrainControllerController implements Initializable {
 
     public void update(){
         idLabel.setText("ID: " + tc.getID());
+        System.out.println("tc is: " + tc.toString());
         suggestedSpeedLabel.setText("Suggested Speed: " + tc.getSSpeed());
         System.out.println("" + tc.getSSpeed() + " with model: ");
         speedLimitLabel.setText("Speed Limit: " + tc.getSpeedLimit());
@@ -96,7 +97,6 @@ public class TrainControllerController implements Initializable {
             opModeToggle.setStyle("-fx-background-color: red; -fx-text-fill: #dfdfdf");
         } else {
             opModeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
-
         }
         setPointInput.setText("");
         setPointInput.setPromptText("" + tc.getsetpointSpeed());
@@ -129,7 +129,7 @@ public class TrainControllerController implements Initializable {
            try {
                float newSPSpeed = Float.parseFloat(setPointInput.getText());
                tc.setSetpointSpeed(newSPSpeed);
-               tc.updateStatus();
+               tc.update();
                tc.updateModelCommandedSpeed();
                setPointInput.setText("");
                setPointInput.setPromptText("" + tc.getsetpointSpeed());
