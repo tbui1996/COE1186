@@ -12,14 +12,20 @@ public class TrainController {
     private float setpointSpeed;
     private float commandedSpeed;
     private float currentSpeed;
-    private float errorSpeed;
-    int opMode = 0; //default to automatic
+    public boolean opMode = false; //default to automatic
     private int time;
     int authority;
     private int ki;
     private int kp;
     private boolean underground;
     private boolean eBrake;
+    private float[] lastVerrs;
+    private float[] lastmuk;
+    final private float MAX_PWR_CMD = 120000; //KW
+    final private float MAX_SPEED = 70; // KM/HR
+    final private float T = 1; //sampling rate of trains
+    private float PWRCMD;
+    private float oldsps;
 
     //Constructor method for the TrainController when instantiated with a train model
     /*
@@ -33,26 +39,110 @@ public class TrainController {
         this.setpointSpeed = 0;
         //this.underground = model.getUnderground();
         this.eBrake = model.getEBrake();
+        this.lastVerrs = new float[]{0, 0, 0};
+        this.lastmuk = new float[]{0, 0, 0};
+        this.PWRCMD = 0;
+        this.oldsps = 0;
         this.updateStatus();
     }
 
     /*
-    Method responsible for updating calculatikns for safe travel and operation
+    Method responsible for updating calculations for safe travel and operation
     determines new commanded speed and
      */
     public void updateStatus(){
-        this.model.update();
-        //this.currentSpeed = model.getCurrSpeed();
-        this.commandedSpeed = this.setpointSpeed < this.suggestedSpeed ? this.setpointSpeed : this.suggestedSpeed;
-        this.commandedSpeed = this.setpointSpeed < this.speedLimit ? this.setpointSpeed : this.speedLimit;
+        model.update();
+        commandedSpeed = setpointSpeed < suggestedSpeed ? setpointSpeed : suggestedSpeed;
+        commandedSpeed = commandedSpeed < speedLimit ? commandedSpeed : speedLimit;
+        commandedSpeed = commandedSpeed < MAX_SPEED ? commandedSpeed : MAX_SPEED;
+        float result1 = getPWRCMD1(commandedSpeed);
+        float result2 = getPWRCMD2(commandedSpeed);
+        float result3 = getPWRCMD3(commandedSpeed);
+        PWRCMD = majorityVote(result1, result2, result3);
+        model.setPWRCMD(PWRCMD);
+        if(PWRCMD == -2){
+            model.setEBrake(true);
+        }
+    }
+
+
+    public void changeOperationMode(){
+        opMode = !opMode; //1 is manual
+        if(opMode){
+            //now in manual
+            setpointSpeed = oldsps;
+        } else { //in automatic mode
+            setpointSpeed = MAX_SPEED;
+        }
+    }
+
+
+    private float majorityVote(float a, float b, float c){
+        if(a == b || a == c){ //a matches with at least one
+            return a;
+        } else if (b == c){ //b matches with c
+            return b;
+        } else
+            return 0;
+    }
+
+    private float getPWRCMD1(float cmdSpeed){
+        if(eBrake){
+            return -2; //-2 is coded as e-brake
+        }
+        if(authority < 2){
+            return -1; // -1 is coded as s-brake
+        }
+        float vErr = currentSpeed - cmdSpeed;
+        float CMD = kp*vErr + ki*(lastmuk[1] + T/2*(vErr + lastVerrs[1]));
+        if(CMD > MAX_PWR_CMD){
+            CMD = kp*vErr + ki*lastmuk[1];
+        } else {
+            lastmuk[1] = lastmuk[1] + T/2*(vErr + lastVerrs[1]);
+        }
+        return CMD;
+    }
+
+    private float getPWRCMD2(float cmdSpeed){
+        if(eBrake){
+            return -2; //-2 is coded as e-brake
+        }
+        if(authority < 2){
+            return -1; // -1 is coded as s-brake
+        }
+        float vErr = currentSpeed - cmdSpeed;
+        float CMD = kp*vErr + ki*(lastmuk[2] + T/2*(vErr + lastVerrs[2]));
+        if(CMD > MAX_PWR_CMD){
+            CMD = kp*vErr + ki*lastmuk[2];
+        } else {
+            lastmuk[2] = lastmuk[2] + T/2*(vErr + lastVerrs[2]);
+        }
+        return CMD;
+    }
+
+    private float getPWRCMD3(float cmdSpeed){
+        if(eBrake){
+            return -2; //-2 is coded as e-brake
+        }
+        if(authority < 2){
+            return -1; // -1 is coded as s-brake
+        }
+        float vErr = currentSpeed - cmdSpeed;
+        float CMD = kp*vErr + ki*(lastmuk[3] + T/2*(vErr + lastVerrs[3]));
+        if(CMD > MAX_PWR_CMD){
+            CMD = kp*vErr + ki*lastmuk[3];
+        } else {
+            lastmuk[3] = lastmuk[3] + T/2*(vErr + lastVerrs[3]);
+        }
+        return CMD;
     }
 
     public void updateModelEBrake(){
-        this.model.setEBrake(this.eBrake);
+        model.setEBrake(eBrake);
     }
 
     public void updateModelCommandedSpeed(){
-        this.model.setCmdSpeed(this.commandedSpeed);
+        model.setCmdSpeed(commandedSpeed);
     }
 
     public void passCommands(int a, float ss){
@@ -87,17 +177,24 @@ public class TrainController {
     public boolean getEBrake(){
         return this.eBrake;
     }
+
     public void setSpeedLimit(float sl){
         this.speedLimit = sl;
     }
 
     public void setEBrake(boolean b){
         this.eBrake = b;
-        //this.model.setEBrake(b);
     }
 
     public void setSetpointSpeed(float sps){
         this.setpointSpeed = sps;
     }
 
+    public boolean getOpMode() {
+        return opMode;
+    }
+
+    public void setOpMode(boolean opMode) {
+        this.opMode = opMode;
+    }
 }

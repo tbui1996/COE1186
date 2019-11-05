@@ -27,15 +27,17 @@ public class TrainControllerController implements Initializable {
     @FXML private ChoiceBox trainChoice;
     @FXML private Label idLabel;
     @FXML private Label speedLimitLabel;
-    @FXML private Label sSpeedLabel;
+    @FXML private Label suggestedSpeedLabel;
     @FXML private TextField setPointInput;
     @FXML private Button confirmSetpoint;
     @FXML private Label authLabel;
     @FXML private AnchorPane pane;
     @FXML private ToggleButton eBrakeToggle;
+    @FXML private ToggleButton opModeToggle;
     @FXML private Label undergroundDisplay;
 
-    private TrainController temp;
+
+    private TrainController tc;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -65,34 +67,14 @@ public class TrainControllerController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
                 if((Integer) number2 > 0) {
-                    eBrakeToggle.setDisable(false);
                     TrainController cur = Main.trains.get((Integer)number2-1).getTControl();
                     cur.updateStatus();
-                    temp = cur;
-                    idLabel.setText("ID: " + cur.getID());
-                    sSpeedLabel.setText("Suggested Speed: " + cur.getSSpeed());
-                    System.out.println("" + cur.getSSpeed() + " with model: ");
-                    speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit());
-                    setPointInput.setText("");
-                    setPointInput.setPromptText("" + cur.getsetpointSpeed());
-                    authLabel.setText("Authority: " + cur.getAuthority());
-                    if (cur.getUnderground()){
-                        undergroundDisplay.setText("True");
-                        undergroundDisplay.setTextFill(Color.GREEN);
-                    } else {
-                        undergroundDisplay.setText("False");
-                        undergroundDisplay.setTextFill(Color.RED);
-                    }
-                    eBrakeToggle.setSelected(cur.getEBrake());
-                    if(cur.getEBrake()) {
-                        eBrakeToggle.setStyle("-fx-background-color: red; -fx-text-fill: #dfdfdf");
-                    } else {
-                        eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
-                    }
+                    tc = cur;
+                    update();
                 } else {
-                    temp = null; //deselect train
+                    tc = null; //deselect train
                     idLabel.setText("ID: ");
-                    sSpeedLabel.setText("Suggested Speed: ");
+                    suggestedSpeedLabel.setText("Suggested Speed: ");
                     authLabel.setText("Authority: ");
                     speedLimitLabel.setText("Speed Limit: ");
                     setPointInput.setPromptText("");
@@ -103,6 +85,35 @@ public class TrainControllerController implements Initializable {
                 }
             }
         });
+    }
+
+    public void update(){
+        idLabel.setText("ID: " + tc.getID());
+        suggestedSpeedLabel.setText("Suggested Speed: " + tc.getSSpeed());
+        System.out.println("" + tc.getSSpeed() + " with model: ");
+        speedLimitLabel.setText("Speed Limit: " + tc.getSpeedLimit());
+        if(tc.getOpMode()){
+            opModeToggle.setStyle("-fx-background-color: red; -fx-text-fill: #dfdfdf");
+        } else {
+            opModeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
+
+        }
+        setPointInput.setText("");
+        setPointInput.setPromptText("" + tc.getsetpointSpeed());
+        authLabel.setText("Authority: " + tc.getAuthority());
+        if (tc.getUnderground()){
+            undergroundDisplay.setText("True");
+            undergroundDisplay.setTextFill(Color.GREEN);
+        } else {
+            undergroundDisplay.setText("False");
+            undergroundDisplay.setTextFill(Color.RED);
+        }
+        eBrakeToggle.setSelected(tc.getEBrake());
+        if(tc.getEBrake()) {
+            eBrakeToggle.setStyle("-fx-background-color: red; -fx-text-fill: #dfdfdf");
+        } else {
+            eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
+        }
     }
 
     public void goBack(ActionEvent actionEvent) throws Exception {
@@ -117,11 +128,11 @@ public class TrainControllerController implements Initializable {
        try {
            try {
                float newSPSpeed = Float.parseFloat(setPointInput.getText());
-               temp.setSetpointSpeed(newSPSpeed);
-               temp.updateStatus();
-               temp.updateModelCommandedSpeed();
+               tc.setSetpointSpeed(newSPSpeed);
+               tc.updateStatus();
+               tc.updateModelCommandedSpeed();
                setPointInput.setText("");
-               setPointInput.setPromptText("" + temp.getsetpointSpeed());
+               setPointInput.setPromptText("" + tc.getsetpointSpeed());
            } catch (NumberFormatException e) {
                System.out.println("nfe found");
            }
@@ -132,8 +143,8 @@ public class TrainControllerController implements Initializable {
 
     public void toggleEBrake(ActionEvent actionEvent) throws Exception {
         boolean brakeStatus = eBrakeToggle.isSelected(); //get brake status - what we want to set it to
-        temp.setEBrake(brakeStatus);
-        temp.updateModelEBrake();
+        tc.setEBrake(brakeStatus);
+        tc.updateModelEBrake();
         if (brakeStatus) {
             eBrakeToggle.setStyle("-fx-background-color: red; -fx-text-fill: #dfdfdf");
             //eBrakeStatus.set(true);
@@ -141,5 +152,9 @@ public class TrainControllerController implements Initializable {
             eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49);");
             //eBrakeStatus.set(false);
         }
+    }
+
+    public void changeOperationMode(ActionEvent actionEvent) throws Exception {
+       // boolean opMode =
     }
 }
