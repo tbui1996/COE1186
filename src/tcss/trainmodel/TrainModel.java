@@ -16,6 +16,7 @@ public class TrainModel {
     private float grade;
     private float cmdSpeed;
     private Boolean underground;
+    private float PWRCMD;
 
     public TrainModel(float suggestedSpeed, int authority, int id, float speedLimit) {
         this.suggestedSpeed = suggestedSpeed;
@@ -56,7 +57,7 @@ public class TrainModel {
     }
 
     public void update() {
-        //this.controller.passCommands(this.authority, this.suggestedSpeed);
+        this.controller.passCommands(this.authority, this.suggestedSpeed);
     }
 
     public void setEBrake(Boolean brake) {
@@ -98,5 +99,9 @@ public class TrainModel {
 
     public TrainController getTControl() {
         return this.controller;
+    }
+
+    public void setPWRCMD(float PWRCMD){
+        this.PWRCMD = PWRCMD;
     }
 }
