@@ -22,6 +22,8 @@ public class CTC {
         //this.trainList.add(new TrainModel(name, trainList.size()));
         this.trainList.add(train);
         this.dispatchList.add(new Dispatch(SS, auth, this.trainList.get(this.trainList.size()-1)));
+        this.dispatchList.get(this.dispatchList.size()-1).createSchedule();
+        System.out.println(this.dispatchList.get(this.dispatchList.size()-1));
         sendNextStop(SS, auth, train.getID());
     }
     public TrackController getTrackController(int index){
