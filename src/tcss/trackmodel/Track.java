@@ -8,13 +8,11 @@ import java.util.ArrayList;
 public class Track {
 
     private LinkedList<Block> trackList;
-    private ArrayList<TrainModel> trains;
     private float suggestedSpeed;
     private int authority;
 
     public Track(){
         trackList = new LinkedList<Block>();
-        trains = new ArrayList<TrainModel>();
 
         /*
         int[] iProperties = {0, 0, 1, 50};
@@ -47,7 +45,6 @@ public class Track {
         TrainModel train = new TrainModel(ss, auth, id, startBlock);
         startBlock.setTrain(train);
         startBlock.setOccupied(true);
-        trains.add(train);
         System.out.println(ss + auth);
         setSuggestedSpeed(ss);
         setAuthority(auth);
