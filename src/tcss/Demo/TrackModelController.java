@@ -49,7 +49,7 @@ public class TrackModelController implements Initializable {
 
         // Testing
         for(Block b: t.getBlockList()) {
-            blockChoice.getItems().add("Block " + b.getBlockNum());
+            blockChoice.getItems().add(b.getSection() + Integer.toString(b.getBlockNum()));
         }
 
         blockChoice.setValue("Select Block");

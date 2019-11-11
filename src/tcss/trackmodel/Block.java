@@ -5,10 +5,10 @@ import tcss.trainmodel.TrainModel;
 public class Block{
 
     private int line;
-    private int section;
+    private char section;
     private int blockNum;
-    private int length;
 
+    private float length;
     private float grade;
     private float speedLimit;
     private float elevation;
@@ -25,7 +25,7 @@ public class Block{
 
     public Block(){
         setLine(-1);
-        setSection(-1);
+        setSection('\u0000');
         setBlockNum(-1);
         setLength(-1);
 
@@ -50,7 +50,7 @@ public class Block{
         return line;
     }
 
-    public int getSection(){
+    public char getSection(){
         return section;
     }
 
@@ -58,7 +58,7 @@ public class Block{
         return blockNum;
     }
 
-    public int getLength(){
+    public float getLength(){
         return length;
     }
 
@@ -112,7 +112,7 @@ public class Block{
         line = l;
     }
 
-    public void setSection(int s){
+    public void setSection(char s){
         section = s;
     }
 
@@ -120,7 +120,7 @@ public class Block{
         blockNum = bn;
     }
 
-    public void setLength(int l){
+    public void setLength(float l){
         length = l;
     }
 

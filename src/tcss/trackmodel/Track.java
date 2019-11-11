@@ -15,18 +15,21 @@ public class Track {
     public Track(){
         trackList = new LinkedList<Block>();
         trains = new ArrayList<TrainModel>();
+
+        /*
         int[] iProperties = {0, 0, 1, 50};
         float[] fProperties = {0.5f, 40.0f, 0.0f, 0.0f};
 
         trackList.add(newBlock(iProperties, fProperties, 1));
         trackList.add(newBlock(iProperties, fProperties, 2));
         trackList.get(1).setStation(new Station("Dormont"));
+        */
     }
 
     private Block newBlock(int[] iProps, float[] fProps, int blockNum){
         Block b = new Block();
         b.setLine(iProps[0]);
-        b.setSection(iProps[1]);
+        b.setSection('0');
         b.setBlockNum(blockNum);
         b.setLength(iProps[3]);
 
