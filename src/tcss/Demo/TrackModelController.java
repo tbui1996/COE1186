@@ -65,8 +65,8 @@ public class TrackModelController implements Initializable {
 
                     blockNumLabel.setText("Block #: " + cur.getBlockNum());
                     sectionLabel.setText("Section #: " + cur.getSection());
-                    sSpeedLabel.setText("Suggested Speed: " + t.getSuggestedSpeed() + " mph");
-                    authLabel.setText("Authority: " + t.getAuthority());
+                    sSpeedLabel.setText("Suggested Speed: " + cur.getSuggestedSpeed() + " mph");
+                    authLabel.setText("Authority: " + cur.getAuthority());
                     lengthLabel.setText("Length: " + cur.getLength() + " m");
                     gradeLabel.setText("Grade: " + cur.getGrade() + "%");
                     speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit() + " mph");

@@ -10,8 +10,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import tcss.trackmodel.Station;
-
 public class TrackModel {
 
     private Track redLine;
@@ -74,49 +72,60 @@ public class TrackModel {
                 Cell cell = currRow.getCell(c);
 
                 //parse cell differently based on which column it is
-                if(colTitle.equals("Line")){
-                    if(!lineParse(currBlock, cell)){
+                switch(colTitle) {
+                    case "Line":
+                        if(!lineParse(currBlock, cell)){
+                            return false;
+                        }
+                        break;
+                    case "Section":
+                        if(!sectionParse(currBlock, cell)){
+                            return false;
+                        }
+                        break;
+                    case "Block Number":
+                        if(!blockNumParse(currBlock, cell)){
+                            return false;
+                        }
+                        break;
+                    case "Block Length (m)":
+                        if(!blockLengthParse(currBlock, cell)){
+                            return false;
+                        }
+                        break;
+                    case "Block Grade (%)":
+                        if(!blockGradeParse(currBlock, cell)){
+                            return false;
+                        }
+                        break;
+                    case "Speed Limit (Km/Hr)":
+                        if(!speedLimitParse(currBlock, cell)){
+                            return false;
+                        }
+                        break;
+                    case "Infrastructure":
+                        if(!infrastructureParse(currBlock, cell)){
+                            return false;
+                        }
+                        break;
+                    case "ELEVATION (M)":
+                        if(!elevationParse(currBlock, cell)){
+                            return false;
+                        }
+                        break;
+                    case "CUMULATIVE ELEVATION (M)":
+                        if(!cumulativeElevationParse(currBlock, cell)){
+                            return false;
+                        }
+                        break;
+                    default:
+                        //invalid track file column title
+                        System.out.println("Track Build Error: Invalid track file column title");
                         return false;
-                    }
-                }else if(colTitle.equals("Section")){
-                    if(!sectionParse(currBlock, cell)){
-                        return false;
-                    }
-                }else if(colTitle.equals("Block Number")){
-                    if(!blockNumParse(currBlock, cell)){
-                        return false;
-                    }
-                }else if(colTitle.equals("Block Length (m)")){
-                    if(!blockLengthParse(currBlock, cell)){
-                        return false;
-                    }
-                }else if(colTitle.equals("Block Grade (%)")) {
-                    if(!blockGradeParse(currBlock, cell)){
-                        return false;
-                    }
-                }else if(colTitle.equals("Speed Limit (Km/Hr)")){
-                    if(!speedLimitParse(currBlock, cell)){
-                        return false;
-                    }
-                }else if(colTitle.equals("Infrastructure")){
-                    if(!infrastructureParse(currBlock, cell)){
-                        return false;
-                    }
-                }else if(colTitle.equals("ELEVATION (M)")){
-                    if(!elevationParse(currBlock, cell)){
-                        return false;
-                    }
-                }else if(colTitle.equals("CUMULATIVE ELEVATION (M)")){
-                    if(!cumulativeElevationParse(currBlock, cell)){
-                        return false;
-                    }
-                }else{
-                    //invalid track file column title
-                    System.out.println("Track Build Error: Invalid track file column title");
-                    return false;
                 }
             }
             redLine.getBlockList().add(currBlock);
+            redLine.addToHashMap(currBlock);
         }
         myExcelBook.close();
         return true;
@@ -229,8 +238,8 @@ public class TrackModel {
                     //switches
                 }
             }
-            for(int i=0;i<infraSects.length;i++){
-                System.out.print(infraSects[i] + ", ");
+            for(String s: infraSects){
+                System.out.print(s + ", ");
             }
             System.out.println();
         }else{
