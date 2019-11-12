@@ -108,13 +108,25 @@ public class TrainModel {
         // If braking, set acceleration manually
         // If service brake...
         if(eBrake) {
-            lastA = curA;
-            curA = -2.73f;
+            if(curV <= 0) {
+                curA = 0;
+                curV = 0;
+            }
+            else {
+                lastA = curA;
+                curA = -2.73f;
+            }
         }
         // If emergency brake...
         else if(sBrake) {
-            lastA = curA;
-            curA = -1.2f;
+            if(curV <= 0) {
+                curA = 0;
+                curV = 0;
+            }
+            else {
+                lastA = curA;
+                curA = -1.2f;
+            }
         }
         // Else (some power command)
         else {
@@ -245,11 +257,19 @@ public class TrainModel {
     }
 
     public String getCurBeaconSignal() {
-        return this.curBeaconSignal;
+        if(curBeaconSignal != null){
+            return this.curBeaconSignal;
+        }
+        else {
+            return "NULL";
+        }
     }
 
     public String getLastBeaconSignal() {
-        return lastBeaconSignal;
+        if(lastBeaconSignal != null) {
+            return this.lastBeaconSignal;
+        }
+        return "NULL";
     }
 
     public boolean getLights() {
@@ -287,13 +307,17 @@ public class TrainModel {
     public void setBeacon(char[] c) {
         if(curBeaconSignal != null) {
             lastBeaconSignal = curBeaconSignal;
-            if(c != null) {
-                curBeaconSignal = new String(c);
-            }
-            else {
-                curBeaconSignal = null;
-            }
         }
+        if(c != null) {
+            curBeaconSignal = new String(c);
+        }
+        else {
+            curBeaconSignal = null;
+        }
+    }
+
+    public void addPassengers(int p) {
+        passengers += p;
     }
 
     public void setLength(float l) {

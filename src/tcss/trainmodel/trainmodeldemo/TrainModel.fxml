@@ -12,9 +12,28 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<AnchorPane prefHeight="558.0" prefWidth="770.0" styleClass="body" stylesheets="@TrainModel.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.trainmodel.trainmodeldemo.TrainModelController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0" prefWidth="770.0" styleClass="body" stylesheets="@TrainModel.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.trainmodel.trainmodeldemo.TrainModelController">
    <children>
-      <VBox layoutY="91.0" prefHeight="473.0" prefWidth="385.0" stylesheets="@TrainModel.css">
+      <VBox>
+         <children>
+            <HBox>
+               <children>
+                  <HBox alignment="CENTER" prefHeight="91.0" prefWidth="64.0">
+                     <children>
+                        <Button fx:id="exitButton" mnemonicParsing="false" onAction="#closeWindow" styleClass="exit-button">
+                           <HBox.margin>
+                              <Insets left="9.0" top="-18.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <Label id="title" fx:id="titleLabel" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" prefHeight="91.0" prefWidth="646.0" stylesheets="@TrainModel.css" text="Train Label" />
+                  <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="91.0" prefWidth="64.0" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox layoutY="91.0" stylesheets="@TrainModel.css">
          <children>
             <HBox alignment="CENTER_LEFT">
                <children>
@@ -27,7 +46,7 @@
                         <Insets left="10.0" right="10.0" />
                      </HBox.margin>
                   </TextField>
-                  <Button fx:id="powerSubmit" minWidth="30.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="submitButton" />
+                  <Button fx:id="powerSubmit" minWidth="30.0" mnemonicParsing="false" onAction="#inputPower" prefHeight="30.0" prefWidth="30.0" styleClass="submitButton" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT">
@@ -41,7 +60,7 @@
                         <Insets left="10.0" right="10.0" />
                      </HBox.margin>
                   </TextField>
-                  <Button fx:id="gradeSubmit" minWidth="30.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="submitButton" />
+                  <Button fx:id="gradeSubmit" minWidth="30.0" mnemonicParsing="false" onAction="#inputGrade" prefHeight="30.0" prefWidth="30.0" styleClass="submitButton" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT">
@@ -88,7 +107,7 @@
                         <Insets left="10.0" right="10.0" />
                      </HBox.margin>
                   </TextField>
-                  <Button fx:id="beaconSubmit" minWidth="30.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="submitButton" />
+                  <Button fx:id="beaconSubmit" minWidth="30.0" mnemonicParsing="false" onAction="#inputBeacon" prefHeight="30.0" prefWidth="30.0" styleClass="submitButton" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT">
@@ -102,7 +121,7 @@
                         <Insets left="10.0" right="10.0" />
                      </HBox.margin>
                   </TextField>
-                  <Button fx:id="passengerSubmit" minWidth="30.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="submitButton" />
+                  <Button fx:id="passengerSubmit" minWidth="30.0" mnemonicParsing="false" onAction="#inputPassengers" prefHeight="30.0" prefWidth="30.0" styleClass="submitButton" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT">
@@ -254,7 +273,7 @@
             <Insets left="45.0" />
          </padding>
       </VBox>
-      <VBox layoutX="385.0" layoutY="91.0" prefHeight="473.0" prefWidth="385.0">
+      <VBox layoutX="385.0" layoutY="91.0" prefWidth="340.0">
          <padding>
             <Insets left="45.0" />
          </padding>
@@ -296,26 +315,8 @@
             </HBox>
             <Label fx:id="distanceLabel" layoutX="55.0" layoutY="208.0" text="Distance Traveled in Block:" />
             <Label fx:id="blocksLabel" layoutX="55.0" layoutY="241.0" text="Blocks Traveled:" />
-            <Label fx:id="curBeaconLabel" layoutX="55.0" layoutY="274.0" text="Current Beacon:" />
-            <Label fx:id="lastBeaconLabel" layoutX="55.0" layoutY="307.0" text="Last Beacon:" />
-         </children>
-      </VBox>
-      <VBox prefHeight="91.0" prefWidth="772.0">
-         <children>
-            <HBox>
-               <children>
-                  <HBox alignment="CENTER" prefHeight="91.0" prefWidth="64.0">
-                     <children>
-                        <Button fx:id="exitButton" mnemonicParsing="false" onAction="#closeWindow" styleClass="exit-button">
-                           <HBox.margin>
-                              <Insets left="9.0" top="-18.0" />
-                           </HBox.margin></Button>
-                     </children>
-                  </HBox>
-                  <Label id="title" fx:id="titleLabel" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" prefHeight="91.0" prefWidth="646.0" stylesheets="@TrainModel.css" text="Train Label" />
-                  <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="91.0" prefWidth="64.0" />
-               </children>
-            </HBox>
+            <Label fx:id="curBeaconLabel" layoutX="55.0" layoutY="274.0" text="Current Beacon:" VBox.vgrow="ALWAYS" />
+            <Label fx:id="lastBeaconLabel" layoutX="55.0" layoutY="307.0" text="Last Beacon:" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
    </children>
