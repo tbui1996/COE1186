@@ -32,13 +32,15 @@ public class CTC {
         stationNames[3] = "South Hills Junction";
         stationNames[4] = "Swissvale";
         for (int i=0; i < 5; i++) {
+            Block temp = new Block();
+            temp.setStation(new Station(stationNames[i]));
             if (i%2 == 0) {
-                redLine.add(new Block());
-                redLine.get(i).setStation(new Station(stationNames[i]));
+                redLine.add(temp);
+                greenLine.add(new Block());
             }
             else {
-                greenLine.add(new Block());
-                greenLine.get(i).setStation(new Station(stationNames[i]));
+                greenLine.add(temp);
+                redLine.add(new Block());
             }
         }
 
@@ -47,10 +49,10 @@ public class CTC {
     public void createDispatch(String name, float SS, int auth, TrainModel train) {
         //TrainModel temp = new TrainModel(SS, auth, trainList.size(), 55);
         //this.trainList.add(new TrainModel(name, trainList.size()));
-        System.out.println("Red Line:");
         //Start here and Fix this
-        for (int i = 0; i < 10; i++) {
-
+        for (int i = 0; i < redLine.size(); i++) {
+            System.out.println("Red Block " + i + ": " + redLine.get(i).toString());
+            System.out.println("Green Block " + i + ": " + greenLine.get(i).toString());
         }
         this.trainList.add(train);
         this.dispatchList.add(new Dispatch(SS, auth, this.trainList.get(this.trainList.size()-1)));
