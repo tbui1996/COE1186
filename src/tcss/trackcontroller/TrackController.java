@@ -1,13 +1,16 @@
 package tcss.trackcontroller;
-import tcss.ctc.*;
+import tcss.ctc.CTC;
 import tcss.trackmodel.*;
-import java.util.*;
-import tcss.trackmodel.RXR;
-import java.lang.reflect.*;
- import java.lang.NoSuchMethodError;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class TrackController {
     TrackModel TrackModel;
+    private int trackControllerID;
     RXR RXR;
     CTC CTC;
     float ss;
@@ -27,10 +30,16 @@ public class TrackController {
     Switch aSwitch;
     Station station;
     Track track;
+    public PLC plc;
+    public String plcFile;
+    boolean plcLoaded;
 
     public TrackController(){
         this.TrackModel = TrackModel;
         this.RXR = RXR;
+        this.trackControllerID =trackControllerID;
+        this.railroadcrossing = railroadcrossing;
+        this.line = line;
     }
 
     public void getNextStop(float SS, int auth, int ID) {
@@ -70,8 +79,8 @@ public class TrackController {
     public void getSection(){
         this.block.getSection();
     }
-    public void getBlockNum(){
-        this.blockId = this.block.getBlockNum();
+    public int getBlock(){
+        return block.getBlockNum();
     }
 
     public void isOccupied(){
@@ -124,6 +133,47 @@ public class TrackController {
         } catch (InvocationTargetException e){
             e.printStackTrace();
         }
+    }
+
+    public int getID() {
+        return this.trackControllerID;
+    }
+
+
+    public boolean loadPLC(String destination) throws IOException {
+        String cur;
+
+        String switches = null;
+        String RXR = null;
+        String maintenance = null;
+        String proceed = null;
+
+        FileReader file = new FileReader(destination);
+        try(BufferedReader bf = new BufferedReader(file)) {
+
+
+        while((cur = bf.readLine()) != null){
+            //control ends before :
+            String[] lines = cur.split(":");
+            if (lines[0].equals("switch")) {
+                switches = lines[1];
+            }
+            if (lines[0].equals("proceed")) {
+                proceed = lines[1];
+            }
+            if (lines[0].equals("maintenance")) {
+                maintenance = lines[1];
+            }
+            if (lines[0].equals("railroadcrossing")) {
+                RXR = lines[1];
+            }
+        }
+    } catch (IOException e){
+        e.printStackTrace();
+        return false;
+    }
+        this.plc = new PLC(switches, proceed, maintenance, RXR);
+        return true;
     }
 
 

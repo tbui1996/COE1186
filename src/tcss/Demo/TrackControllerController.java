@@ -1,8 +1,6 @@
 package tcss.Demo;
 
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,18 +8,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import tcss.trackcontroller.TrackController;
-import tcss.trackmodel.Block;
 import tcss.trackmodel.Track;
-import tcss.trackcontroller.TrackController;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class TrackControllerController implements Initializable{
+    Track track;
     @FXML private Label idLabel;
     @FXML private Label sSpeedLabel;
     @FXML private Label authLabel;
@@ -29,24 +26,30 @@ public class TrackControllerController implements Initializable{
     @FXML private ChoiceBox trackChoice;
     @FXML private Label occupiedLabel;
 
+    private ArrayList<TrackController> trackControllers;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
         TrackController tc = Main.tc;
-        trackChoice.getItems().add("Select Block");
-        trackChoice.setValue("Select Block");
-        trackChoice.setTooltip(new Tooltip("Select a block to view"));
-        trackChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-                if((Integer) number2 > 0) {
-                    sSpeedLabel.setText("Suggested Speed: " + tc.setSS() + " mph");
-                    occupiedLabel.setText("Occupancy: "+ updateOccupied(tc));
-                    idLabel.setText("Id: "+ tc.setID());
-                }
-                else{
-                    sSpeedLabel.setText("Suggested Speed: ");
-                    occupiedLabel.setText("Occupancy: ");
-                    idLabel.setText("Id: ");
-                }
+        trackChoice.getItems().add("Select Track Controller");
+        trackChoice.getItems().add("Red Track Controller1");
+        trackChoice.getItems().add("Red Track Controller2");
+        trackChoice.getItems().add("Red Track Controller3");
+        trackChoice.getItems().add("Red Track Controller4");
+        trackChoice.getItems().add("Green Track Controller1");
+        trackChoice.getItems().add("Green Track Controller2");
+        trackChoice.getItems().add("Green Track Controller3");
+        trackChoice.getItems().add("Greenn Track Controller4");
+
+        trackChoice.setValue("Select Track Controller");
+
+        trackChoice.getSelectionModel().selectedItemProperty().addListener((obs, wasShowing, isNowShowing) -> {
+            if (obs != isNowShowing) {
+                trackChoice.setValue(isNowShowing);
+            }
+            else{
+                trackChoice.setValue(wasShowing);
             }
         });
     }

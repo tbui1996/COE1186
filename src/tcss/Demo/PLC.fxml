@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -14,10 +13,17 @@
 
 <AnchorPane fx:id="pane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@TrackController.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.Demo.TrackControllerController">
     <children>
-        <VBox alignment="CENTER" layoutY="87.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <VBox alignment="CENTER_LEFT" layoutY="87.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Label id="chooseTrackController" fx:id="chooseTrackController" text="Choose Track Controller" />
                 <ChoiceBox fx:id="trackChoice" minHeight="2.0" minWidth="2.0" prefHeight="35.0" prefWidth="154.0" />
+                <Label fx:id="idLabel" text="ID:">
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                </Label>
+                <Label id="sSpeedLabel" fx:id="sSpeedLabel" text="Suggested Speed:" />
+                <Label id="authLabel" fx:id="authLabel" text="Authority:" />
+                <Label fx:id="occupancy" text="Occupancy:" />
             </children>
             <padding>
                 <Insets left="25.0" />
