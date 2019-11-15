@@ -22,7 +22,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        train = new TrainModel(10);
+        train = new TrainModel(100);
         train.setID(7);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TrainModel.fxml"));
@@ -55,10 +55,10 @@ public class Main extends Application {
 
                     @Override
                     public void run() {
-                        System.out.println("ping");
+//                        System.out.println("ping");
                         train.update();
                     }
-                }, 0, 1000);
+                }, 0, 200);
 
     }
 

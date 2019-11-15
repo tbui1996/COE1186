@@ -3,6 +3,8 @@ package tcss.trainmodel;
 import tcss.trackmodel.Block;
 import tcss.traincontroller.TrainController;
 
+import java.util.Random;
+
 import static java.lang.Math.*;
 
 //import static java.lang.Math.sin;
@@ -71,6 +73,12 @@ public class TrainModel {
         underground = false;
         lights = false;
         this.length = length;
+        mass = 409000;
+        power = 0;
+        curV = 0;
+        lastV = 0;
+        curA = 0;
+        lastA = 0;
     }
 
     public TrainModel() {
@@ -79,7 +87,11 @@ public class TrainModel {
         sBrake = false;
         underground = false;
         lights = false;
-        mass = 409000;
+        mass = 40900;
+        curV = 0;
+        lastV = 0;
+        curA = 0;
+        lastA = 0;
     }
 
     public TrainModel(float suggestedSpeed, int authority, int id, Block block) {
@@ -109,6 +121,7 @@ public class TrainModel {
         // If service brake...
         if(eBrake) {
             if(curV <= 0) {
+                lastA = curA;
                 curA = 0;
                 curV = 0;
             }
@@ -120,6 +133,7 @@ public class TrainModel {
         // If emergency brake...
         else if(sBrake) {
             if(curV <= 0) {
+                lastA = curA;
                 curA = 0;
                 curV = 0;
             }
@@ -136,23 +150,24 @@ public class TrainModel {
 
         calculateVelocity();
         // Update distance traveled
-        x = x + curV / period;
+        x = x + (curV * period);
+
         // If the train entered a new block...
         if(x > length) {
             x = x - length;
             //TODO Uncomment when Justin adds getNextBlock() to Block class
 //            block = block.getNextBlock();
-            length = block.getLength();
-            grade = block.getGrade();
-            speedLimit = block.getSpeedLimit();
+//            length = block.getLength();
+//            grade = block.getGrade();
+//            speedLimit = block.getSpeedLimit();
             blocksTraveled = blocksTraveled + 1;
             if(curBeaconSignal != null) {
                 lastBeaconSignal = curBeaconSignal;
                 curBeaconSignal = null;
             }
-            if(block.getBeacon() != null) {
-                curBeaconSignal = new String(block.getBeacon().getData());
-            }
+//            if(block.getBeacon() != null) {
+//                curBeaconSignal = new String(block.getBeacon().getData());
+//            }
         }
     }
 
@@ -184,18 +199,43 @@ public class TrainModel {
         // Negate it for ease of calculation when decomposing
         // gravity force vector
         float theta = -(float)atan((double)grade/100);
+
         // Calculate force due to gravity
         float g = mass*9.8f;
+
         // Decompose force due to gravity into x and y component vectors
         float gx = g * (float)sin(theta);
         float gy = g * (float)cos(theta);
+
         // Calculate force due to friction; negate it, as it is always backwards
         float friction = -(mu * gy);
+
         // Calculate thrust force from engine
-        //TODO Add support for when curV = 0
-        float thrust = power / curV;
+        float thrust;
+        if(curV == 0) {
+            if(power != 0) {
+                thrust = 207460;
+            }
+            else {
+                thrust = 0;
+            }
+        }
+        else {
+            thrust = power / curV;
+        }
         // Add forces in x dimension
-        force = thrust + friction + gx;
+        //NOTE: ONLY CALCULATE FRICTION WHEN THERE IS NO POWER AND NO BRAKE
+        if(power == 0) {
+            if(curV > 0) {
+                force = friction + gx;
+            }
+            else if(curV == 0) {
+                force = gx;
+            }
+        }
+        else {
+            force = thrust + gx;
+        }
     }
 
 
@@ -318,6 +358,13 @@ public class TrainModel {
 
     public void addPassengers(int p) {
         passengers += p;
+        mass = 409000 + 80*passengers;
+    }
+
+    public void removePassengers() {
+        Random r = new Random();
+        passengers -= r.nextInt(passengers+1);
+        mass = 409000 + 80*passengers;
     }
 
     public void setLength(float l) {

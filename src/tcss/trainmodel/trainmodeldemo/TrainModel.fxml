@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefWidth="770.0" styleClass="body" stylesheets="@TrainModel.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.trainmodel.trainmodeldemo.TrainModelController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="530.0" prefWidth="784.0" styleClass="body" stylesheets="@TrainModel.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.trainmodel.trainmodeldemo.TrainModelController">
    <children>
       <VBox>
          <children>
@@ -313,7 +313,7 @@
                   </Label>
                </children>
             </HBox>
-            <Label fx:id="distanceLabel" layoutX="55.0" layoutY="208.0" text="Distance Traveled in Block:" />
+            <Label fx:id="distanceLabel" layoutX="55.0" layoutY="208.0" text="Δx in Block:" />
             <Label fx:id="blocksLabel" layoutX="55.0" layoutY="241.0" text="Blocks Traveled:" />
             <Label fx:id="curBeaconLabel" layoutX="55.0" layoutY="274.0" text="Current Beacon:" VBox.vgrow="ALWAYS" />
             <Label fx:id="lastBeaconLabel" layoutX="55.0" layoutY="307.0" text="Last Beacon:" VBox.vgrow="ALWAYS" />

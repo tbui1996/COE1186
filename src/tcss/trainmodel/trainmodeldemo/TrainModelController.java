@@ -200,7 +200,7 @@ public class TrainModelController implements Initializable {
             public void changed(ObservableValue<? extends String> observable, String oldValue,
                                 String newValue) {
 //                if (!newValue.matches("\\d*")) {
-                if(!newValue.matches("\\d*(\\.\\d*)?")) {
+                if(!newValue.matches("(\\-)?\\d*(\\.\\d*)?")) {
                     gradeIn.setText(oldValue);
                 }
             }
@@ -217,16 +217,6 @@ public class TrainModelController implements Initializable {
                 }
             }
         });
-
-        // Set character limit for beacon input
-//        beaconIn.textProperty().addListener(new ChangeListener<String>() {
-//            @Override
-//            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-//                if(t1.length() > 255) {
-//                    beaconIn.setText(beaconIn.getText().substring(0, 128));
-//                }
-//            }
-//        });
 
         // Add listeners to check boxes
         d1.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -329,7 +319,7 @@ public class TrainModelController implements Initializable {
             lightsLabel.setText("False");
             lightsLabel.setTextFill(Color.RED);
         }
-        distanceLabel.setText("Distance Traveled in Block: " + train.getX());
+        distanceLabel.setText("Δx in Block: " + train.getX());
         blocksLabel.setText("Blocks Traveled: " + train.getBlocksTraveled());
         curBeaconLabel.setText("Current Beacon: " + train.getCurBeaconSignal().toString());
         lastBeaconLabel.setText("Last Beacon: " + train.getLastBeaconSignal());
