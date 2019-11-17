@@ -3,13 +3,15 @@ package tcss.trainmodel;
 import tcss.trackmodel.Block;
 import tcss.traincontroller.TrainController;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import static java.lang.Math.*;
 
-//import static java.lang.Math.sin;
-
 public class TrainModel {
+
+    // Static ArrayList of all trains
+    private static ArrayList<TrainModel> trains = new ArrayList<TrainModel>();
 
     // Instance variables
     private TrainController controller;
@@ -63,9 +65,43 @@ public class TrainModel {
         mass = 409000;
         curA = 0f;
         curV = 0f;
-
     }
 
+    /**
+     * The main TrainModel class constructor.
+     * @param suggestedSpeed Initial suggested speed for the train
+     * @param authority Initial authority
+     * @param block The Block object the train is on after leaving the yard
+     */
+    public TrainModel(float suggestedSpeed, int authority, Block block) {
+        this.suggestedSpeed = suggestedSpeed;
+        this.authority = authority;
+        this.block = block;
+
+        // Get initial block info
+        this.speedLimit = block.getSpeedLimit();
+        this.underground = block.isUnderground();
+        this.length = block.getLength();
+        this.grade = block.getGrade();
+
+        mass = 40900;
+        curA = 0;
+        curV = 0;
+
+        controller = new TrainController(this);
+        controller.setSpeedLimit(speedLimit);
+        controller.passCommands(authority, suggestedSpeed);
+
+        // Add to ArrayList
+        trains.add(this);
+    }
+
+    /**
+     * This constructor is used only for demonstration purposes in the
+     * individual submission. Length of a dummy block is passed; that block
+     * simply repeats to demonstrate train functionality.
+     * @param length The length of the dummy "block"
+     */
     public TrainModel(int length) {
         id = 1;
         eBrake = false;
@@ -106,6 +142,23 @@ public class TrainModel {
 
         controller = new TrainController(this);
         controller.setSpeedLimit(speedLimit);
+    }
+
+    /**
+     * This method returns an ArrayList containing all existing trains
+     *
+     * @return Reference to ArrayList of all trains
+     */
+    public static ArrayList<TrainModel> getAllTrains() {
+        return trains;
+    }
+
+    /**
+     * This method is called when a train returns to the yard. It
+     * removes the train from the ArrayList of active trains.
+     */
+    public void toYard() {
+        trains.remove(this);
     }
 
     /**
