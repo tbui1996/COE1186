@@ -8,6 +8,7 @@ public class Block{
     private char section;
     private int blockNum;
     private int authority;
+    private int failure;
 
     private float suggestedSpeed;
     private float length;
@@ -49,6 +50,14 @@ public class Block{
         setTrain(null);
     }
 
+    public Block getNextBlock(){
+        return null;
+    }
+
+    public Block getPreviousBlock(){
+        return null;
+    }
+
     public boolean setSuggSpeedAndAuth(float ss, int a){
 
         System.out.println("SS: " + ss + ", Auth:" + a);
@@ -56,7 +65,7 @@ public class Block{
         if(ss == -1.0 && a == -1){
             System.out.println("Initializing train on block " + getBlockNum());
             return initTrain(ss, a, 0);
-        }else if(getSuggestedSpeed() == -2 && getAuthority() == -2){
+        }else if(ss == -2 && a == -2){
             setClosed(true);
         }else{
             setSuggestedSpeed(ss);
