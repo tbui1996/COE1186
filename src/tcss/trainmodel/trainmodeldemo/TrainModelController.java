@@ -36,6 +36,8 @@ public class TrainModelController implements Initializable {
     @FXML private Label blocksLabel;
     @FXML private Label curBeaconLabel;
     @FXML private Label lastBeaconLabel;
+    @FXML private Label powerLabel;
+    @FXML private Label forceLabel;
 
     // TextFields
     @FXML private TextField powerIn;
@@ -291,8 +293,11 @@ public class TrainModelController implements Initializable {
     public void update() {
         curSpeedLabel.setText("Current Speed: " + train.getCurV());
         accelLabel.setText("Current Acceleration: " + train.getCurA());
+        powerLabel.setText("Power Command: " + train.getPower());
         massLabel.setText("Mass: " + train.getMass());
         gradeLabel.setText("Grade: " + train.getGrade());
+        forceLabel.setText("Force: " + train.getForce());
+
         if(train.getSBrake()) {
             sBrakeLabel.setText("True");
             sBrakeLabel.setTextFill(Color.GREEN);
@@ -386,6 +391,31 @@ public class TrainModelController implements Initializable {
 
     public void passTrain(TrainModel train) {
         this.train = train;
+
+        // Set radio buttons to train's current values
+        // SBrake group
+        if(train.getSBrake()) {
+            sBrakeOn.setSelected(true);
+        }
+        else {
+            sBrakeOff.setSelected(true);
+        }
+
+        // EBrake
+        if(train.getEBrake()) {
+            eBrakeOn.setSelected(true);
+        }
+        else {
+            eBrakeOff.setSelected(true);
+        }
+
+        // Lights
+        if(train.getLights()) {
+            lightsOn.setSelected(true);
+        }
+        else {
+            lightsOff.setSelected(true);
+        }
     }
 
     public void inputPower() {

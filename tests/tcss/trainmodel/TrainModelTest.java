@@ -42,16 +42,30 @@ class TrainModelTest {
         t.calculateVelocity();
         assertEquals(5.3f, t.getCurV());
     }
-//TODO Test again when question about initial force answered
-//    @Test
-//    void calcForces1() {
-//        t.setGrade(1f);
-//        t.setCurV(0f);
-//        t.setCurA(0f);
-//        t.powerCmd(5f);
-//        t.calculateForces();
-//
-//    }
+
+    @Test
+    void calcForces1() {
+        t.setGrade(0f);
+        t.setCurV(0f);
+        t.setCurA(0f);
+        t.powerCmd(1f);
+        t.calculateForces();
+        assertEquals(207460f, t.getForce());
+    }
+
+    @Test
+    void calcAccel1() {
+
+        t.setGrade(0f);
+        t.setCurV(0f);
+        t.setCurA(0f);
+        t.powerCmd(1f);
+        t.calculateForces();
+        t.calculateAccel();
+        System.out.println("Force: " + t.getForce() + "\nMass: " + t.getMass());
+        System.out.println("Force/Mass: " + (double)t.getForce() / (double)t.getMass());
+        assertEquals(207460.0f/40900.0f, t.getCurA());
+    }
 
     @Test
     void setLights() {

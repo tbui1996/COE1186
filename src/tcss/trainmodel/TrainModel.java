@@ -156,18 +156,29 @@ public class TrainModel {
         if(x > length) {
             x = x - length;
             //TODO Uncomment when Justin adds getNextBlock() to Block class
-//            block = block.getNextBlock();
-//            length = block.getLength();
-//            grade = block.getGrade();
-//            speedLimit = block.getSpeedLimit();
+            // Only use this block when linked to other modules for
+            // group submission
+            if(block != null) {
+                //TODO Uncomment when Justin adds getNextBlock() to Block class
+//                block = block.getNextBlock();
+                length = block.getLength();
+                grade = block.getGrade();
+                speedLimit = block.getSpeedLimit();
+            }
+
             blocksTraveled = blocksTraveled + 1;
             if(curBeaconSignal != null) {
                 lastBeaconSignal = curBeaconSignal;
                 curBeaconSignal = null;
             }
-//            if(block.getBeacon() != null) {
-//                curBeaconSignal = new String(block.getBeacon().getData());
-//            }
+
+            // Only use this block when linked to other modules
+            // for group submission
+            if(block != null) {
+                if(block.getBeacon() != null) {
+                    curBeaconSignal = new String(block.getBeacon().getData());
+                }
+            }
         }
     }
 
@@ -229,8 +240,14 @@ public class TrainModel {
             if(curV > 0) {
                 force = friction + gx;
             }
-            else if(curV == 0) {
+            else if(curV <= 0 && curV > -0.01) {
                 force = gx;
+                if(force == 0) {
+                    curV = 0;
+                }
+            }
+            else {
+                force = gx - friction;
             }
         }
         else {
@@ -334,6 +351,10 @@ public class TrainModel {
 
     public float getLastA() {
         return lastA;
+    }
+
+    public float getPower() {
+        return power;
     }
 
     public float getMass() {

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="530.0" prefWidth="784.0" styleClass="body" stylesheets="@TrainModel.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.trainmodel.trainmodeldemo.TrainModelController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="622.0" prefWidth="784.0" styleClass="body" stylesheets="@TrainModel.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.trainmodel.trainmodeldemo.TrainModelController">
    <children>
       <VBox>
          <children>
@@ -280,8 +280,10 @@
          <children>
             <Label fx:id="curSpeedLabel" text="Current Speed:" />
             <Label fx:id="accelLabel" layoutX="55.0" layoutY="10.0" text="Current Acceleration:" />
+            <Label fx:id="powerLabel" text="Power:" />
             <Label fx:id="massLabel" layoutX="55.0" layoutY="43.0" text="Mass:" />
             <Label fx:id="gradeLabel" text="Grade:" />
+            <Label fx:id="forceLabel" text="Force:" />
             <HBox>
                <children>
                   <Label text="Service Brake:" />
