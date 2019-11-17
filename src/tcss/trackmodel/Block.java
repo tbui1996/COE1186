@@ -65,8 +65,16 @@ public class Block{
         if(ss == -1.0 && a == -1){
             System.out.println("Initializing train on block " + getBlockNum());
             return initTrain(ss, a, 0);
-        }else if(ss == -2 && a == -2){
+        }else if(ss == -2.0 && a == 0){
+            //close block for maintenance
             setClosed(true);
+        }else if(ss == -2.0 && a == 1){
+            //open block
+            setClosed(false);
+        }else if(ss == -3.0 && a == 0){
+            //rxr set down
+        }else if(ss == -3.0 && a == 1){
+            //rxr set up
         }else{
             setSuggestedSpeed(ss);
             setAuthority(a);

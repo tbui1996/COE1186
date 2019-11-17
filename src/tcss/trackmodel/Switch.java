@@ -5,6 +5,7 @@ public class Switch{
     private int dest1;
     private int dest2;
     private boolean orientation;
+    private boolean lights;
 
     public Switch(){
         dest1 = 0;
@@ -22,5 +23,9 @@ public class Switch{
 
     public boolean getOrientation(){
         return orientation;
+    }
+
+    public void setDest1(int d){
+        dest1 = 1;
     }
 }

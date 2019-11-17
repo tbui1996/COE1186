@@ -4,7 +4,6 @@ import tcss.trainmodel.TrainModel;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class Track {
