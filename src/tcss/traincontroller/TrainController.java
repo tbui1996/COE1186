@@ -93,11 +93,11 @@ public class TrainController {
             return -1; // -1 is coded as s-brake
         }
         float vErr = currentSpeed - cmdSpeed;
-        float CMD = kp*vErr + ki*(lastmuk[1] + T/2*(vErr + lastVerrs[1]));
+        float CMD = kp*vErr + ki*(lastmuk[0] + T/2*(vErr + lastVerrs[0]));
         if(CMD > MAX_PWR_CMD){
-            CMD = kp*vErr + ki*lastmuk[1];
+            CMD = kp*vErr + ki*lastmuk[0];
         } else {
-            lastmuk[1] = lastmuk[1] + T/2*(vErr + lastVerrs[1]);
+            lastmuk[0] = lastmuk[0] + T/2*(vErr + lastVerrs[0]);
         }
         return CMD;
     }
@@ -110,11 +110,11 @@ public class TrainController {
             return -1; // -1 is coded as s-brake
         }
         float vErr = currentSpeed - cmdSpeed;
-        float CMD = kp*vErr + ki*(lastmuk[2] + T/2*(vErr + lastVerrs[2]));
+        float CMD = kp*vErr + ki*(lastmuk[1] + T/2*(vErr + lastVerrs[1]));
         if(CMD > MAX_PWR_CMD){
-            CMD = kp*vErr + ki*lastmuk[2];
+            CMD = kp*vErr + ki*lastmuk[1];
         } else {
-            lastmuk[2] = lastmuk[2] + T/2*(vErr + lastVerrs[2]);
+            lastmuk[1] = lastmuk[1] + T/2*(vErr + lastVerrs[1]);
         }
         return CMD;
     }
@@ -127,11 +127,11 @@ public class TrainController {
             return -1; // -1 is coded as s-brake
         }
         float vErr = currentSpeed - cmdSpeed;
-        float CMD = kp*vErr + ki*(lastmuk[3] + T/2*(vErr + lastVerrs[3]));
+        float CMD = kp*vErr + ki*(lastmuk[2] + T/2*(vErr + lastVerrs[2]));
         if(CMD > MAX_PWR_CMD){
-            CMD = kp*vErr + ki*lastmuk[3];
+            CMD = kp*vErr + ki*lastmuk[2];
         } else {
-            lastmuk[3] = lastmuk[3] + T/2*(vErr + lastVerrs[3]);
+            lastmuk[2] = lastmuk[2] + T/2*(vErr + lastVerrs[2]);
         }
         return CMD;
     }

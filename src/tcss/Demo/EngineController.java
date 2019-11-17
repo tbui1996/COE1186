@@ -93,6 +93,8 @@ public class EngineController implements Initializable {
         }));
         kiTextField.setPromptText(Float.toString(ki));
         kpTextField.setPromptText(Float.toString(kp));
+        currentKi.setText("Ki Constant: ");
+        currentKp.setText("Kp Constant: ");
     }
 
     /**
@@ -102,16 +104,15 @@ public class EngineController implements Initializable {
      * @param actionEvent XML event -- the user shall select the confirmKiKp button
      * @throws Exception In case of Null Pointer Exception
      */
-    private void confirmEngineConstants(ActionEvent actionEvent) throws Exception{
-        Main.kikp[0] = Float.parseFloat(kiTextField.getText() == "" ? ""+kp : kpTextField.getText()); //update global ki and kp values
-        Main.kikp[1] = Float.parseFloat(kpTextField.getText() == "" ? ""+kp : kpTextField.getText());
+    public void confirmEngineConstants(ActionEvent actionEvent) throws Exception{
+        Main.kikp[0] = Float.parseFloat(kiTextField.getText() == "" ? "" +ki : kiTextField.getText()); //update global ki and kp values
+        Main.kikp[1] = Float.parseFloat(kpTextField.getText() == "" ? "" +kp : kpTextField.getText());
         kp = Main.kikp[1]; //update ki and kp from the new changes
         ki = Main.kikp[0];
         kpTextField.setText(""); //clear the text fields
         kiTextField.setText("");
         kpTextField.setPromptText(Float.toString(kp)); //reassign the prompt texts
         kiTextField.setPromptText(Float.toString(ki));
-
     }
 
     public void goBack(ActionEvent actionEvent) throws Exception {

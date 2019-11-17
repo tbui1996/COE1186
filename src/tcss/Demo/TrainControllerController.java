@@ -43,9 +43,8 @@ public class TrainControllerController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         DecimalFormat format = new DecimalFormat( "#.0" );
         setPointInput.setTextFormatter( new TextFormatter<>(c -> {
-            if ( c.getControlNewText().isEmpty() ) {
+            if ( c.getControlNewText().isEmpty() )
                 return c;
-            }
             ParsePosition parsePosition = new ParsePosition( 0 );
             Object object = format.parse( c.getControlNewText(), parsePosition );
             if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() ){
@@ -57,10 +56,8 @@ public class TrainControllerController implements Initializable {
         eBrakeToggle.setDisable(true);
         trainChoice.getItems().add("Select Train");
         // Testing
-        for(TrainModel t: Main.trains) {
+        for(TrainModel t: Main.trains)
             trainChoice.getItems().add("Train " + t.getID());
-        }
-
         trainChoice.setValue("Select Train");
         trainChoice.setTooltip(new Tooltip("Select a train to view"));
         trainChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
@@ -93,10 +90,10 @@ public class TrainControllerController implements Initializable {
         suggestedSpeedLabel.setText("Suggested Speed: " + tc.getSSpeed());
         System.out.println("" + tc.getSSpeed() + " with model: ");
         speedLimitLabel.setText("Speed Limit: " + tc.getSpeedLimit());
-        if(tc.getOpMode()){
-            opModeToggle.setStyle("-fx-background-color: red; -fx-text-fill: #dfdfdf");
+        if(opModeToggle.isSelected()){
+            opModeToggle.setText("Exit Manual Mode");
         } else {
-            opModeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
+            opModeToggle.setText("Enter Manual Mode");
         }
         setPointInput.setText("");
         setPointInput.setPromptText("" + tc.getsetpointSpeed());
@@ -108,12 +105,15 @@ public class TrainControllerController implements Initializable {
             undergroundDisplay.setText("False");
             undergroundDisplay.setTextFill(Color.RED);
         }
+        eBrakeToggle.setDisable(false);
         eBrakeToggle.setSelected(tc.getEBrake());
         if(tc.getEBrake()) {
             eBrakeToggle.setStyle("-fx-background-color: red; -fx-text-fill: #dfdfdf");
         } else {
             eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
         }
+        opModeToggle.setSelected(tc.getOpMode()); //set toggle to true if it is in manual
+
     }
 
     public void goBack(ActionEvent actionEvent) throws Exception {
@@ -121,7 +121,6 @@ public class TrainControllerController implements Initializable {
         Stage window = (Stage) pane.getScene().getWindow();
         window.setScene(moduleSelect);
         window.setTitle("Module Selection");
-
     }
 
     public void confirmSetpoint(ActionEvent actionEvent) throws Exception{
@@ -147,14 +146,19 @@ public class TrainControllerController implements Initializable {
         tc.updateModelEBrake();
         if (brakeStatus) {
             eBrakeToggle.setStyle("-fx-background-color: red; -fx-text-fill: #dfdfdf");
-            //eBrakeStatus.set(true);
         } else {
             eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49);");
-            //eBrakeStatus.set(false);
         }
     }
 
-    public void changeOperationMode(ActionEvent actionEvent) throws Exception {
-       // boolean opMode =
+    public void toggleOpMode(ActionEvent actionEvent) throws Exception {
+        boolean opMode = opModeToggle.isSelected();
+        tc.setOpMode(!opMode);
+        opModeToggle.setSelected(opMode);
+        if (opMode) {
+            opModeToggle.setText("Exit Manual Mode");
+        } else {
+            opModeToggle.setText("Enter Manual Mode");
+        }
     }
 }

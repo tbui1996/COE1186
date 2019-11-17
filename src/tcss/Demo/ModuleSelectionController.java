@@ -66,4 +66,11 @@ public class ModuleSelectionController implements Initializable {
         window.setTitle("CTC");
     }
 
+    public void viewEngine(ActionEvent actionEvent) throws Exception {
+        Scene engineView = new Scene(FXMLLoader.load(getClass().getResource("Engine.fxml")));
+        Stage window = (Stage) pane.getScene().getWindow();
+        window.setScene(engineView);
+        window.setTitle("Engine");
+    }
+
 }
