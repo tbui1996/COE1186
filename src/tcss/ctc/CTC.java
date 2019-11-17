@@ -9,13 +9,15 @@ import tcss.trackmodel.*;
 
 public class CTC {
     TrackController TC1;
-    ArrayList<Dispatch> dispatchList = new ArrayList<Dispatch>(); /*Number of Trains*/
+    private ArrayList<Dispatch> dispatchList = new ArrayList<Dispatch>(); /*Number of Trains*/
     public ArrayList<TrainModel> trainList = new ArrayList<TrainModel>(); /*Number of Trains*/
 
     //Temporary Red and Green Line setup for creating a Dispatch
     private LinkedList<Block> redLine;
     private LinkedList<Block> greenLine;
     private String stationNames [];
+
+
 
 
     public CTC(TrackController track) {
@@ -27,7 +29,7 @@ public class CTC {
         greenLine = new LinkedList<Block>();
         stationNames = new String[5];
         stationNames[0] = "Dormont";
-        stationNames[1] = "Station Square";
+        stationNames[1] = "Shadyside";
         stationNames[2] = "First Ave";
         stationNames[3] = "South Hills Junction";
         stationNames[4] = "Swissvale";
@@ -57,9 +59,27 @@ public class CTC {
         this.trainList.add(train);
         this.dispatchList.add(new Dispatch(SS, auth, this.trainList.get(this.trainList.size()-1)));
         this.dispatchList.get(this.dispatchList.size()-1).createSchedule();
+        this.dispatchList.get(this.dispatchList.size()-1).setRequests();
         System.out.println(this.dispatchList.get(this.dispatchList.size()-1));
         sendNextStop(SS, auth, train.getID());
     }
+
+    //This checks dispatch list to see if a new suggested speed and authority need to be sent
+    public void checkDispatchList () {
+        for (int i = 0; i < dispatchList.size(); i++) {
+            Dispatch temp = dispatchList.get(i);
+            //if train is not dispatched yet
+            if (temp.getCurrStop() == -1) {
+                if (100 == temp.getDepartureTime()) { //This should be if departure time == current global time
+                    temp.set
+                }
+            }
+            else {
+
+            }
+        }
+    }
+
     public TrackController getTrackController(int index){
         return this.TC1;
     }

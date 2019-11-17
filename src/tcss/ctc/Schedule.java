@@ -25,6 +25,18 @@ public class Schedule {
             return "GREEN";
     }
 
+    public int getStopNums() {
+        return this.stopList.size();
+    }
+
+    public String getStopName(int i) {
+        return stopList.get(i);
+    }
+
+    public float getStopDwell(int i) {
+        return dwellList.get(i);
+    }
+
     public String toString() {
         StringBuilder temp = new StringBuilder();
         temp.append("line: " + this.getLine());

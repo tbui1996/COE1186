@@ -55,6 +55,14 @@ public class CTCController implements Initializable{
         //dispatchList = 0;
     }
 
+    public void openDispatchWindow(ActionEvent actionEvent) throws Exception {
+        //Change this up to open a new window for a dispatch, not open in same pane
+        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("ModuleSelection.fxml")));
+        Stage window = (Stage) pane.getScene().getWindow();
+        window.setScene(moduleSelect);
+        window.setTitle("Module Selection");
+    }
+
     public void goBack(ActionEvent actionEvent) throws Exception {
 //        Parent trainModelParent = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
 //        Scene trainModelView = new Scene(trainModelParent);
