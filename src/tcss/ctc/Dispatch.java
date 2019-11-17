@@ -86,6 +86,7 @@ public class Dispatch {
 
     public void setCurrStop(int i) {
         this.currStop = i;
+        /**/
     }
 
     public int getArrivalTime() {

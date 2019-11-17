@@ -71,7 +71,7 @@ public class CTC {
             //if train is not dispatched yet
             if (temp.getCurrStop() == -1) {
                 if (100 == temp.getDepartureTime()) { //This should be if departure time == current global time
-                    temp.set
+                    //temp.set
                 }
             }
             else {
