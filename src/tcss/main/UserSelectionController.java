@@ -1,4 +1,4 @@
-package UserSelection;
+package tcss.main;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -8,7 +8,7 @@ import javafx.scene.control.ChoiceBox;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class UserSelectionController implements Initializable {
 
     @FXML private ChoiceBox rate;
     @FXML private Button playpause;
@@ -28,6 +28,7 @@ public class Controller implements Initializable {
 
     public void closeWindow() {
         System.exit(7);
+        // TODO Create exit confirmation window
     }
 
     public void togglePlay() {
