@@ -7,7 +7,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -37,6 +39,7 @@ public class UserSelectionController implements Initializable {
     @FXML private Button trackEngineer;
     @FXML private Button driver;
     @FXML private Button murphy;
+    @FXML private Button settingsButton;
 
     // Labels
     @FXML private Label clockLabel;
@@ -97,6 +100,19 @@ public class UserSelectionController implements Initializable {
 
     public void murphyView() {
         System.out.println("OPEN MURPHY VIEW");
+    }
+
+    public void openSettings() throws Exception {
+        System.out.println("OPEN SETTINGS POPUP");
+
+        FXMLLoader settingsLoader = new FXMLLoader(getClass().getResource("fxml/settings.fxml"));
+        Parent settingsRoot = settingsLoader.load();
+        Stage settings = new Stage();
+        settings.initModality(Modality.APPLICATION_MODAL);
+        settings.setScene(new Scene(settingsRoot));
+        settings.setTitle("System Settings");
+        settings.getIcons().add(new Image("file:resources/train.png"));
+        settings.showAndWait();
     }
 
 

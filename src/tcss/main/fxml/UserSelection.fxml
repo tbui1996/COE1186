@@ -55,5 +55,6 @@
          </font>
       </Text>
       <Button fx:id="close" ellipsisString="" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#closeWindow" styleClass="exit-button" />
+      <Button fx:id="settingsButton" layoutX="554.0" layoutY="11.0" mnemonicParsing="false" onAction="#openSettings" styleClass="settings" />
    </children>
 </AnchorPane>
