@@ -11,6 +11,8 @@ import javafx.stage.WindowEvent;
 
 public class Main extends Application {
 
+    static SimTime T;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -20,7 +22,6 @@ public class Main extends Application {
         Parent root = loader.load();
         primaryStage.setTitle("User Selection");
         primaryStage.setScene(new Scene(root));
-//        primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setResizable(false);
         primaryStage.getIcons().add(new Image("file:resources/train.png"));
 
@@ -28,13 +29,27 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent)  {
-                //TODO create exit confirmation window
                 windowEvent.consume();
             }
-
         });
 
         primaryStage.show();
+
+        // TESTING TIMER PAUSE
+        T = new SimTime();
+//        T = new Timer();
+//        T.schedule(
+//                new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        System.out.println("Ping!");
+//                    }
+//                }, 0, 1000
+//        );
+
+
+
+
 
     }
 
@@ -43,5 +58,7 @@ public class Main extends Application {
     }
 
 }
+
+
 
 
