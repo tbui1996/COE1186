@@ -24,7 +24,7 @@
                      </VBox.margin>
                   </Label>
                   <Label fx:id="speedLimitLabel" text="Speed Limit: " />
-                  <Label id="sSpeedLabel" fx:id="sSpeedLabel" text="Suggested Speed:" />
+                  <Label id="sSpeedLabel" fx:id="suggestedSpeedLabel" text="Suggested Speed:" />
                   <HBox prefHeight="47.0" prefWidth="376.0">
                      <children>
                         <Label text="Setpoint Speed: " />
@@ -52,11 +52,16 @@
                   <Insets left="25.0" />
                </padding>
             </VBox>
-            <ToggleButton fx:id="eBrakeToggle" mnemonicParsing="false" onAction="#toggleEBrake" text="Emergency Break">
-               <HBox.margin>
-                  <Insets left="25.0" top="75.0" />
-               </HBox.margin>
-            </ToggleButton>
+            <VBox prefHeight="460.0" prefWidth="210.0">
+               <children>
+                  <ToggleButton fx:id="eBrakeToggle" mnemonicParsing="false" onAction="#toggleEBrake" prefHeight="27.0" prefWidth="156.0" text="Emergency Break">
+                     <VBox.margin>
+                        <Insets bottom="59.0" top="100.0" />
+                     </VBox.margin>
+                  </ToggleButton>
+                  <ToggleButton fx:id="opModeToggle" mnemonicParsing="false" onAction="#toggleOpMode" prefHeight="27.0" prefWidth="156.0" text="Manual Mode" />
+               </children>
+            </VBox>
          </children>
       </HBox>
       <Button fx:id="backButton" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#goBack" prefHeight="55.0" prefWidth="70.0" styleClass="backButton" />

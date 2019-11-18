@@ -1,9 +1,14 @@
 package tcss.traincontroller;
 
 import tcss.trainmodel.TrainModel;
-//import java.time.Clock;
+
+import java.util.ArrayList;
 
 public class TrainController {
+
+    public static ArrayList<TrainController> TrainControllerList = new ArrayList<TrainController>();
+
+
     //Instance Variables
     public int id;
     private TrainModel model;
@@ -32,6 +37,23 @@ public class TrainController {
     Takes a train model, this includes the TC id
      */
     public TrainController(TrainModel m){
+        System.out.println("Adding a new train controller for train model: " + m.getID());
+        this.model = m;
+        this.id = model.getID();
+        this.authority = model.getAuthority();
+        this.suggestedSpeed = model.getSSpeed();
+        this.setpointSpeed = suggestedSpeed;
+        //this.underground = model.getUnderground();
+        this.eBrake = model.getEBrake();
+        this.lastVerrs = new float[]{0, 0, 0};
+        this.lastmuk = new float[]{0, 0, 0};
+        this.PWRCMD = 0;
+        TrainController.TrainControllerList.add(this);
+        System.out.println(TrainControllerList.toString());
+    }
+
+    public TrainController(TrainModel m, int a){
+        //System.out.println("Adding a new train controller for train model: " + m.getID());
         this.model = m;
         this.id = model.getID();
         this.authority = model.getAuthority();
@@ -43,18 +65,15 @@ public class TrainController {
         this.lastmuk = new float[]{0, 0, 0};
         this.PWRCMD = 0;
         this.oldsps = 0;
-        this.updateStatus();
     }
 
     /*
     Method responsible for updating calculations for safe travel and operation
     determines new commanded speed and
      */
-    public void updateStatus(){
+    public void update(){
         model.update();
         commandedSpeed = setpointSpeed < suggestedSpeed ? setpointSpeed : suggestedSpeed;
-        commandedSpeed = commandedSpeed < speedLimit ? commandedSpeed : speedLimit;
-        commandedSpeed = commandedSpeed < MAX_SPEED ? commandedSpeed : MAX_SPEED;
         float result1 = getPWRCMD1(commandedSpeed);
         float result2 = getPWRCMD2(commandedSpeed);
         float result3 = getPWRCMD3(commandedSpeed);
@@ -70,9 +89,9 @@ public class TrainController {
         opMode = !opMode; //1 is manual
         if(opMode){
             //now in manual
-            setpointSpeed = oldsps;
+            setpointSpeed = suggestedSpeed;
         } else { //in automatic mode
-            setpointSpeed = MAX_SPEED;
+            setpointSpeed = suggestedSpeed;
         }
     }
 
@@ -94,11 +113,11 @@ public class TrainController {
             return -1; // -1 is coded as s-brake
         }
         float vErr = currentSpeed - cmdSpeed;
-        float CMD = kp*vErr + ki*(lastmuk[1] + T/2*(vErr + lastVerrs[1]));
+        float CMD = kp*vErr + ki*(lastmuk[0] + T/2*(vErr + lastVerrs[0]));
         if(CMD > MAX_PWR_CMD){
-            CMD = kp*vErr + ki*lastmuk[1];
+            CMD = kp*vErr + ki*lastmuk[0];
         } else {
-            lastmuk[1] = lastmuk[1] + T/2*(vErr + lastVerrs[1]);
+            lastmuk[0] = lastmuk[0] + T/2*(vErr + lastVerrs[0]);
         }
         return CMD;
     }
@@ -111,11 +130,11 @@ public class TrainController {
             return -1; // -1 is coded as s-brake
         }
         float vErr = currentSpeed - cmdSpeed;
-        float CMD = kp*vErr + ki*(lastmuk[2] + T/2*(vErr + lastVerrs[2]));
+        float CMD = kp*vErr + ki*(lastmuk[1] + T/2*(vErr + lastVerrs[1]));
         if(CMD > MAX_PWR_CMD){
-            CMD = kp*vErr + ki*lastmuk[2];
+            CMD = kp*vErr + ki*lastmuk[1];
         } else {
-            lastmuk[2] = lastmuk[2] + T/2*(vErr + lastVerrs[2]);
+            lastmuk[1] = lastmuk[1] + T/2*(vErr + lastVerrs[1]);
         }
         return CMD;
     }
@@ -128,11 +147,11 @@ public class TrainController {
             return -1; // -1 is coded as s-brake
         }
         float vErr = currentSpeed - cmdSpeed;
-        float CMD = kp*vErr + ki*(lastmuk[3] + T/2*(vErr + lastVerrs[3]));
+        float CMD = kp*vErr + ki*(lastmuk[2] + T/2*(vErr + lastVerrs[2]));
         if(CMD > MAX_PWR_CMD){
-            CMD = kp*vErr + ki*lastmuk[3];
+            CMD = kp*vErr + ki*lastmuk[2];
         } else {
-            lastmuk[3] = lastmuk[3] + T/2*(vErr + lastVerrs[3]);
+            lastmuk[2] = lastmuk[2] + T/2*(vErr + lastVerrs[2]);
         }
         return CMD;
     }
@@ -196,5 +215,9 @@ public class TrainController {
 
     public void setOpMode(boolean opMode) {
         this.opMode = opMode;
+    }
+
+    public String toString(){
+        return(this.id + " at " + this.setpointSpeed);
     }
 }

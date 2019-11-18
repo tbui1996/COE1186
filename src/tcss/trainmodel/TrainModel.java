@@ -141,6 +141,7 @@ public class TrainModel {
         this.grade = block.getGrade();
 
         controller = new TrainController(this);
+        controller.update();
         controller.setSpeedLimit(speedLimit);
     }
 
