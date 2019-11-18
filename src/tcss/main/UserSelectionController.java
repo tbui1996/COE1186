@@ -2,19 +2,32 @@ package tcss.main;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class UserSelectionController implements Initializable {
 
+    // ChoiceBox
     @FXML private ChoiceBox rate;
+
+    // Buttons
     @FXML private Button playpause;
-    @FXML private Button trainModelButton;
     @FXML private Button close;
-//    @FXML private Label rateLabel;
+    @FXML private Button dispatcher;
+    @FXML private Button trackEngineer;
+    @FXML private Button driver;
+    @FXML private Button murphy;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -26,17 +39,59 @@ public class UserSelectionController implements Initializable {
 //        trainModelButton.setText("Train Model");
     }
 
-    public void closeWindow() {
-        System.exit(7);
-        // TODO Create exit confirmation window
+    /*
+    TODO
+    USE THESE METHODS TO OPEN YOUR GUI VIEWS
+     */
+
+
+
+
+    public void closeWindow() throws Exception{
+
+        Stage popup = new Stage();
+        popup.initModality(Modality.APPLICATION_MODAL);
+        popup.setResizable(false);
+        popup.getIcons().add(new Image("file:resources/train.png"));
+
+        AnchorPane pane = new AnchorPane();
+        pane.getStyleClass().add("body");
+
+        VBox vbox = new VBox();
+        vbox.getStyleClass().add("v-box");
+
+        Label confirmLabel = new Label("Are you sure you want to exit?");
+
+        HBox hbox = new HBox(40);
+        hbox.getStyleClass().add("h-box");
+
+        Button quitButton = new Button("Quit");
+        Button cancelButton = new Button("Cancel");
+        quitButton.getStyleClass().add("quitButton");
+        cancelButton.getStyleClass().add("cancelButton");
+
+        pane.getChildren().add(vbox);
+        vbox.getChildren().addAll(confirmLabel, hbox);
+        hbox.getChildren().addAll(quitButton, cancelButton);
+
+        quitButton.setOnAction((actionEvent -> {
+            System.exit(7);
+        }));
+
+        cancelButton.setOnAction((actionEvent -> {
+            popup.close();
+        }));
+
+        Scene popupScene = new Scene(pane);
+        popupScene.getStylesheets().add(getClass().getResource("css/ConfirmExit.css").toExternalForm());
+        popup.setScene(popupScene);
+        popup.showAndWait();
+
+
     }
 
     public void togglePlay() {
         String cur = playpause.getStyleClass().toString();
-//        System.out.println(cur);
-//            playpause.getStyleClass().removeAll();
-//            playpause.getStyleClass().add("pause");
-//        playpause.setStyle("-fx-shape: \"M39.104,6.708c-8.946-8.943-23.449-8.946-32.395,0c-8.946,8.944-8.946,23.447,0,32.394 c8.944,8.946,23.449,8.946,32.395,0C48.047,30.156,48.047,15.653,39.104,6.708z M20.051,31.704c0,1.459-1.183,2.64-2.641,2.64 s-2.64-1.181-2.64-2.64V14.108c0-1.457,1.182-2.64,2.64-2.64s2.641,1.183,2.641,2.64V31.704z M31.041,31.704 c0,1.459-1.183,2.64-2.64,2.64s-2.64-1.181-2.64-2.64V14.108c0-1.457,1.183-2.64,2.64-2.64s2.64,1.183,2.64,2.64V31.704z\"");
 
         if(cur.toLowerCase().equals("button play")) {
             playpause.getStyleClass().remove(1);
@@ -51,6 +106,5 @@ public class UserSelectionController implements Initializable {
 
 
     }
-
-
 }
+
