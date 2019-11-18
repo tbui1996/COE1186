@@ -1,9 +1,14 @@
 package tcss.traincontroller;
 
 import tcss.trainmodel.TrainModel;
-//import java.time.Clock;
+
+import java.util.ArrayList;
 
 public class TrainController {
+
+    public static ArrayList<TrainController> TrainControllerList = new ArrayList<TrainController>();
+
+
     //Instance Variables
     public int id;
     private TrainModel model;
@@ -32,6 +37,23 @@ public class TrainController {
     Takes a train model, this includes the TC id
      */
     public TrainController(TrainModel m){
+        System.out.println("Adding a new train controller for train model: " + m.getID());
+        this.model = m;
+        this.id = model.getID();
+        this.authority = model.getAuthority();
+        this.suggestedSpeed = model.getSSpeed();
+        this.setpointSpeed = suggestedSpeed;
+        //this.underground = model.getUnderground();
+        this.eBrake = model.getEBrake();
+        this.lastVerrs = new float[]{0, 0, 0};
+        this.lastmuk = new float[]{0, 0, 0};
+        this.PWRCMD = 0;
+        TrainController.TrainControllerList.add(this);
+        System.out.println(TrainControllerList.toString());
+    }
+
+    public TrainController(TrainModel m, int a){
+        //System.out.println("Adding a new train controller for train model: " + m.getID());
         this.model = m;
         this.id = model.getID();
         this.authority = model.getAuthority();
@@ -52,8 +74,6 @@ public class TrainController {
     public void update(){
         model.update();
         commandedSpeed = setpointSpeed < suggestedSpeed ? setpointSpeed : suggestedSpeed;
-        commandedSpeed = commandedSpeed < speedLimit ? commandedSpeed : speedLimit;
-        commandedSpeed = commandedSpeed < MAX_SPEED ? commandedSpeed : MAX_SPEED;
         float result1 = getPWRCMD1(commandedSpeed);
         float result2 = getPWRCMD2(commandedSpeed);
         float result3 = getPWRCMD3(commandedSpeed);
@@ -69,9 +89,9 @@ public class TrainController {
         opMode = !opMode; //1 is manual
         if(opMode){
             //now in manual
-            setpointSpeed = oldsps;
+            setpointSpeed = suggestedSpeed;
         } else { //in automatic mode
-            setpointSpeed = MAX_SPEED;
+            setpointSpeed = suggestedSpeed;
         }
     }
 

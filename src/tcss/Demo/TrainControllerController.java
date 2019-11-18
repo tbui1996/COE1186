@@ -56,7 +56,7 @@ public class TrainControllerController implements Initializable {
         eBrakeToggle.setDisable(true);
         trainChoice.getItems().add("Select Train");
         // Testing
-        for(TrainModel t: Main.trains)
+        for(TrainController t: TrainController.TrainControllerList)
             trainChoice.getItems().add("Train " + t.getID());
         trainChoice.setValue("Select Train");
         trainChoice.setTooltip(new Tooltip("Select a train to view"));
@@ -64,7 +64,7 @@ public class TrainControllerController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
                 if((Integer) number2 > 0) {
-                    TrainController cur = Main.trains.get((Integer)number2-1).getTControl();
+                    TrainController cur = TrainController.TrainControllerList.get((Integer)number2-1);
                     cur.update();
                     tc = cur;
                     update();
@@ -153,12 +153,14 @@ public class TrainControllerController implements Initializable {
 
     public void toggleOpMode(ActionEvent actionEvent) throws Exception {
         boolean opMode = opModeToggle.isSelected();
-        tc.setOpMode(!opMode);
+        tc.changeOperationMode();
         opModeToggle.setSelected(opMode);
         if (opMode) {
             opModeToggle.setText("Exit Manual Mode");
+            update();
         } else {
             opModeToggle.setText("Enter Manual Mode");
+            update();
         }
     }
 }
