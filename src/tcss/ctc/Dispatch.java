@@ -6,6 +6,7 @@ import tcss.trainmodel.TrainModel;
 public class Dispatch {
     private float SS;
     private int auth;
+    private int line; //Red == 1, Green == 2
     private Schedule schedule;
     public String trainName;
     private int mode;
@@ -16,9 +17,10 @@ public class Dispatch {
     private int arrivalTime;
     private int departureTime;
 
-    public Dispatch() {
-        this.SS = 0;
-        this.auth = 0;
+    public Dispatch(String l) {
+        this.line = this.lineStringToInt(l);
+        //this.SS = 0;
+        //this.auth = 0;
     }
 
     public Dispatch(float SS, int auth, TrainModel train) {
@@ -47,6 +49,7 @@ public class Dispatch {
 
 
         for (int i = 0; i < schedule.getStopNums(); i++) {
+            //Calculates speed and authority for each stop
             //(distance between blocks) / ((station w/ dwell) - dwell), unit is blocks/sec
             if (i == 0) {
                 speedList[i] = (1 / (float) (3.7 * 60 - 35)); //stationToYard((schedule.getStopName(i)) / schedule.getStopDwell(i)*60 - 35
@@ -97,9 +100,22 @@ public class Dispatch {
         return departureTime;
     }
 
+    public int getLine() {
+        return line;
+    }
+
 
     public String toString() {
-        return "ID: " + this.train.getID() + "\nSuggested Speed: " + this.train.getSSpeed() + "\nAuthority: " + this.train.getAuthority() +
-                "Schedule: " + this.schedule;
+        return /*"ID: " + this.train.getID() + "\nSuggested Speed: " + this.train.getSSpeed() + "\nAuthority: " + this.train.getAuthority() +
+                */"Schedule: " + this.schedule;
+    }
+
+    private int lineStringToInt(String line) {
+        if (line.equals("RED"))
+            return 1;
+        else if (line.equals("GREEN"))
+            return 2;
+        else
+            return 0;
     }
 }

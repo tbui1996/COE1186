@@ -25,6 +25,11 @@ public class Schedule {
             return "GREEN";
     }
 
+    //Set line as int
+    public void setLine(int line) {
+        line = line;
+    }
+
     public int getStopNums() {
         return this.stopList.size();
     }
