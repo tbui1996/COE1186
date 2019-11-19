@@ -31,7 +31,7 @@ public class SettingsController implements Initializable {
         // Configure FileChooser
         fileChooser.setTitle("Select your track file");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("CSV", "*.csv"),
+                new FileChooser.ExtensionFilter("Excel", "*.xlsx"),
                 new FileChooser.ExtensionFilter("Text Files", "*.txt")
         );
 
