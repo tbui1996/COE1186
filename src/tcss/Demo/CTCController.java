@@ -29,6 +29,7 @@ public class CTCController implements Initializable{
     @FXML private VBox dispatchList;
     @FXML Label dispatch1;
     @FXML private AnchorPane pane;
+    @FXML private Button newDispatch;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -52,6 +53,16 @@ public class CTCController implements Initializable{
         dispatchList.getChildren().add(dispatch1);
 
         //dispatchList = 0;
+    }
+
+    public void openDispatchWindow(ActionEvent actionEvent) throws Exception {
+        newDispatch.setText("Created");
+
+        //Opens in same window for now, want it to be a new window
+        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("DispatchSelect.fxml")));
+        Stage window = (Stage) pane.getScene().getWindow();
+        window.setScene(moduleSelect);
+        window.setTitle("Dispatch");
     }
 
     public void goBack(ActionEvent actionEvent) throws Exception {

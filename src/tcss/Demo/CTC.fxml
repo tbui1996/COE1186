@@ -35,6 +35,7 @@
                   <Insets bottom="17.0" />
                </VBox.margin>
             </Button>
+            <Button fx:id="newDispatch" mnemonicParsing="false" onAction="#openDispatchWindow" styleClass="userButton" text="create Dispatch" />
          </children>
       </VBox>
       <Button layoutX="12.0" layoutY="10.0" mnemonicParsing="false" onAction="#goBack" styleClass="backButton" />
