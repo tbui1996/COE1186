@@ -27,6 +27,10 @@ public class CTCController implements Initializable{
     @FXML private AnchorPane pane;
     @FXML private Button newDispatch;
     @FXML private Accordion dispatchList;
+    @FXML private ChoiceBox<String> lineSelector;
+    @FXML private ChoiceBox<Integer> blockSelector;
+    @FXML private Button confirmLine;
+    @FXML private Button confirmBlock;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -39,6 +43,12 @@ public class CTCController implements Initializable{
             System.out.println(Main.ctc.getDispatch(i).getName());
             dispatchList.getPanes().add(new TitledPane(Main.ctc.getDispatch(i).getName(), new Label(Main.ctc.getDispatchString(i))));
         }
+
+        //populates line dropdown
+        lineSelector.getItems().add("Red");
+        lineSelector.getItems().add("Green");
+        lineSelector.setValue("Red");
+        lineSelector.setTooltip(new Tooltip("Select a line to view a block"));
     }
 
     public void sendDispatch(ActionEvent actionEvent) throws Exception {
@@ -58,13 +68,24 @@ public class CTCController implements Initializable{
     }*/
 
     public void openDispatchWindow(ActionEvent actionEvent) throws Exception {
-        newDispatch.setText("Created");
+        //newDispatch.setText("Created");
 
         //Opens in same window for now, want it to be a new window
         Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("DispatchSelect.fxml")));
         Stage window = (Stage) pane.getScene().getWindow();
         window.setScene(moduleSelect);
         window.setTitle("Dispatch");
+    }
+
+    //Populates Block list once a line is selected
+    public void populateBlocks(ActionEvent e) throws Exception {
+        int temp = Main.ctc.lineStringToInt(lineSelector.getSelectionModel().getSelectedItem().toUpperCase());
+
+        blockSelector.getItems().clear();
+        for (int i = 0; i < Main.ctc.lineLength(temp); i++) {
+            blockSelector.getItems().add(i+1);
+        }
+
     }
 
     public void goBack(ActionEvent actionEvent) throws Exception {
