@@ -110,7 +110,7 @@ public class Block{
             if(getSwitch() == null){
                 return false;
             }else{
-                getSwitch().setOrientation(false);
+                getSwitch().setStraight(false);
             }
         }else if(ss == -4.0 && a == 1){
 
@@ -118,7 +118,7 @@ public class Block{
             if(getSwitch() == null){
                 return false;
             }else{
-                getSwitch().setOrientation(true);
+                getSwitch().setStraight(true);
             }
         }else{
             if(getTrain() == null){

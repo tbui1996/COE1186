@@ -126,7 +126,7 @@ public class TrackModelController implements Initializable {
         if(cur.getSwitch() == null){
             return "N/A";
         }else{
-            if(cur.getSwitch().getOrientation()){
+            if(cur.getSwitch().getStraight()){
                 return "Straight";
             }else{
                 return "Branched";

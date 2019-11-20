@@ -3,6 +3,7 @@ package tcss.trackmodel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.*;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -22,7 +23,7 @@ public class TrackModel {
     }
 
     private void init() throws IOException {
-        File trackFile = new File("resources/Sample_Track_File1.xlsx");
+        File trackFile = new File("resources/Sample_Track_File2.xlsx");
         if (!buildTrack(trackFile)) {
             System.out.println("Error Constructing Track!");
         }
@@ -42,6 +43,7 @@ public class TrackModel {
 
     private boolean buildTrack(File trackFile) throws IOException {
 
+        Map<Integer, Switch> switchMap = new HashMap<Integer, Switch>();
         XSSFWorkbook myExcelBook = new XSSFWorkbook(new FileInputStream(trackFile));
 
         //init red and green line
@@ -57,7 +59,6 @@ public class TrackModel {
         //iterate through sheet
         for(int r=1;r<=redLineSheet.getLastRowNum();r++){
 
-            System.out.println("Block " + r);
             //each row corresponds to a block
             currRow = redLineSheet.getRow(r);
             Block currBlock = new Block();
@@ -71,7 +72,6 @@ public class TrackModel {
 
                 String colTitle = firstRow.getCell(c).getStringCellValue();
                 Cell cell = currRow.getCell(c);
-
                 //parse cell differently based on which column it is
                 switch(colTitle) {
                     case "Line":
@@ -105,7 +105,7 @@ public class TrackModel {
                         }
                         break;
                     case "Infrastructure":
-                        if(!infrastructureParse(currBlock, cell)){
+                        if(!infrastructureParse(currBlock, cell, switchMap)){
                             return false;
                         }
                         break;
@@ -126,15 +126,18 @@ public class TrackModel {
                 }
             }
 
-            if(currBlock.getBlockNum() != 1){
+            if(currBlock.getBlockNum() > 1){
                 //set tail of current block to be the previous block
                 currBlock.setTail(redLine.getBlock(currBlock.getBlockNum() - 1));
-                //set head of previous block to be current block
-                currBlock.getPreviousBlock().setHead(redLine.getBlock(currBlock.getBlockNum() + 1));
 
-                System.out.println("Block " + currBlock.getPreviousBlock().getBlockNum()
-                        + ": Head = " +currBlock.getPreviousBlock().getHead().getBlockNum()
-                        + ", Tail = " +currBlock.getPreviousBlock().getTail().getBlockNum());
+                //set head of previous block to be current block
+                currBlock.getPreviousBlock().setHead(currBlock);
+            }
+
+            if(currBlock.getBlockNum() > 2){
+                System.out.println(currBlock.getPreviousBlock().getTail().getBlockNum() + " => "
+                        + currBlock.getPreviousBlock().getBlockNum() + " => "
+                        + currBlock.getPreviousBlock().getHead().getBlockNum());
             }
 
             redLine.addToHashMap(currBlock);
@@ -229,32 +232,64 @@ public class TrackModel {
     }
 
     //parse infrastructure features into block, if applicable
-    private boolean infrastructureParse(Block b, Cell cell){
+    private boolean infrastructureParse(Block b, Cell cell, Map<Integer, Switch> switchMap){
 
         if(cell == null){
             System.out.println("Null Infrastructure Cell");
         }else if(cell.getCellType() == Cell.CELL_TYPE_STRING){
-            String[] infraSects = cell.getStringCellValue().split("; ",0);
+            String[] infraSects = cell.getStringCellValue().split(";",0);
 
             for(int i=0;i<infraSects.length;i++){
                 if(infraSects[i].equals("UNDERGROUND")){
                     //underground
                     b.setUnderground(true);
-                }else if(infraSects[i].startsWith("STATION: ")){
-                    //stations
-                    String stationName = infraSects[i].split("STATION: ", 0)[1];
-                    System.out.println(stationName);
-                    b.setStation(new Station(stationName));
                 }else if(infraSects[i].equals("RAILWAY CROSSING")){
                     b.setRXR(new RXR());
-                }else if(true){
+                }else if(infraSects[i].startsWith("STATION")){
+                    //stations
+                    String stationName = infraSects[i+1];
+                    System.out.println(stationName);
+                    b.setStation(new Station(stationName));
+                }else if(infraSects[i].startsWith("SWITCH") && infraSects.length > 1){
                     //switches
+                    String switchString = infraSects[i] + infraSects[i+1];
+
+                    String[] switchSplit = switchString.split("S|W|I|T|C|H|\\s|\\(|-|\\)");
+                    HashSet<Integer> tempSet = new HashSet<Integer>();
+                    int root = 0, blockNum;
+
+                    //parse switch entry for values
+                    for(String s: switchSplit){
+                        try{
+                            blockNum = Integer.parseInt(s);
+                            if(!tempSet.add(blockNum)){
+                                root = blockNum;
+                            }
+                        }catch(Exception e){
+
+                        }
+                    }
+
+                    //build switch from parsed block numbers
+                    Switch sw = new Switch();
+                    Iterator<Integer> it = tempSet.iterator();
+                    while (it.hasNext()){
+                        int temp = it.next();
+                        if(temp != root){
+                            if(temp - root == -1 || temp - root == 1){
+                                sw.setStraightDest(temp);
+                            }else{
+                                sw.setBranchDest(temp);
+                            }
+                        }
+                    }
+
+                    switchMap.put(root, sw);
+                    System.out.println("New switch on block " + root
+                        + ", Straight: " + sw.getStraightDest()
+                        + ", Branch: " + sw.getBranchDest());
                 }
             }
-            for(String s: infraSects){
-                System.out.print(s + ", ");
-            }
-            System.out.println();
         }else{
             System.out.println("Track Build Error: Invalid Infrastructure Cell Type");
             return false;
