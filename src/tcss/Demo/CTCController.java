@@ -24,8 +24,6 @@ public class CTCController implements Initializable{
 
     // UI variables
     @FXML private Button dispatch;
-    @FXML private TextField SS;
-    @FXML private TextField auth;
     @FXML private VBox dispatchList;
     @FXML Label dispatch1;
     @FXML private AnchorPane pane;
@@ -37,12 +35,13 @@ public class CTCController implements Initializable{
 //        sSpeedLabel.setText("Suggested Speed: 0 mph");
 //        authLabel.setText("Authority: 0 Blocks");
 //        speedLimitLabel.setText("Speed Limit: 0 mph");
+        //dispatchList.
     }
 
     public void sendDispatch(ActionEvent actionEvent) throws Exception {
-        TrainModel temp = new TrainModel(Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), Main.ctc.trainList.size(), 40);
-        Main.ctc.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), temp);
-        Main.trains.add(temp);
+        //TrainModel temp = new TrainModel(Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), Main.ctc.trainList.size(), 40);
+        //Main.ctc.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), temp);
+        //Main.trains.add(temp);
         dispatch.setText("DISPATCH");
         Main.tc.initTrain();
     }

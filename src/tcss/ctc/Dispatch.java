@@ -4,6 +4,7 @@ import tcss.trainmodel.TrainModel;
 
 
 public class Dispatch {
+    private int name;
     private float SS;
     private int auth;
     private int line; //Red == 1, Green == 2

@@ -25,6 +25,8 @@ public class DispatchSelectController implements Initializable {
     @FXML private Button stopConfirm;
     @FXML private Button dispatchConfirm;
     @FXML private ChoiceBox<String> stopSelector;
+    @FXML private TextField dwell;
+    @FXML private TextField dispatchName;
 
     //Other variables
     private Dispatch curr;

@@ -114,6 +114,10 @@ public class CTC {
         return dispatchList.get(0);
     }
 
+    public int numDispatches() {
+        return this.dispatchList.size();
+    }
+
     //Return a String array of all stops in a line
     public String [] getAllStops(int l) {
         if (l == 1) {
