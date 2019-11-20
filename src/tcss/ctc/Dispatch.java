@@ -5,16 +5,16 @@ import tcss.trainmodel.TrainModel;
 
 public class Dispatch {
     private String name;
-    private float SS;
-    private int auth;
+    private float SS = 0;
+    private int auth = 0;
     private int line; //Red == 1, Green == 2
     public Schedule schedule;
-    public String trainName;
+    //public String trainName;
     private int mode;
-    private TrainModel train;
+    //private TrainModel train;
     private int currStop = -1;
-    private float speedList [];
-    private int authList [];
+    private float [] speedList;
+    private int [] authList;
     private int arrivalTime;
     private int departureTime;
 
@@ -28,7 +28,7 @@ public class Dispatch {
     public Dispatch(float SS, int auth, TrainModel train) {
         this.SS = SS;
         this.auth = auth;
-        this.train = train;
+        //this.train = train;
     }
 
     public void createSchedule(int l) {
@@ -95,7 +95,7 @@ public class Dispatch {
     }
 
     public int getArrivalTime() {
-        return arrivalTime % 12;
+        return this.arrivalTime;
     }
 
     public void setArrivalTime(int t) {
@@ -112,7 +112,7 @@ public class Dispatch {
     }
 
     public int getDepartureTime() {
-        return departureTime % 12;
+        return this.departureTime;
     }
 
     public void setDepartureTime(int t) {
@@ -135,6 +135,14 @@ public class Dispatch {
     //Set name of Dispatch for display purposes
     public void setName(String n) {
         this.name = n;
+    }
+
+    public float getSpeed(int index) {
+        return speedList[index];
+    }
+
+    public int getAuth(int index) {
+        return authList[index];
     }
 
     public String getName() {

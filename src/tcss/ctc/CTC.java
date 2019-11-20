@@ -91,13 +91,21 @@ public class CTC {
         for (int i = 0; i < dispatchList.size(); i++) {
             Dispatch temp = dispatchList.get(i);
             //if train is not dispatched yet
-            if (temp.getCurrStop() == -1) {
-                if (100 == temp.getDepartureTime()) { //This should be if departure time == current global time
-                    //temp.set
+            if (temp.getCurrStop() == -1 && temp.getSS() == 0) {
+                if (11 == temp.getDepartureTime()) { //This should be if departure time == current global time
+                    temp.setSS(temp.getSpeed(temp.getCurrStop()+1));
+                    temp.setAuth(temp.getAuth(temp.getCurrStop()+1));
+                    //Sends SS and Auth to new
+                    //Main.tc.sendNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),YARD);
                 }
             }
+            //If train is already dispatched
             else {
+                //Check block occupancy list to see if next stop block is currently occupied.  If so, a new request must be sent to keep train moving
+                /*if () {
 
+                }*/
+                //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
             }
         }
     }
