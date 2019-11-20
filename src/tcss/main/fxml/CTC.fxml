@@ -44,7 +44,7 @@
                                     <Button fx:id="newDispatch" mnemonicParsing="false" onAction="#openDispatchWindow" styleClass="userButton" text="create Dispatch" />
                                  </children>
                               </VBox>
-                              <Button mnemonicParsing="false" onAction="#goBack" styleClass="backButton" />
+                              <Button layoutX="8.0" layoutY="7.0" mnemonicParsing="false" onAction="#goBack" styleClass="exit-button" />
                            </children>
                         </AnchorPane>
                     </items>
