@@ -10,12 +10,14 @@ public class PLC {
     private static String RXR;
     private static String maintenance;
     private static String proceed;
+    private static String lightslogic;
 
-    public PLC(String switches, String proceed, String maintenance, String RXR) {
+    public PLC(String switches, String proceed, String maintenance, String RXR, String lights) {
         this.switches = switches;
         this.proceed = proceed;
         this.maintenance = maintenance;
         this.RXR = RXR;
+        this.lightslogic = lights;
 
         jexlEvaluator = new JexlEngine();
     }
@@ -105,6 +107,24 @@ public class PLC {
 
             result &= (boolean) expression.evaluate(jexlcontent);
         }
+        return result;
+    }
+
+    public boolean verifyLightBlock(Block normalBlock, Block alternativeBlock){
+        return vitalLightBlock(normalBlock, alternativeBlock);
+    }
+
+    private boolean vitalLightBlock(Block normalBlock, Block alternativeBlock){
+        boolean result = true;
+        Expression expression = jexlEvaluator.createExpression(lightslogic);
+        JexlContext jexlcontent = new MapContext();
+        for(int i=0; i < 7; i++){
+            jexlcontent.set("Normal Block occupied", normalBlock.getSwitch().getDest1());
+            jexlcontent.set("Alternative Block occupied", alternativeBlock.getSwitch().getDest2());
+
+            result &= (boolean) expression.evaluate(jexlcontent);
+        }
+
         return result;
     }
 }
