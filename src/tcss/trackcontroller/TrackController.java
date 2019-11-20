@@ -128,7 +128,7 @@ public class TrackController {
             return true;
         }
         //open
-        maintenanceBlock.setSuggSpeedAndAuth(-2, 1);
+        maintenanceBlock.setSuggSpeedAndAuth(-2, 1);*/
         return false;
     }
 
@@ -145,9 +145,8 @@ public class TrackController {
             return true;
         }
         //put it up
-        crossingBlock.setSuggSpeedAndAuth(-3, 1);
+        crossingBlock.setSuggSpeedAndAuth(-3, 1);*/
         return false;
-
     }
 
     public boolean proceed(int line, int blockId, int nexBlock, int destBlock, int authority, float suggestedspeed){

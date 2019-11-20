@@ -1,11 +1,12 @@
 package tcss.trackcontroller;
 
-import org.apache.commons.jexl2.*;
+//import org.apache.commons.jexl2.*;
 import tcss.trackmodel.Block;
 
 public class PLC {
+
     private TrackController trackController;
-    private static JexlEngine jexlEvaluator;
+    //private static JexlEngine jexlEvaluator;
     private static String switches;
     private static String RXR;
     private static String maintenance;
@@ -19,9 +20,9 @@ public class PLC {
         this.RXR = RXR;
         this.lightslogic = lights;
 
-        jexlEvaluator = new JexlEngine();
+        //jexlEvaluator = new JexlEngine();
     }
-
+    /*
     public boolean verifySwitch(Block nextBlock, Block destinationBlock){
         return vitalSwitch(nextBlock, destinationBlock);
     }
