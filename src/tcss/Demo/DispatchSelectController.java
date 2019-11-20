@@ -42,7 +42,7 @@ public class DispatchSelectController implements Initializable {
     }
 
     public void confirmLine(ActionEvent e) throws Exception {
-        curr = new Dispatch(lineSelector.getSelectionModel().getSelectedItem().toString().toUpperCase());
+        curr = new Dispatch(lineSelector.getSelectionModel().getSelectedItem().toString().toUpperCase(),("Dispatch " + Main.ctc.numDispatches() + 1));
         //System.out.println(curr.getLine());
 
         //Populates stop drop down once line is selected
@@ -59,6 +59,9 @@ public class DispatchSelectController implements Initializable {
     //Approves overall dispatch and adds it to the CTC list
     public void confirmDispatch(ActionEvent e) throws Exception {
         curr.setRequests();
+        if (!dispatchName.getText().equals(""))
+            curr.setName(dispatchName.getText());
+
         Main.ctc.addDispatch(curr);
         System.out.println(curr);
     }

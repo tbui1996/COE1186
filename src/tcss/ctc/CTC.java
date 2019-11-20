@@ -110,8 +110,12 @@ public class CTC {
         this.TC1.getNextStop(SS, auth, ID);
     }
 
-    public Dispatch getFirstDispatch() {
-        return dispatchList.get(0);
+    public Dispatch getDispatch(int i) {
+        return dispatchList.get(i);
+    }
+
+    public String getDispatchString(int i) {
+        return dispatchList.get(i).toString();
     }
 
     public int numDispatches() {

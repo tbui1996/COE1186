@@ -4,7 +4,7 @@ import tcss.trainmodel.TrainModel;
 
 
 public class Dispatch {
-    private int name;
+    private String name;
     private float SS;
     private int auth;
     private int line; //Red == 1, Green == 2
@@ -18,8 +18,9 @@ public class Dispatch {
     private int arrivalTime;
     private int departureTime;
 
-    public Dispatch(String l) {
+    public Dispatch(String l, String n) {
         this.line = this.lineStringToInt(l);
+        this.name = n;
         //this.SS = 0;
         //this.auth = 0;
     }
@@ -103,6 +104,15 @@ public class Dispatch {
 
     public int getLine() {
         return line;
+    }
+
+    //Set name of Dispatch for display purposes
+    public void setName(String n) {
+        this.name = n;
+    }
+
+    public String getName() {
+        return this.name;
     }
 
 

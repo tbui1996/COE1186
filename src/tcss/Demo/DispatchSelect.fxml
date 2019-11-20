@@ -21,7 +21,7 @@
             <HBox alignment="CENTER" prefHeight="32.0" prefWidth="600.0">
                <children>
                   <Label text="Name: " textFill="WHITE" />
-                  <TextField promptText="Dispatch Name" />
+                  <TextField fx:id="dispatchName" promptText="Dispatch Name" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="64.0" prefWidth="600.0" spacing="10.0">
