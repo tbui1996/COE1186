@@ -54,7 +54,7 @@ public class Dispatch {
             //Calculates speed and authority for each stop
             //(distance between blocks) / ((station w/ dwell) - dwell), unit is blocks/sec
             if (i == 0) {
-                speedList[i] = (1 / (float) (3.7 * 60 - 35)); //stationToYard((schedule.getStopName(i)) / schedule.getStopDwell(i)*60 - 35
+                speedList[i] = (1 / (float) (this.schedule.getStopDwell(i) - 35)); //stationToYard((schedule.getStopName(i)) / schedule.getStopDwell(i) - 35
                 authList[i] = 1; //stationToYard(schedule.getStopName(i))
             }
             else {
@@ -95,11 +95,37 @@ public class Dispatch {
     }
 
     public int getArrivalTime() {
-        return arrivalTime;
+        return arrivalTime % 12;
+    }
+
+    public void setArrivalTime(int t) {
+        this.arrivalTime = t;
+    }
+
+    public String arrivalTimeString() {
+        if (this.arrivalTime > 12) {
+            return (this.arrivalTime % 12) + "PM";
+        }
+        else {
+            return (this.arrivalTime) + "AM";
+        }
     }
 
     public int getDepartureTime() {
-        return departureTime;
+        return departureTime % 12;
+    }
+
+    public void setDepartureTime(int t) {
+        this.departureTime = t;
+    }
+
+    public String departureTimeString() {
+        if (this.departureTime > 12) {
+            return (this.departureTime % 12) + " PM";
+        }
+        else {
+            return (this.departureTime) + " AM";
+        }
     }
 
     public int getLine() {
@@ -118,7 +144,8 @@ public class Dispatch {
 
     public String toString() {
         return /*"ID: " + this.train.getID() + "\nSuggested Speed: " + this.train.getSSpeed() + "\nAuthority: " + this.train.getAuthority() +
-                */"Schedule: \n" + this.schedule + "\nNext Stop: " + this.schedule.getStopName(currStop+1);
+                */"Schedule: \n" + "Departure Time: " + this.departureTimeString() + "\n" + this.schedule + "\nFinal Arrival Time: " +
+                this.arrivalTimeString() + "\nNext Stop: " + this.schedule.getStopName(currStop+1);
     }
 
     private int lineStringToInt(String line) {

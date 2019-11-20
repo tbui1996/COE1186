@@ -28,6 +28,12 @@ public class DispatchSelectController implements Initializable {
     @FXML private TextField timeToStop;
     @FXML private TextField departureTime;
     @FXML private TextField dispatchName;
+    @FXML private TextField dHour;
+    @FXML private TextField dMin;
+    @FXML private TextField dHalf;
+    @FXML private TextField aHour;
+    @FXML private TextField aMin;
+    @FXML private TextField aHalf;
 
     //Other variables
     private Dispatch curr;
@@ -55,11 +61,30 @@ public class DispatchSelectController implements Initializable {
 
     //Approves each stop added to the Schedule
     public void confirmStop(ActionEvent e) throws Exception {
-        curr.schedule.addStop(stopSelector.getSelectionModel().getSelectedItem(), Float.parseFloat(timeToStop.getText()));
+        curr.schedule.addStop(stopSelector.getSelectionModel().getSelectedItem(), Float.parseFloat(timeToStop.getText()) * 60);
     }
 
     //Approves overall dispatch and adds it to the CTC list
     public void confirmDispatch(ActionEvent e) throws Exception {
+        //Set Departure Time if one was entered
+        if (!dHour.getText().equals("")) {
+            if (dHalf.getText().equals("AM"))
+                curr.setDepartureTime(Integer.parseInt(dHour.getText()));
+            else
+                curr.setDepartureTime(Integer.parseInt(dHour.getText()) + 12);
+        }
+
+        //Set Arrival Time if one was entered
+        if (!aHour.getText().equals("")) {
+            System.out.println("aHalf: " + aHalf.getText().equals("AM"));
+            if (aHalf.getText().equals("AM")) {
+                curr.setArrivalTime(Integer.parseInt(aHour.getText()));
+            }
+            else {
+                curr.setArrivalTime(Integer.parseInt((aHour.getText())) + 12);
+            }
+        }
+
         curr.setRequests();
         if (!dispatchName.getText().equals(""))
             curr.setName(dispatchName.getText());

@@ -13,9 +13,9 @@ public class Schedule {
         this.dwellList = new ArrayList<Float>();
     }
 
-    public void addStop(String stopName, float minutes) {
+    public void addStop(String stopName, float seconds) {
         this.stopList.add(stopName);
-        this.dwellList.add(minutes);
+        this.dwellList.add(seconds);
     }
 
     public String getLine() {
