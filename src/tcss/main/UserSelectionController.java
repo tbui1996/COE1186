@@ -20,6 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 import java.net.URL;
@@ -86,8 +87,28 @@ public class UserSelectionController implements Initializable {
     USE THESE METHODS TO OPEN YOUR GUI VIEWS
      */
 
-    public void dispatcherView() {
+    public void dispatcherView() throws Exception{
         System.out.println("OPEN DISPATCHER VIEW");
+
+        FXMLLoader dispatchLoader = new FXMLLoader(getClass().getResource("fxml/ctc.fxml"));
+        Stage dispatch = new Stage();
+        Parent dispatchRoot = dispatchLoader.load();
+        dispatch.setTitle("CTC");
+        dispatch.setScene(new Scene(dispatchRoot));
+        dispatch.setResizable(false);
+        dispatch.getIcons().add(new Image("file:resources/train.png"));
+
+        dispatch.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                windowEvent.consume();
+            }
+        });
+
+        dispatch.show();
+
+
+
     }
 
     public void trackEngineerView() {
