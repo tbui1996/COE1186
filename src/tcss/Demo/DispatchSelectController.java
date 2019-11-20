@@ -25,7 +25,8 @@ public class DispatchSelectController implements Initializable {
     @FXML private Button stopConfirm;
     @FXML private Button dispatchConfirm;
     @FXML private ChoiceBox<String> stopSelector;
-    @FXML private TextField dwell;
+    @FXML private TextField timeToStop;
+    @FXML private TextField departureTime;
     @FXML private TextField dispatchName;
 
     //Other variables
@@ -42,8 +43,9 @@ public class DispatchSelectController implements Initializable {
     }
 
     public void confirmLine(ActionEvent e) throws Exception {
-        curr = new Dispatch(lineSelector.getSelectionModel().getSelectedItem().toString().toUpperCase(),("Dispatch " + Main.ctc.numDispatches() + 1));
+        curr = new Dispatch(lineSelector.getSelectionModel().getSelectedItem().toUpperCase(),("Dispatch " + Main.ctc.numDispatches() + 1));
         //System.out.println(curr.getLine());
+        curr.createSchedule(curr.getLine());
 
         //Populates stop drop down once line is selected
         String [] temp = Main.ctc.getAllStops(curr.getLine());
@@ -53,7 +55,7 @@ public class DispatchSelectController implements Initializable {
 
     //Approves each stop added to the Schedule
     public void confirmStop(ActionEvent e) throws Exception {
-        curr.createSchedule();
+        curr.schedule.addStop(stopSelector.getSelectionModel().getSelectedItem(), Float.parseFloat(timeToStop.getText()));
     }
 
     //Approves overall dispatch and adds it to the CTC list

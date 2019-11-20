@@ -76,7 +76,7 @@ public class CTC {
         }
         this.trainList.add(train);
         this.dispatchList.add(new Dispatch(SS, auth, this.trainList.get(this.trainList.size()-1)));
-        this.dispatchList.get(this.dispatchList.size()-1).createSchedule();
+        //this.dispatchList.get(this.dispatchList.size()-1).createSchedule();
         this.dispatchList.get(this.dispatchList.size()-1).setRequests();
         System.out.println(this.dispatchList.get(this.dispatchList.size()-1));
         sendNextStop(SS, auth, train.getID());

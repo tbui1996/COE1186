@@ -27,7 +27,8 @@
             <HBox alignment="CENTER" prefHeight="64.0" prefWidth="600.0" spacing="10.0">
                <children>
                   <ChoiceBox fx:id="stopSelector" prefWidth="150.0" />
-                  <TextField fx:id="dwell" promptText="Time to Arrival" />
+                  <TextField fx:id="timeToStop" promptText="Time to Stop" />
+                  <TextField promptText="Departure Time" />
                   <Button fx:id="stopConfirm" mnemonicParsing="false" onAction="#confirmStop" text="Add Stop" />
                </children>
             </HBox>

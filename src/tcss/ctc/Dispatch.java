@@ -8,7 +8,7 @@ public class Dispatch {
     private float SS;
     private int auth;
     private int line; //Red == 1, Green == 2
-    private Schedule schedule;
+    public Schedule schedule;
     public String trainName;
     private int mode;
     private TrainModel train;
@@ -31,11 +31,11 @@ public class Dispatch {
         this.train = train;
     }
 
-    public void createSchedule() {
-        this.schedule = new Schedule(1);
-        this.schedule.addStop("Shadyside", (float) 3.7);
+    public void createSchedule(int l) {
+        this.schedule = new Schedule(l);
+        //this.schedule.addStop("Shadyside", (float) 3.7);
         //this.schedule.addStop("Herron Ave", (float) 2.3);
-        this.schedule.addStop("Swissvale", (float) 1.5);
+        //this.schedule.addStop("Swissvale", (float) 1.5);
         //this.schedule.addStop("Penn Station", (float) 1.8);
         //this.schedule.addStop("Steel Plaza", (float) 2.1);
         //this.schedule.addStop("First Ave", (float) 2.1);
@@ -118,7 +118,7 @@ public class Dispatch {
 
     public String toString() {
         return /*"ID: " + this.train.getID() + "\nSuggested Speed: " + this.train.getSSpeed() + "\nAuthority: " + this.train.getAuthority() +
-                */"Schedule: " + this.schedule;
+                */"Schedule: \n" + this.schedule + "\nNext Stop: " + this.schedule.getStopName(currStop+1);
     }
 
     private int lineStringToInt(String line) {
