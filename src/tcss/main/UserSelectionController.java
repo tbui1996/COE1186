@@ -20,7 +20,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 import java.net.URL;
@@ -98,12 +97,12 @@ public class UserSelectionController implements Initializable {
         dispatch.setResizable(false);
         dispatch.getIcons().add(new Image("file:resources/train.png"));
 
-        dispatch.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-                windowEvent.consume();
-            }
-        });
+//        dispatch.setOnCloseRequest(new EventHandler<WindowEvent>() {
+//            @Override
+//            public void handle(WindowEvent windowEvent) {
+//                windowEvent.consume();
+//            }
+//        });
 
         dispatch.show();
 
