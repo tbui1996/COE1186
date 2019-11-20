@@ -5,15 +5,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import tcss.ctc.Dispatch;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import tcss.Demo.Main;
-import tcss.ctc.Dispatch;
 
 public class DispatchSelectController implements Initializable {
     //UI variables
