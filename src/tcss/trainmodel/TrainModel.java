@@ -235,6 +235,12 @@ public class TrainModel {
         }
     }
 
+    public static void updateAll() {
+        for(TrainModel t: trains) {
+            t.update();
+        }
+    }
+
     /**
      * This method uses the previous and current accelerations to calculate
      * the train's new velocity.

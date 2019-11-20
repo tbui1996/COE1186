@@ -111,5 +111,6 @@ class SimClock {
                 }
             }
         }
+        Main.update();
     }
 }

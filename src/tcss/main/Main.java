@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import tcss.ctc.CTC;
+import tcss.trainmodel.TrainModel;
 
 public class Main extends Application {
 
@@ -42,20 +43,17 @@ public class Main extends Application {
 
         // TESTING TIMER PAUSE
         T = new SimTime();
-//        T = new Timer();
-//        T.schedule(
-//                new TimerTask() {
-//                    @Override
-//                    public void run() {
-//                        System.out.println("Ping!");
-//                    }
-//                }, 0, 1000
-//        );
 
 
 
 
 
+    }
+
+    // Method called in SimTime to update modules
+    public static void update() {
+        // Place update calls here
+        TrainModel.updateAll();
     }
 
     public static void main(String [] args) throws Exception {
