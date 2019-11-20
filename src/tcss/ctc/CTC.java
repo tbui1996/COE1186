@@ -25,9 +25,9 @@ public class CTC {
 
 
 
-    public CTC(TrackController track) {
+    public CTC() {
 
-        this.TC1 = track;
+        //this.TC1 = track;
 
         //Temporary Red and Green Line setup for creating a Dispatch
         redLine = new LinkedList<Block>();

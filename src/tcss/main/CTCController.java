@@ -1,4 +1,4 @@
-package tcss.Demo;
+package tcss.main;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -7,11 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import tcss.ctc.Dispatch;
-import tcss.trainmodel.TrainModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -39,9 +35,9 @@ public class CTCController implements Initializable{
 //        authLabel.setText("Authority: 0 Blocks");
 //        speedLimitLabel.setText("Speed Limit: 0 mph");
         dispatchList.getPanes().removeAll();
-        for (int i = 0; i < Main.ctc.numDispatches(); i++) {
-            System.out.println(Main.ctc.getDispatch(i).getName());
-            dispatchList.getPanes().add(new TitledPane(Main.ctc.getDispatch(i).getName(), new Label(Main.ctc.getDispatchString(i))));
+        for (int i = 0; i < tcss.main.Main.ctc.numDispatches(); i++) {
+            System.out.println(tcss.main.Main.ctc.getDispatch(i).getName());
+            dispatchList.getPanes().add(new TitledPane(tcss.main.Main.ctc.getDispatch(i).getName(), new Label(tcss.main.Main.ctc.getDispatchString(i))));
         }
 
         //populates line dropdown
@@ -56,7 +52,7 @@ public class CTCController implements Initializable{
         //Main.ctc.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), temp);
         //Main.trains.add(temp);
         dispatch.setText("DISPATCH");
-        Main.tc.initTrain();
+        tcss.main.Main.tc.initTrain();
     }
 
     /*public void getDispatches() {
@@ -71,7 +67,7 @@ public class CTCController implements Initializable{
         //newDispatch.setText("Created");
 
         //Opens in same window for now, want it to be a new window
-        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("DispatchSelect.fxml")));
+        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("fxml/DispatchSelect.fxml")));
         Stage window = (Stage) pane.getScene().getWindow();
         window.setScene(moduleSelect);
         window.setTitle("Dispatch");
@@ -79,7 +75,7 @@ public class CTCController implements Initializable{
 
     //Populates Block list once a line is selected
     public void populateBlocks(ActionEvent e) throws Exception {
-        int temp = Main.ctc.lineStringToInt(lineSelector.getSelectionModel().getSelectedItem().toUpperCase());
+        int temp = tcss.main.Main.ctc.lineStringToInt(lineSelector.getSelectionModel().getSelectedItem().toUpperCase());
 
         blockSelector.getItems().clear();
         for (int i = 0; i < Main.ctc.lineLength(temp); i++) {
@@ -97,7 +93,7 @@ public class CTCController implements Initializable{
 //        window.setScene(trainModelView);
 //        window.show();
 
-        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("ModuleSelection.fxml")));
+        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("../Demo/ModuleSelection.fxml")));
         Stage window = (Stage) pane.getScene().getWindow();
         window.setScene(moduleSelect);
         window.setTitle("Module Selection");
