@@ -4,13 +4,14 @@ public class Switch{
     
     private int dest1;
     private int dest2;
-    private boolean orientation;
+    private boolean straight;
     private boolean lights;
 
     public Switch(){
         dest1 = 0;
         dest2 = 0;
-        orientation = true;
+        straight = true; //true == straight, false == curved
+        lights = false; //true == on, false == off
     }
 
     public int getDest1(){
@@ -21,8 +22,20 @@ public class Switch{
         return dest2;
     }
 
-    public boolean getOrientation(){
+    public boolean getStraight(){
         return orientation;
+    }
+
+    public boolean lightsOn(){
+        return lights;
+    }
+
+    public void setOrientation(boolean orientation){
+        this.orientation = orientation;
+    }
+
+    public void setLights(boolean lights){
+        this.lights = lights;
     }
 
     public void setDest1(int d){

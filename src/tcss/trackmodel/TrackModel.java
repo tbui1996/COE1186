@@ -23,7 +23,7 @@ public class TrackModel {
 
     private void init() throws IOException {
         File trackFile = new File("resources/Sample_Track_File1.xlsx");
-        if(!buildTrack(trackFile)){
+        if (!buildTrack(trackFile)) {
             System.out.println("Error Constructing Track!");
         }
     }
@@ -48,7 +48,6 @@ public class TrackModel {
         redLine = new Track();
         greenLine = new Track();
 
-
         XSSFSheet redLineSheet = myExcelBook.getSheet("Red Line");
         Row currRow;
 
@@ -57,6 +56,8 @@ public class TrackModel {
 
         //iterate through sheet
         for(int r=1;r<=redLineSheet.getLastRowNum();r++){
+
+            System.out.println("Block " + r);
             //each row corresponds to a block
             currRow = redLineSheet.getRow(r);
             Block currBlock = new Block();
@@ -124,8 +125,20 @@ public class TrackModel {
                         return false;
                 }
             }
-            redLine.getBlockList().add(currBlock);
+
+            if(currBlock.getBlockNum() != 1){
+                //set tail of current block to be the previous block
+                currBlock.setTail(redLine.getBlock(currBlock.getBlockNum() - 1));
+                //set head of previous block to be current block
+                currBlock.getPreviousBlock().setHead(redLine.getBlock(currBlock.getBlockNum() + 1));
+
+                System.out.println("Block " + currBlock.getPreviousBlock().getBlockNum()
+                        + ": Head = " +currBlock.getPreviousBlock().getHead().getBlockNum()
+                        + ", Tail = " +currBlock.getPreviousBlock().getTail().getBlockNum());
+            }
+
             redLine.addToHashMap(currBlock);
+            redLine.getBlockList().add(currBlock);
         }
         myExcelBook.close();
         return true;

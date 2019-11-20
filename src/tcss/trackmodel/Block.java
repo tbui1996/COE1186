@@ -2,13 +2,16 @@ package tcss.trackmodel;
 
 import tcss.trainmodel.TrainModel;
 
+enum Failure{
+    BROKEN_RAIL, CIRCUIT_FAILURE, POWER_FAILURE, NONE;
+}
+
 public class Block{
 
     private int line;
     private char section;
     private int blockNum;
     private int authority;
-    private int failure;
 
     private float suggestedSpeed;
     private float length;
@@ -20,6 +23,12 @@ public class Block{
     private boolean underground;
     private boolean occupied;
     private boolean closed;
+
+    private Failure failure;
+
+    private Block head;
+    private Block tail;
+    private Block branch;
 
     private Switch sw;
     private Station station;
@@ -42,6 +51,12 @@ public class Block{
 
         setUnderground(false);
         setOccupied(false);
+
+        setFailure(Failure.NONE);
+
+        setHead(null);
+        setTail(null);
+        setBranch(null);
         
         setSwitch(null);
         setStation(null);
@@ -51,11 +66,11 @@ public class Block{
     }
 
     public Block getNextBlock(){
-        return null;
+        return head;
     }
 
     public Block getPreviousBlock(){
-        return null;
+        return tail;
     }
 
     public boolean setSuggSpeedAndAuth(float ss, int a){
@@ -66,18 +81,53 @@ public class Block{
             System.out.println("Initializing train on block " + getBlockNum());
             return initTrain(ss, a, 0);
         }else if(ss == -2.0 && a == 0){
+
             //close block for maintenance
             setClosed(true);
         }else if(ss == -2.0 && a == 1){
+
             //open block
             setClosed(false);
         }else if(ss == -3.0 && a == 0){
-            //rxr set down
-        }else if(ss == -3.0 && a == 1){
+
             //rxr set up
+            if(getRXR() == null){
+                return false;
+            }else{
+                getRXR().setDown(false);
+            }
+        }else if(ss == -3.0 && a == 1){
+
+            //rxr set down
+            if(getRXR() == null){
+                return false;
+            }else{
+                getRXR().setDown(true);
+            }
+        }else if(ss == -4.0 && a == 0){
+
+            //set switch curved
+            if(getSwitch() == null){
+                return false;
+            }else{
+                getSwitch().setOrientation(false);
+            }
+        }else if(ss == -4.0 && a == 1){
+
+            //set switch straight
+            if(getSwitch() == null){
+                return false;
+            }else{
+                getSwitch().setOrientation(true);
+            }
         }else{
-            setSuggestedSpeed(ss);
-            setAuthority(a);
+            if(getTrain() == null){
+                //no train to pass values to
+                return false;
+            }else{
+                //pass values to train on block
+                getTrain().passCommands(ss, a);
+            }
         }
 
         return true;
@@ -148,6 +198,22 @@ public class Block{
         return closed;
     }
 
+    public Failure getFailure(){
+        return failure;
+    }
+
+    public Block getHead() {
+        return head;
+    }
+
+    public Block getTail() {
+        return tail;
+    }
+
+    public Block getBranch() {
+        return branch;
+    }
+
     public Switch getSwitch(){
         return sw;
     }
@@ -170,75 +236,91 @@ public class Block{
 
     //****************** MUTATOR METHODS **********************************
 
-    public void setLine(int l){
-        line = l;
+    public void setLine(int line){
+        this.line = line;
     }
 
-    public void setSection(char s){
-        section = s;
+    public void setSection(char section){
+        this.section = section;
     }
 
-    public void setBlockNum(int bn){
-        blockNum = bn;
+    public void setBlockNum(int blockNum){
+        this.blockNum = blockNum;
     }
 
-    public void setAuthority(int a){
-        authority = a;
+    public void setAuthority(int authority){
+        this.authority = authority;
     }
 
-    public void setSuggestedSpeed(float ss){
-        suggestedSpeed = ss;
+    public void setSuggestedSpeed(float suggestedSpeed){
+        this.suggestedSpeed = suggestedSpeed;
     }
 
-    public void setLength(float l){
-        length = l;
+    public void setLength(float length){
+        this.length = length;
     }
 
-    public void setGrade(float g){
-        grade = g;
+    public void setGrade(float grade){
+        this.grade = grade;
     }
 
-    public void setSpeedLimit(float sl){
-        speedLimit = sl;
+    public void setSpeedLimit(float speedLimit){
+        this.speedLimit = speedLimit;
     }
 
-    public void setElevation(float e){
-        elevation = e;
+    public void setElevation(float elevation){
+        this.elevation = elevation;
     }
 
     public void setCumulativeElevation(float ce){
         cumulativeElevation = ce;
     }
 
-    public void setUnderground(boolean u){
-        underground = u;
+    public void setUnderground(boolean underground){
+        this.underground = underground;
     }
 
-    public void setOccupied(boolean o){
-        occupied = o;
+    public void setOccupied(boolean occupied){
+        this.occupied = occupied;
     }
 
-    public void setClosed(boolean c){
-        closed = c;
+    public void setClosed(boolean closed){
+        this.closed = closed;
     }
 
-    public void setSwitch(Switch s){
-        sw = s;
+    public void setFailure(Failure failure){
+        this.failure = failure;
     }
 
-    public void setStation(Station s){
-        station = s;
+    public void setHead(Block head) {
+        this.head = head;
     }
 
-    public void setRXR(RXR r){
-        rxr = r;
+    public void setTail(Block tail) {
+        this.tail = tail;
     }
 
-    public void setBeacon(Beacon b){
-        beacon = b;
+    public void setBranch(Block branch) {
+        this.branch = branch;
     }
 
-    public void setTrain(TrainModel t){
-        train = t;
+    public void setSwitch(Switch sw) {
+        this.sw = sw;
+    }
+
+    public void setStation(Station station){
+        this.station = station;
+    }
+
+    public void setRXR(RXR rxr){
+        this.rxr = rxr;
+    }
+
+    public void setBeacon(Beacon beacon){
+        this.beacon = beacon;
+    }
+
+    public void setTrain(TrainModel train){
+        this.train = train;
     }
 }

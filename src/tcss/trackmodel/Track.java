@@ -2,30 +2,38 @@ package tcss.trackmodel;
 
 import tcss.trainmodel.TrainModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
 public class Track {
 
-    private LinkedList<Block> trackList;
-    Map<Integer, Block> blockHashMap = new HashMap<>();
+    Map<Integer, Block> blockHashMap;
+    LinkedList<Block> blockList;
+
+    ArrayList<Block> rxrBlocks;
+    ArrayList<Block> switchBlocks;
+
+    Block startBlock;
 
     public Track(){
-        trackList = new LinkedList<Block>();
+        blockHashMap = new HashMap<>();
+        startBlock = null;
+        blockList = new LinkedList<Block>();
     }
 
     public boolean initTrain(float ss, int auth, int id){
         System.out.println("Init Train");
-        return trackList.get(0).setSuggSpeedAndAuth(ss, auth);
-    }
-
-    public Block getBlock(int blockNum){
-        return blockHashMap.get(blockNum);
+        return startBlock.setSuggSpeedAndAuth(ss, auth);
     }
 
     //distance between two blocks
-    public double distanceBetween(){
+    public double distanceBetweenTwoBlocks(Block start, Block end){
+        return 0.0;
+    }
+
+    public double distanceToYard(Block start){
         return 0.0;
     }
 
@@ -42,7 +50,19 @@ public class Track {
         return true;
     }
 
+    public Block getStartBlock(){
+        return startBlock;
+    }
+
+    public void setStartBlock(Block sb){
+        startBlock = sb;
+    }
+
     public LinkedList<Block> getBlockList(){
-        return trackList;
+        return this.blockList;
+    }
+
+    public Block getBlock(int blockNum){
+        return blockHashMap.get(blockNum);
     }
 }
