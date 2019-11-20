@@ -30,7 +30,7 @@ public class TrainController {
     final private float MAX_SPEED = 70; // KM/HR
     final private float T = 1; //sampling rate of trains
     private float PWRCMD;
-    private float oldsps;
+    //private float oldsps;
 
     //Constructor method for the TrainController when instantiated with a train model
     /*
@@ -64,7 +64,7 @@ public class TrainController {
         this.lastVerrs = new float[]{0, 0, 0};
         this.lastmuk = new float[]{0, 0, 0};
         this.PWRCMD = 0;
-        this.oldsps = 0;
+        //this.oldsps = 0;
     }
 
     /*
@@ -219,5 +219,21 @@ public class TrainController {
 
     public String toString(){
         return(this.id + " at " + this.setpointSpeed);
+    }
+
+    public float getPWRCMD(){
+        return PWRCMD;
+    }
+
+    public float getKi(){
+        return ki;
+    }
+
+    public float getKp(){
+        return kp;
+    }
+
+    public float getCurrentSpeed(){
+        return currentSpeed;
     }
 }
