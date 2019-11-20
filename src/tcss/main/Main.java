@@ -8,13 +8,18 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import tcss.ctc.CTC;
 
 public class Main extends Application {
 
     static SimTime T;
+    static CTC ctc;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        // Init CTC
+        ctc = new CTC();
 
         // Load opening scene - track input
 
