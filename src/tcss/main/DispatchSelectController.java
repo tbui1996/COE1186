@@ -48,12 +48,12 @@ public class DispatchSelectController implements Initializable {
     }
 
     public void confirmLine(ActionEvent e) throws Exception {
-        curr = new Dispatch(lineSelector.getSelectionModel().getSelectedItem().toUpperCase(),("Dispatch " + tcss.Demo.Main.ctc.numDispatches() + 1));
+        curr = new Dispatch(lineSelector.getSelectionModel().getSelectedItem().toUpperCase(),("Dispatch " + tcss.main.Main.ctc.numDispatches() + 1));
         //System.out.println(curr.getLine());
         curr.createSchedule(curr.getLine());
 
         //Populates stop drop down once line is selected
-        String [] temp = tcss.Demo.Main.ctc.getAllStops(curr.getLine());
+        String [] temp = tcss.main.Main.ctc.getAllStops(curr.getLine());
         for (int i = 0; i < temp.length; i++)
             stopSelector.getItems().add(temp[i]);
     }
@@ -88,7 +88,7 @@ public class DispatchSelectController implements Initializable {
         if (!dispatchName.getText().equals(""))
             curr.setName(dispatchName.getText());
 
-        Main.ctc.addDispatch(curr);
+        tcss.main.Main.ctc.addDispatch(curr);
         System.out.println(curr);
     }
 
