@@ -1,42 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
 
 <AnchorPane fx:id="pane" prefHeight="400.0" prefWidth="600.0" styleClass="body" stylesheets="@CTC.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.Demo.CTCController">
    <children>
-      <VBox alignment="CENTER" layoutX="114.0" layoutY="-13.0" prefHeight="400.0" prefWidth="486.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <HBox alignment="CENTER_LEFT" maxWidth="-Infinity" prefHeight="25.0" prefWidth="250.0">
+      <SplitPane dividerPositions="0.75" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" styleClass="body">
                <children>
-                  <Text fill="#dfdfdf" strokeType="OUTSIDE" strokeWidth="0.0" text="Suggested Speed: " />
-                  <TextField fx:id="SS" maxWidth="-Infinity" prefHeight="25.0" prefWidth="200.0" promptText="mph" />
+                  <VBox alignment="CENTER" prefHeight="398.0" prefWidth="295.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Button fx:id="dispatch" mnemonicParsing="false" onAction="#sendDispatch" prefHeight="56.0" prefWidth="120.0" styleClass="userButton" text="Dispatch">
+                           <VBox.margin>
+                              <Insets bottom="17.0" />
+                           </VBox.margin>
+                        </Button>
+                        <Button fx:id="newDispatch" mnemonicParsing="false" onAction="#openDispatchWindow" styleClass="userButton" text="create Dispatch" />
+                     </children>
+                  </VBox>
                </children>
-               <VBox.margin>
-                  <Insets bottom="17.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" maxWidth="-Infinity" prefWidth="250.0">
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="187.0" styleClass="body">
                <children>
-                  <Text fill="#dfdfdf" strokeType="OUTSIDE" strokeWidth="0.0" text="Authority: " />
-                  <TextField fx:id="auth" maxWidth="-Infinity" prefHeight="25.0" prefWidth="200.0" promptText="blocks" />
+                  <Accordion fx:id="dispatchList" layoutX="47.0" layoutY="149.0" prefHeight="398.0" prefWidth="145.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
-               <VBox.margin>
-                  <Insets bottom="17.0" />
-               </VBox.margin>
-            </HBox>
-            <Button fx:id="dispatch" mnemonicParsing="false" onAction="#sendDispatch" prefHeight="56.0" prefWidth="120.0" styleClass="userButton" text="Dispatch">
-               <VBox.margin>
-                  <Insets bottom="17.0" />
-               </VBox.margin>
-            </Button>
-         </children>
-      </VBox>
+            </AnchorPane>
+        </items>
+      </SplitPane>
       <Button layoutX="12.0" layoutY="10.0" mnemonicParsing="false" onAction="#goBack" styleClass="backButton" />
    </children>
 </AnchorPane>

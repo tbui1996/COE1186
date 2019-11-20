@@ -5,9 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -24,11 +22,11 @@ public class CTCController implements Initializable{
 
     // UI variables
     @FXML private Button dispatch;
-    @FXML private TextField SS;
-    @FXML private TextField auth;
-    @FXML private VBox dispatchList;
-    @FXML Label dispatch1;
+    //@FXML private VBox dispatchList;
+    @FXML private Label dispatch1;
     @FXML private AnchorPane pane;
+    @FXML private Button newDispatch;
+    @FXML private Accordion dispatchList;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -36,22 +34,37 @@ public class CTCController implements Initializable{
 //        sSpeedLabel.setText("Suggested Speed: 0 mph");
 //        authLabel.setText("Authority: 0 Blocks");
 //        speedLimitLabel.setText("Speed Limit: 0 mph");
+        dispatchList.getPanes().removeAll();
+        for (int i = 0; i < Main.ctc.numDispatches(); i++) {
+            System.out.println(Main.ctc.getDispatch(i).getName());
+            dispatchList.getPanes().add(new TitledPane(Main.ctc.getDispatch(i).getName(), new Label(Main.ctc.getDispatchString(i))));
+        }
     }
 
     public void sendDispatch(ActionEvent actionEvent) throws Exception {
-        TrainModel temp = new TrainModel(Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), Main.ctc.trainList.size(), 40);
-        Main.ctc.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), temp);
-        Main.trains.add(temp);
+        //TrainModel temp = new TrainModel(Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), Main.ctc.trainList.size(), 40);
+        //Main.ctc.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), temp);
+        //Main.trains.add(temp);
         dispatch.setText("DISPATCH");
         Main.tc.initTrain();
     }
 
-    public void getDispatches() {
+    /*public void getDispatches() {
         Dispatch currDispatch = Main.ctc.getFirstDispatch();
         dispatch1 = new Label(currDispatch.toString());
         dispatchList.getChildren().add(dispatch1);
 
         //dispatchList = 0;
+    }*/
+
+    public void openDispatchWindow(ActionEvent actionEvent) throws Exception {
+        newDispatch.setText("Created");
+
+        //Opens in same window for now, want it to be a new window
+        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("DispatchSelect.fxml")));
+        Stage window = (Stage) pane.getScene().getWindow();
+        window.setScene(moduleSelect);
+        window.setTitle("Dispatch");
     }
 
     public void goBack(ActionEvent actionEvent) throws Exception {
