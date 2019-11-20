@@ -5,15 +5,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import tcss.ctc.Dispatch;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import tcss.Demo.Main;
-import tcss.ctc.Dispatch;
 
 public class DispatchSelectController implements Initializable {
     //UI variables
@@ -48,12 +49,12 @@ public class DispatchSelectController implements Initializable {
     }
 
     public void confirmLine(ActionEvent e) throws Exception {
-        curr = new Dispatch(lineSelector.getSelectionModel().getSelectedItem().toUpperCase(),("Dispatch " + tcss.Demo.Main.ctc.numDispatches() + 1));
+        curr = new Dispatch(lineSelector.getSelectionModel().getSelectedItem().toUpperCase(),("Dispatch " + tcss.main.Main.ctc.numDispatches() + 1));
         //System.out.println(curr.getLine());
         curr.createSchedule(curr.getLine());
 
         //Populates stop drop down once line is selected
-        String [] temp = tcss.Demo.Main.ctc.getAllStops(curr.getLine());
+        String [] temp = tcss.main.Main.ctc.getAllStops(curr.getLine());
         for (int i = 0; i < temp.length; i++)
             stopSelector.getItems().add(temp[i]);
     }
@@ -88,7 +89,7 @@ public class DispatchSelectController implements Initializable {
         if (!dispatchName.getText().equals(""))
             curr.setName(dispatchName.getText());
 
-        Main.ctc.addDispatch(curr);
+        tcss.main.Main.ctc.addDispatch(curr);
         System.out.println(curr);
     }
 

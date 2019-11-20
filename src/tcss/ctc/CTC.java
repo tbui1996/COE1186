@@ -1,11 +1,12 @@
 package tcss.ctc;
 
-import java.util.*;
+import tcss.trackcontroller.TrackController;
+import tcss.trackmodel.Block;
+import tcss.trackmodel.Station;
+import tcss.trainmodel.TrainModel;
 
-import tcss.trackmodel.TrackModel;
-import tcss.trainmodel.*;
-import tcss.trackcontroller.*;
-import tcss.trackmodel.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class CTC {
     TrackController TC1;
@@ -27,7 +28,7 @@ public class CTC {
 
     public CTC() {
 
-        //this.TC1 = track;
+//        this.TC1 = track;
 
         //Temporary Red and Green Line setup for creating a Dispatch
         redLine = new LinkedList<Block>();
