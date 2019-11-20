@@ -25,9 +25,9 @@ public class CTC {
 
 
 
-    public CTC(TrackController track) {
+    public CTC() {
 
-        this.TC1 = track;
+        //this.TC1 = track;
 
         //Temporary Red and Green Line setup for creating a Dispatch
         redLine = new LinkedList<Block>();
@@ -92,7 +92,7 @@ public class CTC {
             Dispatch temp = dispatchList.get(i);
             //if train is not dispatched yet
             if (temp.getCurrStop() == -1 && temp.getSS() == 0) {
-                if (11 == temp.getDepartureTime()) { //This should be if departure time == current global time
+                if (11 >= temp.getDepartureTime()) { //This should be if departure time == current global time
                     temp.setSS(temp.getSpeed(temp.getCurrStop()+1));
                     temp.setAuth(temp.getAuth(temp.getCurrStop()+1));
                     //Sends SS and Auth to new
@@ -140,5 +140,38 @@ public class CTC {
         }
     }
 
+    public int lineStringToInt(String line) {
+        if (line.equals("RED"))
+            return 1;
+        else if (line.equals("GREEN"))
+            return 2;
+        else
+            return 0;
+    }
+
+    //returns total block number in the line
+    public int lineLength(int l) {
+        if (l == 1) {
+            return redLine.size();
+        }
+        else if (l == 2) {
+            return greenLine.size();
+        }
+        else {
+            return -1;
+        }
+    }
+
+    public Block getBlock(int l, int b) {
+        if (l == 1) {
+            return redLine.get(b);
+        }
+        else if (l == 2) {
+            return greenLine.get(b);
+        }
+        else {
+            return null;
+        }
+    }
 
 }

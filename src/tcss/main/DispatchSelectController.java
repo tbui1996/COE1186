@@ -1,6 +1,5 @@
-package tcss.Demo;
+package tcss.main;
 
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,12 +7,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import tcss.Demo.Main;
 import tcss.ctc.Dispatch;
 
 public class DispatchSelectController implements Initializable {
@@ -49,12 +48,12 @@ public class DispatchSelectController implements Initializable {
     }
 
     public void confirmLine(ActionEvent e) throws Exception {
-        curr = new Dispatch(lineSelector.getSelectionModel().getSelectedItem().toUpperCase(),("Dispatch " + Main.ctc.numDispatches() + 1));
+        curr = new Dispatch(lineSelector.getSelectionModel().getSelectedItem().toUpperCase(),("Dispatch " + tcss.Demo.Main.ctc.numDispatches() + 1));
         //System.out.println(curr.getLine());
         curr.createSchedule(curr.getLine());
 
         //Populates stop drop down once line is selected
-        String [] temp = Main.ctc.getAllStops(curr.getLine());
+        String [] temp = tcss.Demo.Main.ctc.getAllStops(curr.getLine());
         for (int i = 0; i < temp.length; i++)
             stopSelector.getItems().add(temp[i]);
     }
@@ -95,7 +94,7 @@ public class DispatchSelectController implements Initializable {
 
     public void goBack(ActionEvent e) throws Exception {
         //Should return back to CTC module screen.  Does not save current progress
-        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("CTC.fxml")));
+        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("fxml/CTC.fxml")));
         Stage window = (Stage) pane.getScene().getWindow();
         window.setScene(moduleSelect);
         window.setTitle("CTC");
