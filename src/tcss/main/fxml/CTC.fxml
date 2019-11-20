@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="pane" prefHeight="400.0" prefWidth="600.0" styleClass="body" stylesheets="@../css/CTC.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.CTCController">
+<AnchorPane fx:id="pane" prefHeight="463.0" prefWidth="658.0" styleClass="body" stylesheets="@../css/CTC.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.CTCController">
    <children>
       <SplitPane dividerPositions="0.75" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -27,7 +27,7 @@
                                     <Button fx:id="confirmLine" mnemonicParsing="false" onAction="#populateBlocks" text="Confirm" />
                                     <Label styleClass="text" text="Block:" />
                                     <ChoiceBox fx:id="blockSelector" prefWidth="150.0" />
-                                    <Button fx:id="confirmBlock" mnemonicParsing="false" text="Button" />
+                                    <Button fx:id="confirmBlock" mnemonicParsing="false" text="Confirm" />
                                  </children>
                               </VBox>
                            </children>
