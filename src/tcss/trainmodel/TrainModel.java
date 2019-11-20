@@ -27,7 +27,7 @@ public class TrainModel {
         this.underground = false;
 
         controller = new TrainController(this);
-        controller.setSpeedLimit(speedLimit);
+        //controller.setSpeedLimit(speedLimit);
 
 
     }
@@ -42,9 +42,9 @@ public class TrainModel {
         this.underground = block.isUnderground();
         this.grade = block.getGrade();
 
-        controller = new TrainController(this);
+        controller = new TrainController(this, 8);
         controller.update();
-        controller.setSpeedLimit(speedLimit);
+        //controller.setSpeedLimit(speedLimit);
     }
 
     public void passCommands(float sSpeed, int auth) {

@@ -27,7 +27,7 @@ public class Main extends Application {
     static TrackController tc;
     static CTC ctc;
 
-    static float[] kikp = {0,0};
+    static public float[] kikp = {0,0};
 
     @Override
     public void start(Stage primaryStage) throws Exception{

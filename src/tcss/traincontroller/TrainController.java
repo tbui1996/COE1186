@@ -1,6 +1,7 @@
 package tcss.traincontroller;
 
 import tcss.trainmodel.TrainModel;
+import tcss.Demo.Main;
 
 import java.util.ArrayList;
 
@@ -13,15 +14,14 @@ public class TrainController {
     public int id;
     private TrainModel model;
     private float suggestedSpeed;
-    private float speedLimit;
     private float setpointSpeed;
     private float commandedSpeed;
     private float currentSpeed;
     public boolean opMode = false; //default to automatic
     private int time;
     int authority;
-    private int ki;
-    private int kp;
+    private float ki;
+    private float kp;
     private boolean underground;
     private boolean eBrake;
     private float[] lastVerrs;
@@ -48,6 +48,8 @@ public class TrainController {
         this.lastVerrs = new float[]{0, 0, 0};
         this.lastmuk = new float[]{0, 0, 0};
         this.PWRCMD = 0;
+        this.ki = Main.kikp[0];
+        this.kp = Main.kikp[1];
         TrainController.TrainControllerList.add(this);
         System.out.println(TrainControllerList.toString());
     }
@@ -64,6 +66,8 @@ public class TrainController {
         this.lastVerrs = new float[]{0, 0, 0};
         this.lastmuk = new float[]{0, 0, 0};
         this.PWRCMD = 0;
+        this.ki = Main.kikp[0];
+        this.kp = Main.kikp[1];
         //this.oldsps = 0;
     }
 
@@ -112,8 +116,9 @@ public class TrainController {
         if(authority < 2){
             return -1; // -1 is coded as s-brake
         }
-        float vErr = currentSpeed - cmdSpeed;
+        float vErr = cmdSpeed - currentSpeed;
         float CMD = kp*vErr + ki*(lastmuk[0] + T/2*(vErr + lastVerrs[0]));
+        lastVerrs[0] = vErr;
         if(CMD > MAX_PWR_CMD){
             CMD = kp*vErr + ki*lastmuk[0];
         } else {
@@ -129,8 +134,9 @@ public class TrainController {
         if(authority < 2){
             return -1; // -1 is coded as s-brake
         }
-        float vErr = currentSpeed - cmdSpeed;
+        float vErr = cmdSpeed - currentSpeed;
         float CMD = kp*vErr + ki*(lastmuk[1] + T/2*(vErr + lastVerrs[1]));
+        lastVerrs[1] = vErr;
         if(CMD > MAX_PWR_CMD){
             CMD = kp*vErr + ki*lastmuk[1];
         } else {
@@ -146,8 +152,9 @@ public class TrainController {
         if(authority < 2){
             return -1; // -1 is coded as s-brake
         }
-        float vErr = currentSpeed - cmdSpeed;
+        float vErr = cmdSpeed - currentSpeed;
         float CMD = kp*vErr + ki*(lastmuk[2] + T/2*(vErr + lastVerrs[2]));
+        lastVerrs[2] = vErr;
         if(CMD > MAX_PWR_CMD){
             CMD = kp*vErr + ki*lastmuk[2];
         } else {
@@ -184,21 +191,12 @@ public class TrainController {
     public int getAuthority() {
         return authority;
     }
-
-    public float getSpeedLimit(){
-        return this.speedLimit;
-    }
-
     public boolean getUnderground(){
         return this.underground;
     }
 
     public boolean getEBrake(){
         return this.eBrake;
-    }
-
-    public void setSpeedLimit(float sl){
-        this.speedLimit = sl;
     }
 
     public void setEBrake(boolean b){
