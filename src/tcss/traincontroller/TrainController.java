@@ -64,6 +64,23 @@ public class TrainController {
         //System.out.println(TrainControllerList.toString());
     }
 
+    public TrainController(int id, int authority, float suggestedSpeed, float speedLimit, boolean underground, float temp){
+        this.id = id;
+        this.authority = authority;
+        this.suggestedSpeed = suggestedSpeed;
+        this.speedLimit = speedLimit;
+        this.underground = underground;
+        this.temp = temp;
+        this.setpointSpeed = suggestedSpeed; //since we start in auto, we can set sps to the suggested
+        this.eBrake = true;
+        this.lastVerrs = new float[]{0, 0, 0}; //for use in the vital pwrcmd calcs
+        this.lastmuk = new float[]{0, 0, 0};
+        this.PWRCMD = 0;
+        this.ki = Main.kikp[0]; //get the current desired KI and KP
+        this.kp = Main.kikp[1];
+        TrainController.TrainControllerList.add(this);
+    }
+
     /**
      * This constructor is used for special cases. Specifically this is used to create a trainController without adding it to the traincontroller list
      * @param m The train model that this controller is installed within

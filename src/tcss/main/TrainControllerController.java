@@ -272,6 +272,9 @@ public class TrainControllerController implements Initializable {
     }
 
     public void toggleDoor0(Event event) throws Exception{
+        if(tc == null){
+            return;
+        }
         boolean[] doors = tc.getDoorStatus();
         //System.out.println("you pressed it!");
         doors[0]=!doors[0];
@@ -285,6 +288,9 @@ public class TrainControllerController implements Initializable {
     }
 
     public void toggleDoor1(Event event) throws Exception{
+        if(tc == null){
+            return;
+        }
         boolean[] doors = tc.getDoorStatus();
         doors[1]=!doors[1];
         tc.adjustDoors(doors);
@@ -297,6 +303,9 @@ public class TrainControllerController implements Initializable {
     }
 
     public void toggleDoor2(Event event) throws Exception{
+        if(tc == null){
+            return;
+        }
         boolean[] doors = tc.getDoorStatus();
         doors[2]=!doors[2];
         tc.adjustDoors(doors);
@@ -309,6 +318,9 @@ public class TrainControllerController implements Initializable {
     }
 
     public void toggleDoor3(Event event) throws Exception{
+        if(tc == null){
+            return;
+        }
         boolean[] doors = tc.getDoorStatus();
         doors[3]=!doors[3];
         tc.adjustDoors(doors);
@@ -321,6 +333,9 @@ public class TrainControllerController implements Initializable {
     }
 
     public void toggleDoor4(Event event) throws Exception{
+        if(tc == null){
+            return;
+        }
         boolean[] doors = tc.getDoorStatus();
         doors[4]=!doors[4];
         tc.adjustDoors(doors);
@@ -332,6 +347,9 @@ public class TrainControllerController implements Initializable {
     }
 
     public void toggleDoor5(Event event) throws Exception{
+        if(tc == null){
+            return;
+        }
         boolean[] doors = tc.getDoorStatus();
         doors[5]=!doors[5];
         tc.adjustDoors(doors);
@@ -343,6 +361,9 @@ public class TrainControllerController implements Initializable {
     }
 
     public void toggleDoor6(Event event) throws Exception{
+        if(tc == null){
+            return;
+        }
         boolean[] doors = tc.getDoorStatus();
         doors[6]=!doors[6];
         tc.adjustDoors(doors);
@@ -354,6 +375,9 @@ public class TrainControllerController implements Initializable {
     }
 
     public void toggleDoor7(Event event) throws Exception{
+        if(tc == null){
+            return;
+        }
         boolean[] doors = tc.getDoorStatus();
         doors[7]=!doors[7];
         tc.adjustDoors(doors);
