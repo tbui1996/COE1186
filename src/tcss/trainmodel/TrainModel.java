@@ -140,8 +140,9 @@ public class TrainModel {
         this.underground = block.isUnderground();
         this.grade = block.getGrade();
 
-        controller = new TrainController(this);
-        controller.setSpeedLimit(speedLimit);
+        controller = new TrainController(this, 8);
+        controller.update();
+        //controller.setSpeedLimit(speedLimit);
     }
 
     /**
@@ -529,5 +530,9 @@ public class TrainModel {
 
     public void setGrade(float grade) {
         this.grade = grade;
+    }
+
+    public void setPWRCMD(float PWRCMD){
+        this.PWRCMD = PWRCMD;
     }
 }
