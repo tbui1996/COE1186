@@ -42,6 +42,7 @@ public class TrainModelController implements Initializable {
     @FXML private Label lastBeaconLabel;
     @FXML private Label powerLabel;
     @FXML private Label forceLabel;
+    @FXML private Label tempLabel;
 
 
     // Radio buttons
@@ -125,6 +126,7 @@ public class TrainModelController implements Initializable {
         massLabel.setText("Mass: " + train.getMass());
         gradeLabel.setText("Grade: " + train.getGrade());
         forceLabel.setText("Force: " + train.getForce());
+        tempLabel.setText("Temp: " + train.getTemp());
 
         if(train.getSBrake()) {
             sBrakeLabel.setText("True");
@@ -214,6 +216,12 @@ public class TrainModelController implements Initializable {
             d8Status.setFill(Color.RED);
         }
 
+        if(train.getEBrake()) {
+            eBrakeOn.setSelected(true);
+        }
+        else {
+            eBrakeOff.setSelected(true);
+        }
 
     }
 
