@@ -141,7 +141,7 @@ public class Dispatch {
             return (this.dHr % 12) + " : " + this.dMin + " PM";
         }
         else {
-            return (this.dHr) + " : " +  " AM";
+            return (this.dHr) + " : " +  this.dMin + " AM";
         }
     }
 

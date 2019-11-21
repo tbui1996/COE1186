@@ -43,12 +43,12 @@ public class CTCController implements Initializable{
         Main.ctc.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), temp);
         Main.trains.add(temp);
         dispatch.setText("DISPATCH");
-        Main.tc.initTrain();
+        //Main.tc.initTrain();
     }
 
     public void getDispatches() {
-        Dispatch currDispatch = Main.ctc.getFirstDispatch();
-        dispatch1 = new Label(currDispatch.toString());
+        //Dispatch currDispatch = Main.ctc.getFirstDispatch();
+        //dispatch1 = new Label(currDispatch.toString());
         dispatchList.getChildren().add(dispatch1);
 
         //dispatchList = 0;

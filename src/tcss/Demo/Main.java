@@ -32,7 +32,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        tc = new TrackController();
+        //tc = new TrackController();
         ctc = new CTC();
         Parent root = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
         primaryStage.setTitle("Module Selection");

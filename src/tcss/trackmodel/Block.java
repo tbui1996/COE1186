@@ -95,12 +95,18 @@ public class Block{
         setBranch(b.getBranch());
 
         Switch sw = new Switch();
-        sw.setRoot(b.getSwitch().getRoot());
-        sw.setBranchDest(b.getSwitch().getBranchDest());
-        sw.setStraightDest(b.getSwitch().getStraightDest());
-        sw.setStraight(b.getSwitch().getStraight());
-        sw.setLights(b.getSwitch().lightsOn());
-        setSwitch(sw);
+        if (b.getSwitch() != null) {
+            sw.setRoot(b.getSwitch().getRoot());
+            sw.setBranchDest(b.getSwitch().getBranchDest());
+            sw.setStraightDest(b.getSwitch().getStraightDest());
+            sw.setStraight(b.getSwitch().getStraight());
+            sw.setLights(b.getSwitch().lightsOn());
+            setSwitch(sw);
+        }
+        else {
+            setSwitch(null);
+        }
+
         setStation(b.getStation());
         setRXR(b.getRXR());
         setBeacon(b.getBeacon());

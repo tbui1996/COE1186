@@ -9,16 +9,21 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import tcss.ctc.CTC;
+import tcss.trackmodel.TrackModel;
 import tcss.trainmodel.TrainModel;
 
 public class Main extends Application {
 
+    public static TrackModel tm;
     static SimTime T;
     static CTC ctc;
     static public float[] kikp = {0,0};
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        //init Track Model
+        tm = new TrackModel();
 
         // Init CTC
         ctc = new CTC();
