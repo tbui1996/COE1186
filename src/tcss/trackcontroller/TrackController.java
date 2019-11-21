@@ -77,9 +77,7 @@ public class TrackController {
         track.getBlock(blockId).getSwitch().setStraight(status);
     }
 
-    public void transmitCrossingState(int blockId, boolean status){
-        track.getBlock(blockId).getRXR().setDown(status);
-    }
+
 
     public boolean loadPLC(String destination) throws IOException {
         String cur;
