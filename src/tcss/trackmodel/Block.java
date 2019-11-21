@@ -6,6 +6,10 @@ enum Failure{
     BROKEN_RAIL, CIRCUIT_FAILURE, POWER_FAILURE, NONE;
 }
 
+enum Direction{
+    FROM_HEAD, FROM_TAIL, FROM_BRANCH, NONE;
+}
+
 public class Block{
 
     private int line;
@@ -25,6 +29,7 @@ public class Block{
     private boolean closed;
 
     private Failure failure;
+    private Direction direction;
 
     private Block head;
     private Block tail;
@@ -53,6 +58,7 @@ public class Block{
         setOccupied(false);
 
         setFailure(Failure.NONE);
+        setDirection(Direction.FROM_TAIL);
 
         setHead(null);
         setTail(null);
@@ -63,6 +69,80 @@ public class Block{
         setRXR(null);
         setBeacon(null);
         setTrain(null);
+    }
+
+    public Block trainGetNextBlock() throws Exception {
+
+        Block retBlock;
+
+        if(getBranch() == null){
+
+            if(getDirection() == Direction.FROM_TAIL){
+                retBlock = getHead();
+            }else if(getDirection() == Direction.FROM_HEAD){
+                retBlock = getTail();
+            }else{
+                throw new Exception("trainGetNextBlock(): current block has no valid direction specified");
+            }
+        }else{
+            if(this == getBranch().getHead()){
+
+                //branching into a head
+                if(getDirection() == Direction.FROM_BRANCH || getDirection() == Direction.FROM_HEAD){
+                    //if from branch or from head, to tail
+                    retBlock = getTail();
+                }else if(getDirection() == Direction.FROM_TAIL){
+                    //if from tail
+
+                    if(!getSwitch().getStraight()){
+                        //if switch is branched, to branch
+                        retBlock = getBranch();
+                    }else{
+                        //else, to head
+                        retBlock = getHead();
+                    }
+                }else{
+                    throw new Exception("trainGetNextBlock(): current block has no valid direction specified");
+                }
+
+            }else{
+                //branching into a tail
+                if(getDirection() == Direction.FROM_BRANCH || getDirection() == Direction.FROM_TAIL){
+                    //if from branch or from tail, to head
+                    retBlock = getHead();
+                }else if(getDirection() == Direction.FROM_HEAD){
+
+                    //if from head
+                    if(!getSwitch().getStraight()){
+                        //if switch is branched, to branch
+                        retBlock = getBranch();
+                    }else{
+                        //else, to tail
+                        retBlock = getTail();
+                    }
+                }else{
+                    throw new Exception("trainGetNextBlock(): current block has no direction specified");
+                }
+            }
+        }
+
+        //set train of next block to that of current block
+        retBlock.setTrain(getTrain());
+        setTrain(null);
+        setDirection(Direction.NONE);
+
+        //set direction of next block
+        if(this == retBlock.getHead()){
+            retBlock.setDirection(Direction.FROM_HEAD);
+        }else if(this == retBlock.getTail()){
+            retBlock.setDirection(Direction.FROM_TAIL);
+        }else if(retBlock.getBranch() != null){
+            retBlock.setDirection(Direction.FROM_BRANCH);
+        }else{
+            throw new Exception("trainGetNextBlock(): no references on returned block point to current block");
+        }
+
+        return retBlock;
     }
 
     public Block getNextBlock(){
@@ -141,6 +221,7 @@ public class Block{
         TrainModel train = new TrainModel(suggSpeed, auth, id, this);
         setTrain(train);
         setOccupied(true);
+        setDirection(Direction.FROM_TAIL);
         return true;
     }
 
@@ -202,11 +283,15 @@ public class Block{
         return failure;
     }
 
+    public Direction getDirection(){
+        return direction;
+    }
+
     public Block getHead() {
         return head;
     }
 
-    public Block getTail() {
+    public Block getTail(){
         return tail;
     }
 
@@ -292,6 +377,10 @@ public class Block{
         this.failure = failure;
     }
 
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
     public void setHead(Block head) {
         this.head = head;
     }
@@ -323,4 +412,6 @@ public class Block{
     public void setTrain(TrainModel train){
         this.train = train;
     }
+
+    //****************** EXCEPTIONS **********************************
 }
