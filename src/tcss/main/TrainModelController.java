@@ -154,7 +154,7 @@ public class TrainModelController implements Initializable {
         }
         distanceLabel.setText("Δx in Block: " + train.getX());
         blocksLabel.setText("Blocks Traveled: " + train.getBlocksTraveled());
-        curBeaconLabel.setText("Current Beacon: " + train.getCurBeaconSignal().toString());
+        curBeaconLabel.setText("Current Beacon: " + train.getCurBeaconSignal());
         lastBeaconLabel.setText("Last Beacon: " + train.getLastBeaconSignal());
 
         //Update door statuses
@@ -228,6 +228,7 @@ public class TrainModelController implements Initializable {
         else {
             eBrakeOff.setSelected(true);
         }
+        titleLabel.setText("Train " + train.getID());
     }
 
     public void closeWindow() {

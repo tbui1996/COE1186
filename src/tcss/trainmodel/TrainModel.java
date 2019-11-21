@@ -30,6 +30,7 @@ public class TrainModel {
     private boolean lights;
     private boolean[] doors = new boolean[8];
     private int passengers;
+    private float temp;
 
     // Variables for physics
     private float grade;            // Grade of the current block
@@ -66,6 +67,7 @@ public class TrainModel {
         mass = 409000;
         curA = 0f;
         curV = 0f;
+        temp = 68f;
     }
 
     /**
@@ -96,6 +98,7 @@ public class TrainModel {
 
         // Add to ArrayList
         trains.add(this);
+        temp = 68f;
     }
 
     /**
@@ -105,7 +108,7 @@ public class TrainModel {
      * @param length The length of the dummy "block"
      */
     public TrainModel(int length) {
-        id = 1;
+//        id = 1;
         eBrake = false;
         sBrake = false;
         underground = false;
@@ -117,7 +120,10 @@ public class TrainModel {
         lastV = 0;
         curA = 0;
         lastA = 0;
+        trains.add(this);
+        id = trains.size();
         controller = new TrainController(this);
+        temp = 68f;
     }
 
     public TrainModel() {
@@ -217,7 +223,7 @@ public class TrainModel {
             // group submission
             if(block != null) {
                 //TODO Uncomment when Justin adds getNextBlock() to Block class
-//                block = block.getNextBlock();
+//                block = block.trainGetNextBlock();
                 length = block.getLength();
                 grade = block.getGrade();
                 speedLimit = block.getSpeedLimit();
@@ -538,4 +544,14 @@ public class TrainModel {
     public void setPWRCMD(float PWRCMD){
         this.power = PWRCMD;
     }
+
+    public void setTemp(float temp) {
+        this.temp = temp;
+    }
+
+    public float getTemp() {
+        return temp;
+    }
+
+
 }
