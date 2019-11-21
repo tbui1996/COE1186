@@ -72,11 +72,12 @@ public class TrackModelController implements Initializable {
                         currTrack = greenLine;
                     }
 
-                    blockChoice = new ChoiceBox();
+                    blockChoice.getItems().clear();
                     blockChoice.getItems().add("Select Block");
                     // Populate Line Blocks
-                    for(int i=1;i<=redLine.getBlockHashMap().size();i++) {
-                        Block b = redLine.getBlock(i);
+                    for(int i=1;i<=currTrack.getBlockHashMap().size();i++) {
+                        System.out.println("Adding block " + i + " to blockChoice");
+                        Block b = currTrack.getBlock(i);
                         blockChoice.getItems().add(b.getSection() + Integer.toString(b.getBlockNum()));
                     }
                 }
@@ -92,7 +93,7 @@ public class TrackModelController implements Initializable {
 //                    System.out.println(trainChoice.getItems().get((Integer) number2));
 //                    System.out.println("ID: " + Main.trains.get((Integer)number2 - 1).getID());
 
-                    Block cur = redLine.getBlock((Integer) number2-1);
+                    Block cur = currTrack.getBlock((Integer) number2);
 
                     blockNumLabel.setText("Block #: " + cur.getBlockNum());
                     sectionLabel.setText("Section #: " + cur.getSection());
