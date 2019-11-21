@@ -10,6 +10,8 @@ import java.util.Map;
 public class Track {
 
     Map<Integer, Block> blockHashMap;
+    Map<Integer, Branch> branchMap;
+
     LinkedList<Block> blockList;
 
     ArrayList<Block> rxrBlocks;
@@ -19,6 +21,7 @@ public class Track {
 
     public Track(){
         blockHashMap = new HashMap<>();
+        branchMap = new HashMap<>();
         startBlock = null;
         blockList = new LinkedList<Block>();
     }
@@ -30,11 +33,87 @@ public class Track {
 
     //distance between two blocks
     public double distanceBetweenTwoBlocks(Block start, Block end){
-        return 0.0;
+
+        double headDistance = distanceHelper(start, end, Direction.FROM_TAIL);
+        double tailDistance = distanceHelper(start, end, Direction.FROM_HEAD);
+
+        if(headDistance <= tailDistance){
+            return headDistance;
+        }else{
+            return tailDistance;
+        }
+    }
+
+    private double distanceHelper(Block start, Block end, Direction initialDir){
+
+        double currDistance = 0.0;
+        Branch currBranch = getBranch(start.getBlockNum());
+        Branch endBranch = getBranch(end.getBlockNum());
+
+        if(currBranch == endBranch){
+            return currBranch.getDistance(start.getBlockNum(), end.getBlockNum());
+        }
+
+        if(initialDir == Direction.FROM_TAIL){
+            currDistance = currBranch.getDistance(start.getBlockNum(), currBranch.getEnd());
+        }else{
+            currDistance = currBranch.getDistance(start.getBlockNum(), currBranch.getStart());
+        }
+
+        Direction dir = initialDir;
+        while(currBranch != endBranch){
+            ArrayList<Branch> next;
+            if(dir == Direction.FROM_TAIL) {
+                next = currBranch.getHead();
+            }else {
+                next = currBranch.getTail();
+            }
+
+            double nextDist = 0.0;
+            Branch nextBranch = null;
+            if(next.contains(endBranch)){
+                nextBranch = endBranch;
+                nextDist = 0.0;
+            }else if(next.size() == 1){
+                nextBranch = next.get(0);
+                nextDist = next.get(0).getTotalLength();
+            }else if(next.get(0).getTotalLength() < next.get(1).getTotalLength()){
+                nextBranch = next.get(0);
+                nextDist = next.get(0).getTotalLength();
+            }else{
+                nextBranch = next.get(1);
+                nextDist = next.get(1).getTotalLength();
+            }
+
+            if(nextBranch.getTail().contains(currBranch)){
+                dir = Direction.FROM_TAIL;
+                System.out.println("Branch " +currBranch.getStart()+" "+currBranch.getEnd() +
+                        " => Tail of Branch "+nextBranch.getStart()+" "+nextBranch.getEnd());
+            }else{
+                dir = Direction.FROM_HEAD;
+                System.out.println("Branch " +currBranch.getStart()+" "+currBranch.getEnd() +
+                        " => Head of Branch "+nextBranch.getStart()+" "+nextBranch.getEnd());
+            }
+
+            currBranch = nextBranch;
+            currDistance += nextDist;
+
+            if(currBranch == endBranch){
+                if(dir == Direction.FROM_TAIL){
+                    currDistance += currBranch.getDistance(currBranch.getStart(), end.getBlockNum());
+                }else {
+                    currDistance += currBranch.getDistance(currBranch.getEnd(), end.getBlockNum());
+                }
+                break;
+            }
+        }
+
+        return currDistance;
     }
 
     public double distanceToYard(Block start){
-        return 0.0;
+
+        return distanceBetweenTwoBlocks(start, getStartBlock());
     }
 
     public boolean addToHashMap(Block b){
@@ -66,7 +145,15 @@ public class Track {
         return blockHashMap.get(blockNum);
     }
 
+    public Branch getBranch(int blockNum){
+        return branchMap.get(blockNum);
+    }
+
     public Map<Integer, Block> getBlockHashMap(){
         return blockHashMap;
+    }
+
+    public Map<Integer, Branch> getBranchMap(){
+        return branchMap;
     }
 }

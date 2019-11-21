@@ -21,6 +21,13 @@ public class TrackModel {
     public TrackModel() throws Exception {
         init();
 
+        initRedLineBranches();
+        initGreenLineBranches();
+
+        //TODO: get rid of hard-coded startBlock if possible
+        getRedLine().setStartBlock(getRedLine().getBlock(9));
+        getGreenLine().setStartBlock(getGreenLine().getBlock(63));
+
         System.out.println("Verifying Red Line...");
         if(!verify(getRedLine())){
             System.out.println("Red Line Verification Failed!");
@@ -62,6 +69,7 @@ public class TrackModel {
         return greenLine;
     }
 
+    //TODO: implement yard switches
     private boolean buildTrack(File trackFile, Track track) throws IOException {
 
         ArrayList<Switch> builtSwitches = new ArrayList<Switch>();
@@ -436,6 +444,131 @@ public class TrackModel {
             System.out.println("=> " + testBlock.getBlockNum());
         }
 
+        if(track == getRedLine()){
+            Block b1 = track.getBlock(1);
+            Block b2 = track.getBlock(66);
+            System.out.println("Distance between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2));
+            System.out.println("Distance between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1));
+
+        }else{
+            Block b1 = track.getBlock(1);
+            Block b2 = track.getBlock(150);
+            System.out.println("Distance between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2));
+            System.out.println("Distance between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1));
+
+        }
+
         return true;
+    }
+
+    public void initRedLineBranches(){
+
+        ArrayList<Branch> branchList = new ArrayList<Branch>();
+        Branch r0 = new Branch(1,15, getRedLine());
+        Branch r1 = new Branch(16, 27, getRedLine());
+        Branch r2 = new Branch(28, 32, getRedLine());
+        Branch r3 = new Branch(33, 38, getRedLine());
+        Branch r4 = new Branch(39, 43, getRedLine());
+        Branch r5 = new Branch(44, 52, getRedLine());
+        Branch r6 = new Branch(53, 66, getRedLine());
+        Branch r7 = new Branch(67, 71, getRedLine());
+        Branch r8 = new Branch(72, 76, getRedLine());
+
+        branchList.add(r0);
+        branchList.add(r1);
+        branchList.add(r2);
+        branchList.add(r3);
+        branchList.add(r4);
+        branchList.add(r5);
+        branchList.add(r6);
+        branchList.add(r7);
+        branchList.add(r8);
+
+        for(Branch b: branchList){
+            for(int i=b.getStart();i<= b.getEnd();i++){
+                redLine.getBranchMap().put(i, b);
+            }
+        }
+
+        r0.getHead().add(r1);
+        r0.getTail().add(r1);
+
+        r1.getHead().add(r2);
+        r1.getHead().add(r8);
+        r1.getTail().add(r0);
+
+        r2.getHead().add(r3);
+        r2.getTail().add(r1);
+
+        r3.getHead().add(r4);
+        r3.getHead().add(r7);
+        r3.getTail().add(r2);
+        r3.getTail().add(r8);
+
+        r4.getHead().add(r5);
+        r4.getTail().add(r3);
+
+        r5.getHead().add(r6);
+        r5.getTail().add(r4);
+        r5.getTail().add(r7);
+
+        r6.getHead().add(r5);
+        r6.getTail().add(r5);
+
+        r7.getHead().add(r3);
+        r7.getTail().add(r5);
+
+        r8.getHead().add(r1);
+        r8.getTail().add(r3);
+    }
+
+    public void initGreenLineBranches(){
+
+        Track tempTrack = getGreenLine();
+        ArrayList<Branch> branchList = new ArrayList<Branch>();
+        Branch r0 = new Branch(12,1, tempTrack);
+        Branch r1 = new Branch(13, 28, tempTrack);
+        Branch r2 = new Branch(29, 76, tempTrack);
+        Branch r3 = new Branch(77, 85, tempTrack);
+        Branch r4 = new Branch(86, 100, tempTrack);
+        Branch r5 = new Branch(101, 150, tempTrack);
+
+        branchList.add(r0);
+        branchList.add(r1);
+        branchList.add(r2);
+        branchList.add(r3);
+        branchList.add(r4);
+        branchList.add(r5);
+
+        for(Branch b: branchList){
+            if(b.getStart() > b.getEnd()){
+                for(int i=b.getStart();i>= b.getEnd();i--){
+                    tempTrack.getBranchMap().put(i, b);
+                }
+            }else {
+                for (int i = b.getStart(); i <= b.getEnd(); i++) {
+                    tempTrack.getBranchMap().put(i, b);
+                }
+            }
+        }
+
+        r0.getHead().add(r1);
+        r0.getTail().add(r1);
+
+        r1.getHead().add(r2);
+        r1.getTail().add(r0);
+
+        r2.getHead().add(r3);
+        r2.getTail().add(r1);
+
+        r3.getHead().add(r4);
+        r3.getTail().add(r2);
+        r3.getTail().add(r5);
+
+        r4.getHead().add(r3);
+        r4.getTail().add(r3);
+
+        r5.getHead().add(r1);
+        r5.getTail().add(r3);
     }
 }
