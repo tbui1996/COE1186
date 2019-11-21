@@ -61,7 +61,8 @@ public class TrainModel {
         this.underground = false;
 
         controller = new TrainController(this);
-        controller.setSpeedLimit(speedLimit);
+        //TODO Talk to Pat about speed limit
+//        controller.setSpeedLimit(speedLimit);
         mass = 409000;
         curA = 0f;
         curV = 0f;
@@ -89,7 +90,8 @@ public class TrainModel {
         curV = 0;
 
         controller = new TrainController(this);
-        controller.setSpeedLimit(speedLimit);
+        //TODO Talk to Pat about speed limit
+//        controller.setSpeedLimit(speedLimit);
         controller.passCommands(authority, suggestedSpeed);
 
         // Add to ArrayList
@@ -533,6 +535,6 @@ public class TrainModel {
     }
 
     public void setPWRCMD(float PWRCMD){
-        this.PWRCMD = PWRCMD;
+        this.power = PWRCMD;
     }
 }
