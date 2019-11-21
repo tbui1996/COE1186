@@ -115,8 +115,8 @@ public class TrainControllerController implements Initializable {
         } else {
             opModeToggle.setText("Enter Manual Mode");
         }
-        setPointInput.setText("");
-        setPointInput.setPromptText("" + tc.getsetpointSpeed());
+//        setPointInput.setText("");
+//        setPointInput.setPromptText("" + tc.getsetpointSpeed());
         authLabel.setText("Authority: " + tc.getAuthority());
         if (tc.getUnderground()){
             undergroundDisplay.setText("True");

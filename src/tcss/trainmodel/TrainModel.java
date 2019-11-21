@@ -105,7 +105,7 @@ public class TrainModel {
      * @param length The length of the dummy "block"
      */
     public TrainModel(int length) {
-        id = 1;
+//        id = 1;
         eBrake = false;
         sBrake = false;
         underground = false;
@@ -117,6 +117,8 @@ public class TrainModel {
         lastV = 0;
         curA = 0;
         lastA = 0;
+        trains.add(this);
+        id = trains.size();
         controller = new TrainController(this);
     }
 
