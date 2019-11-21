@@ -13,6 +13,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import tcss.trackcontroller.PLC;
 import tcss.trackcontroller.TrackController;
@@ -20,7 +21,7 @@ import tcss.trackcontroller.WaysideController;
 import tcss.trackmodel.Block;
 import tcss.trackmodel.Track;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -112,14 +113,13 @@ public class TrackControllerController implements Initializable {
     blockChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
       public void changed(ObservableValue ov, Number value, Number new_value) {
           if(!blockChoice.getSelectionModel().isEmpty()){
-            for(Block block: currBlocks){
-              String blockstatus = curTC.blockState(block.getBlockNum());
-            }
-            String occupied = (currBlocks.get(blockChoice.getSelectionModel().getSelectedIndex()).isOccupied()) ? "Occupied" : "Not Occupied";
+            Integer blockId = (Integer) blockChoice.getValue();
+            Block block = curTC.getBlock(blockId);
+            String occupied = (block.isOccupied()) ? "Occupied" : "Not Occupied";
             occupiedLabel.setText("Occupancy: "+ occupied);
-            sSpeedLabel.setText("Suggested Speed: "+ currBlocks.get(blockChoice.getSelectionModel().getSelectedIndex()).getSuggestedSpeed());
-            authLabel.setText("Authority: "+currBlocks.get(blockChoice.getSelectionModel().getSelectedIndex()).getAuthority());
-            String switches = (currBlocks.get(blockChoice.getSelectionModel().getSelectedIndex()).getSwitch() != null) ? "Switch" : "Not switched";
+            sSpeedLabel.setText("Suggested Speed: "+ block.getSuggestedSpeed());
+            authLabel.setText("Authority: "+block.getAuthority());
+            String switches = (block.getSwitch().getStraight()) ? "Not switched" : "Switched";
             outputSwitch.setText("Switch: "+ switches);
           }
           else{
@@ -145,6 +145,15 @@ public class TrackControllerController implements Initializable {
     Stage window = (Stage) pane.getScene().getWindow();
     window.setScene(moduleSelect);
     window.setTitle("Module Selection");
+
+  }
+  @FXML
+  void onPLCClick(ActionEvent event) throws IOException{
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Browse for plc file");
+    File file = fileChooser.showOpenDialog(null);
+    String plcFile = file.getPath();
+    curTC.loadPLC(plcFile);
 
   }
 
