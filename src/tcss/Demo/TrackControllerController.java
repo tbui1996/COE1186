@@ -69,6 +69,7 @@ public class TrackControllerController implements Initializable {
     trackChoice.setValue("Select Track Controller");
     trackChoice.setTooltip(new Tooltip("Select a Track Controller"));
 
+    blockChoice.getItems().add("Select a Block");
     blockChoice.setValue("Select Block:");
     blockChoice.setTooltip(new Tooltip("Select a Block"));
 
@@ -88,16 +89,37 @@ public class TrackControllerController implements Initializable {
             trackChoice.setValue(tc.getTCID());
           }
         }
-        updateBlockChoiceBox();
+        blockChoice = updateBlockChoiceBox();
+      }
+    });
+
+    blockChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+      public void changed(ObservableValue ov, Number value, Number new_value) {
+        if(!blockChoice.getSelectionModel().isEmpty()){
+          Integer blockId = (Integer) blockChoice.getValue();
+          Block block = curTC.getBlock(blockId);
+          String occupied = (block.isOccupied()) ? "Occupied" : "Not Occupied";
+          occupiedLabel.setText("Occupancy: "+ occupied);
+          sSpeedLabel.setText("Suggested Speed: "+ block.getSuggestedSpeed());
+          authLabel.setText("Authority: "+block.getAuthority());
+          String switches = (block.getSwitch().getStraight()) ? "Not switched" : "Switched";
+          outputSwitch.setText("Switch: "+ switches);
+        }
+        else{
+          occupiedLabel.setText("Occupancy: ");
+          sSpeedLabel.setText("Suggested Speed: ");
+          authLabel.setText("Authority: ");
+          outputSwitch.setText("Switch: ");
+        }
       }
     });
 
 
   }
-  private void updateBlockChoiceBox(){
-    int tcID = trackChoice.getSelectionModel().getSelectedIndex();
+  private ChoiceBox updateBlockChoiceBox(){
+    Integer tcID = (Integer) trackChoice.getValue();
     if(tcID<0)
-      return;
+      return null;
 
     if(0<=tcID && tcID<=3)
       curTC = wc.redTC.get(tcID);
@@ -110,26 +132,7 @@ public class TrackControllerController implements Initializable {
 
     currBlocks = blocks;
     blockChoice= new ChoiceBox(FXCollections.observableArrayList(currBlocks));
-    blockChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-      public void changed(ObservableValue ov, Number value, Number new_value) {
-          if(!blockChoice.getSelectionModel().isEmpty()){
-            Integer blockId = (Integer) blockChoice.getValue();
-            Block block = curTC.getBlock(blockId);
-            String occupied = (block.isOccupied()) ? "Occupied" : "Not Occupied";
-            occupiedLabel.setText("Occupancy: "+ occupied);
-            sSpeedLabel.setText("Suggested Speed: "+ block.getSuggestedSpeed());
-            authLabel.setText("Authority: "+block.getAuthority());
-            String switches = (block.getSwitch().getStraight()) ? "Not switched" : "Switched";
-            outputSwitch.setText("Switch: "+ switches);
-          }
-          else{
-            occupiedLabel.setText("Occupancy: ");
-            sSpeedLabel.setText("Suggested Speed: ");
-            authLabel.setText("Authority: ");
-            outputSwitch.setText("Switch: ");
-          }
-        }
-    });
+    return blockChoice;
 
   }
   public void goBack(ActionEvent actionEvent) throws Exception {
