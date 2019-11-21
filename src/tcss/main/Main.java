@@ -15,7 +15,6 @@ import tcss.trainmodel.TrainModel;
 
 public class Main extends Application {
 
-    public static TrackModel tm;
     static SimTime T;
     static CTC ctc;
     static public TrackModel tm;
@@ -83,7 +82,7 @@ public class Main extends Application {
         launch(args);
     }
 
-    public SimTime getSimTime() {
+    public static SimTime getSimTime() {
         return T;
     }
 
