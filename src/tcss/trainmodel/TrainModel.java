@@ -219,7 +219,7 @@ public class TrainModel {
             // group submission
             if(block != null) {
                 //TODO Uncomment when Justin adds getNextBlock() to Block class
-//                block = block.getNextBlock();
+                block = block.trainGetNextBlock();
                 length = block.getLength();
                 grade = block.getGrade();
                 speedLimit = block.getSpeedLimit();

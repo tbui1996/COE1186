@@ -154,10 +154,8 @@ public class TrainModelController implements Initializable {
         }
         distanceLabel.setText("Δx in Block: " + train.getX());
         blocksLabel.setText("Blocks Traveled: " + train.getBlocksTraveled());
-        curBeaconLabel.setText("Current Beacon: " + train.getCurBeaconSignal().toString());
+        curBeaconLabel.setText("Current Beacon: " + train.getCurBeaconSignal());
         lastBeaconLabel.setText("Last Beacon: " + train.getLastBeaconSignal());
-        //TODO DELETE THIS TEST
-        curBeaconLabel.setText(Main.T.getLongTime());
 
         //Update door statuses
         if(train.getDoor(0)) {
