@@ -23,6 +23,18 @@ public class SimTime {
         return rate;
     }
 
+    public double getSec() {
+        return clock.getSec();
+    }
+
+    public int getMin() {
+        return clock.getMin();
+    }
+
+    public int getHour() {
+        return clock.getHour();
+    }
+
     public void changeRate(int rate) {
         if(T != null) {
             this.rate = rate;
