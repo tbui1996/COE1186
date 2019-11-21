@@ -20,8 +20,7 @@ public class Main extends Application {
     static public TrackModel tm;
     static public Track redLine;
     static public Track greenLine;
-
-    static public float[] kikp = {0,0};
+    static public float[] kikp = {1, 1};
 
     @Override
     public void start(Stage primaryStage) throws Exception {
