@@ -109,11 +109,11 @@ public class CTC {
             else {
                 //Check block occupancy list to see if next stop block is currently occupied.  If so, a new request must be sent to keep train moving
                 /*if (temp.getLine() == 1) {
-                    if (redLineBlocks(stationToBlockNum(temp.schedule.getStopName(temp.getCurrStop()+1))).getOccupancy() == 1) {
+                    if (redLineBlocks(stationToBlockNum(temp.schedule.getStopName(temp.getCurrStop()+1))).isOccupied()) {
                         temp.setCurrStop(temp.getCurrStop()+1);
                     }
                 else {
-                    if (greenLineBlocks(stationToBlockNum(temp.schedule.getStopName(temp.getCurrStop()+1))).getOccupancy() == 1) {
+                    if (greenLineBlocks(stationToBlockNum(temp.schedule.getStopName(temp.getCurrStop()+1))).isOccupied()) {
                         temp.setCurrStop(temp.getCurrStop()+1);
                     }
                 }*/
