@@ -117,6 +117,7 @@ public class TrainModel {
         lastV = 0;
         curA = 0;
         lastA = 0;
+        controller = new TrainController(this);
     }
 
     public TrainModel() {
