@@ -71,6 +71,42 @@ public class Block{
         setTrain(null);
     }
 
+    public Block(Block b){
+        setLine(b.getLine());
+        setSection(b.getSection());
+        setBlockNum(b.getBlockNum());
+        setLength(b.getLength());
+        setAuthority(b.getAuthority());
+
+        setSuggestedSpeed(b.getSuggestedSpeed());
+        setGrade(b.getGrade());
+        setSpeedLimit(b.getSpeedLimit());
+        setElevation(b.getElevation());
+        setCumulativeElevation(b.getCumulativeElevation());
+
+        setUnderground(b.isUnderground());
+        setOccupied(b.isOccupied());
+
+        setFailure(b.getFailure());
+        setDirection(b.getDirection());
+
+        setHead(b.getHead());
+        setTail(b.getTail());
+        setBranch(b.getBranch());
+
+        Switch sw = new Switch();
+        sw.setRoot(b.getSwitch().getRoot());
+        sw.setBranchDest(b.getSwitch().getBranchDest());
+        sw.setStraightDest(b.getSwitch().getStraightDest());
+        sw.setStraight(b.getSwitch().getStraight());
+        sw.setLights(b.getSwitch().lightsOn());
+        setSwitch(sw);
+        setStation(b.getStation());
+        setRXR(b.getRXR());
+        setBeacon(b.getBeacon());
+        setTrain(null);
+    }
+
     public Block trainGetNextBlock() throws Exception {
 
         Block retBlock;
