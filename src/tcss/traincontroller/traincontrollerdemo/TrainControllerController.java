@@ -1,4 +1,4 @@
-package tcss.main;
+package tcss.traincontroller.traincontrollerdemo;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import tcss.main.TrainModelController;
 import tcss.traincontroller.TrainController;
 
 import java.net.URL;
@@ -37,8 +38,6 @@ public class TrainControllerController implements Initializable {
     @FXML private Label lightsDisplay;
     @FXML private Label powerCommandLabel, kilabel, kplabel;
     @FXML private Label currentSpeedLabel;
-    //@FXML private Button settings;
-    //@FXML private CheckBox light1, light2, light3, light4, light5, light6, light7, light8, door1, door2, door3, door4, door5, door6, door7, door8;
 
     private TrainController tc;
 
