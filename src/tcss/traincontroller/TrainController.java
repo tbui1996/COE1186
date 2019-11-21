@@ -234,4 +234,9 @@ public class TrainController {
     public float getCurrentSpeed(){
         return currentSpeed;
     }
+
+    public TrainModel getTrain() {
+        return model;
+    }
+
 }

@@ -8,10 +8,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import tcss.trainmodel.TrainModel;
 
@@ -227,7 +231,8 @@ public class TrainModelController implements Initializable {
     }
 
     public void closeWindow() {
-        System.exit(7);
+        Stage s = (Stage) titleLabel.getScene().getWindow();
+        s.close();
     }
 
     public void goBack(ActionEvent actionEvent) throws Exception {

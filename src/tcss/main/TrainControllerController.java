@@ -6,8 +6,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -27,6 +29,7 @@ public class TrainControllerController implements Initializable {
     @FXML private Label suggestedSpeedLabel;
     @FXML private TextField setPointInput;
     @FXML private Button confirmSetpoint;
+    @FXML private Button trainButton;
     @FXML private Label authLabel;
     @FXML private AnchorPane pane;
     @FXML private ToggleButton eBrakeToggle;
@@ -54,6 +57,7 @@ public class TrainControllerController implements Initializable {
             }
         }));
         eBrakeToggle.setDisable(true);
+        trainButton.setDisable(true);
         trainChoice.getItems().add("Select Train");
         // Testing
         for(TrainController t: TrainController.TrainControllerList)
@@ -67,6 +71,7 @@ public class TrainControllerController implements Initializable {
                     TrainController cur = TrainController.TrainControllerList.get((Integer)number2-1);
                     cur.update();
                     tc = cur;
+                    trainButton.setDisable(false);
                     update();
                 } else {
                     tc = null; //deselect train
@@ -77,6 +82,7 @@ public class TrainControllerController implements Initializable {
                     //undergroundDisplay.setText("N/A");
                     //undergroundDisplay.setTextFill(Color.YELLOW);
                     eBrakeToggle.setDisable(true);
+                    trainButton.setDisable(true);
                     eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
                     powerCommandLabel.setText("Power: ");
                     kilabel.setText("Ki: ");
@@ -131,6 +137,7 @@ public class TrainControllerController implements Initializable {
         kilabel.setText("Ki: " + tc.getKi());
         kplabel.setText("Kp: " + tc.getKp());
         currentSpeedLabel.setText("Current Speed: " + tc.getCurrentSpeed());
+
     }
 
     public void goBack(ActionEvent actionEvent) throws Exception {
@@ -143,6 +150,23 @@ public class TrainControllerController implements Initializable {
     public void closeWindow() {
         Stage s = (Stage) trainChoice.getScene().getWindow();
         s.close();
+    }
+
+    public void showTrain() throws Exception {
+//        Stage trainStage = (Stage) trainChoice.getScene().getWindow();
+        Stage trainStage = new Stage();
+        FXMLLoader trainloader = new FXMLLoader(getClass().getResource("fxml/TrainModel.fxml"));
+        Parent trainRoot = trainloader.load();
+        trainStage.setTitle("Train Model View");
+        trainStage.setWidth(784);
+        trainStage.setHeight(609);
+        trainStage.setScene(new Scene(trainRoot));
+        trainStage.getIcons().add(new Image("file:resources/train.png"));
+
+        TrainModelController controller = trainloader.<TrainModelController>getController();
+        controller.passTrain(tc.getTrain());
+
+        trainStage.show();
     }
 
     public void confirmSetpoint(ActionEvent actionEvent) throws Exception{

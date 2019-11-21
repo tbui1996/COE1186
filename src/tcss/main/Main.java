@@ -44,6 +44,9 @@ public class Main extends Application {
         // TESTING TIMER PAUSE
         T = new SimTime();
 
+        // TODO DELETE THIS
+        // TESTING TRAIN CONTROLLER GUI
+        TrainModel train = new TrainModel(100);
 
 
 
