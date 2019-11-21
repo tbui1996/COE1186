@@ -97,7 +97,7 @@ public class CTC {
                     temp.setSS(temp.getSpeed(temp.getCurrStop()+1));
                     temp.setAuth(temp.getAuth(temp.getCurrStop()+1));
                     //Sends SS and Auth to new
-                    //Main.tc.sendNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),YARD);
+                    //tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),YARD);
                 }
             }
             //If train is already dispatched
