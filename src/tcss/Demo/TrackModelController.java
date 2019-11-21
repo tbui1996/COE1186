@@ -49,7 +49,7 @@ public class TrackModelController implements Initializable {
 
         // Testing
         for(Block b: t.getBlockList()) {
-            blockChoice.getItems().add("Block " + b.getBlockNum());
+            blockChoice.getItems().add(b.getSection() + Integer.toString(b.getBlockNum()));
         }
 
         blockChoice.setValue("Select Block");
@@ -65,8 +65,8 @@ public class TrackModelController implements Initializable {
 
                     blockNumLabel.setText("Block #: " + cur.getBlockNum());
                     sectionLabel.setText("Section #: " + cur.getSection());
-                    sSpeedLabel.setText("Suggested Speed: " + t.getSuggestedSpeed() + " mph");
-                    authLabel.setText("Authority: " + t.getAuthority());
+                    sSpeedLabel.setText("Suggested Speed: " + cur.getSuggestedSpeed() + " mph");
+                    authLabel.setText("Authority: " + cur.getAuthority());
                     lengthLabel.setText("Length: " + cur.getLength() + " m");
                     gradeLabel.setText("Grade: " + cur.getGrade() + "%");
                     speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit() + " mph");
@@ -126,7 +126,7 @@ public class TrackModelController implements Initializable {
         if(cur.getSwitch() == null){
             return "N/A";
         }else{
-            if(cur.getSwitch().getOrientation()){
+            if(cur.getSwitch().getStraight()){
                 return "Straight";
             }else{
                 return "Branched";
