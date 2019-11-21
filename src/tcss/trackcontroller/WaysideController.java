@@ -39,10 +39,9 @@ public class WaysideController {
     public int auth;
     public int blockId;
 
-    public WaysideController(Track track, int blockId) throws IOException {
+    public WaysideController(Track track) throws IOException {
         this.track = track;
         this.line = track.getBlock(blockId).getLine();
-        this.blockId = blockId;
 
         if (this.line == 1) {
             redtrackcontrollerConstructor(this.track, this.line, this.blockId);
@@ -134,7 +133,7 @@ public class WaysideController {
                     calculate += listofgreenblocks.size();
                 Block curBlock = listofgreenblocks.get(calculate);
                 blocks1.put(curBlock.getBlockNum(), curBlock);
-                /*if (curBlock.getCrossing()) {
+                if (curBlock.getCrossing()) {
                     RXR1.put(curBlock.getBlockNum(), curBlock);
                 } else {
                     calculateHashMaps(blocks1, switching1, curBlock, listofgreenblocks);
@@ -151,7 +150,7 @@ public class WaysideController {
     }
 
     public void calculateHashMaps(HashMap<Integer, Block> blocks1, HashMap<Integer, Block> switching1, Block curBlock, LinkedList<Block> listofgreenblocks) {
-        /*if (curBlock.getSwitch().getStraight()) {
+        if (curBlock.getSwitch().getStraight()) {
             switching1.put(curBlock.getBlockNum(), curBlock);
             int switchid1 = curBlock.getBlockNum();
             Block switchblock1 = listofgreenblocks.get(switchid1);
@@ -271,7 +270,7 @@ public class WaysideController {
         }
         return null;
     }
-    /*
+
     public String blockRequest(int line, int blockId){
         TrackController tc;
         ArrayList<Integer> blocklist = new ArrayList<>();
@@ -282,44 +281,5 @@ public class WaysideController {
 
         return " ";
     }
-
-
-}
-
-/*
-
-    public TrackController getTC(int line, ArrayList<Integer> blok) {
-        //green
-        if (line == 0) {
-            if (1 <= blockId && blockId < 17) {
-                return waysideControllers[0];
-            }
-            if ((17 <= blockId && blockId <= 62) && (102 <= blockId && blockId <= 150)) {
-                return waysideControllers[1];
-            }
-            if ((85 <= blockId && blockId <= 100)) {
-                return waysideControllers[2];
-            }
-            if (((63 <= blockId) && (blockId <= 85)) && (blockId == 101)) {
-                return waysideControllers[3];
-            }
-        }
-        //red
-        if (line == 1) {
-            if (1 <= blockId && blockId <= 23) {
-                return waysideControllers[4];
-            }
-            if ((21 <= blockId && blockId <= 45) && (72 <= blockId && 76 <= blockId)) {
-                return waysideControllers[5];
-            }
-            if ((24 <= blockId && blockId <= 48) && (67 <= blockId && blockId <= 71)) {
-                return waysideControllers[6];
-            }
-            if (46 <= blockId && blockId <= 66) {
-                return waysideControllers[7];
-            }
-        }
-
-        return null;
 
 }

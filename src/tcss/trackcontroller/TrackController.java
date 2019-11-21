@@ -49,7 +49,7 @@ public class TrackController {
         this.line = line;
 
     }
-    /*
+
 
 
 
@@ -273,8 +273,6 @@ public class TrackController {
         if(isOccupied)
             return "occupied";
         return "open";
-    }*/
-
-
+    }
 
 }
