@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="609.0" prefWidth="784.0" styleClass="body" stylesheets="@../css/TrainModel.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.trainmodel.trainmodeldemo.TrainModelController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="609.0" prefWidth="784.0" styleClass="body" stylesheets="@../css/TrainModel.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.TrainModelController">
    <children>
       <VBox>
          <children>
@@ -17,7 +17,7 @@
                <children>
                   <HBox alignment="CENTER" prefHeight="91.0" prefWidth="64.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#goBack" styleClass="backButton">
+                        <Button mnemonicParsing="false" onAction="#closeWindow" styleClass="exit-button">
                            <HBox.margin>
                               <Insets left="9.0" top="-18.0" />
                            </HBox.margin>

@@ -106,5 +106,6 @@ public class TrainModelController implements Initializable {
         window.setScene(moduleSelect);
         window.setTitle("Module Selection");
 
+
     }
 }

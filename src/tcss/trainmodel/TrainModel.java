@@ -105,7 +105,7 @@ public class TrainModel {
      * @param length The length of the dummy "block"
      */
     public TrainModel(int length) {
-        id = 1;
+//        id = 1;
         eBrake = false;
         sBrake = false;
         underground = false;
@@ -117,6 +117,9 @@ public class TrainModel {
         lastV = 0;
         curA = 0;
         lastA = 0;
+        trains.add(this);
+        id = trains.size();
+        controller = new TrainController(this);
     }
 
     public TrainModel() {
@@ -216,7 +219,7 @@ public class TrainModel {
             // group submission
             if(block != null) {
                 //TODO Uncomment when Justin adds getNextBlock() to Block class
-//                block = block.getNextBlock();
+//                block = block.trainGetNextBlock();
                 length = block.getLength();
                 grade = block.getGrade();
                 speedLimit = block.getSpeedLimit();
