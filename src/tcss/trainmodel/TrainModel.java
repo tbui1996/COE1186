@@ -30,6 +30,7 @@ public class TrainModel {
     private boolean lights;
     private boolean[] doors = new boolean[8];
     private int passengers;
+    private float temp;
 
     // Variables for physics
     private float grade;            // Grade of the current block
@@ -540,5 +541,9 @@ public class TrainModel {
 
     public void setPWRCMD(float PWRCMD){
         this.power = PWRCMD;
+    }
+
+    public float getTemp(){
+        return this.temp;
     }
 }

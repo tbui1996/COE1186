@@ -36,6 +36,7 @@ public class TrainController {
     final private float MAX_PWR_CMD = 120000; //120 KW == 120,000 W
     final private float T = 1; //sampling rate of trains - PWRCMD calculation rate
     private float PWRCMD;
+    private boolean[] doors = {true, true, true, true, true, true, true, true};
 
 
     /**
@@ -173,6 +174,18 @@ public class TrainController {
         return CMD;
     }
 
+    public void adjustDoors(boolean [] doors){
+        if(currentSpeed == 0){
+            this.doors = doors;
+        }
+    }
+
+    public boolean[] getDoorStatus(){
+        return this.doors;
+    }
+
+
+
     public void updateModelEBrake(){
         model.setEBrake(eBrake);
     }
@@ -229,6 +242,10 @@ public class TrainController {
         this.temp = temp;
     }
 
+    public float getTemp(){
+        return temp;
+    }
+
     public String toString(){
         return(this.id + " at " + this.setpointSpeed);
     }
@@ -255,6 +272,10 @@ public class TrainController {
 
     public void setSpeedLimit(float speedLimit){
         this.speedLimit = speedLimit;
+    }
+
+    public float getSpeedLimit(){
+        return speedLimit;
     }
 
     /**

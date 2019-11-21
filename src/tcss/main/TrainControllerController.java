@@ -5,6 +5,7 @@ import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import tcss.traincontroller.TrainController;
@@ -42,6 +44,7 @@ public class TrainControllerController implements Initializable {
     @FXML private Label powerCommandLabel, kilabel, kplabel;
     @FXML private Label currentSpeedLabel;
     @FXML private TextField setTempInput;
+    @FXML private Circle d1Status, d2Status, d3Status, d4Status, d5Status, d6Status, d7Status, d8Status;
 
     private TrainController tc;
 
@@ -88,6 +91,8 @@ public class TrainControllerController implements Initializable {
                     tc = cur;
                     idLabel.setText("ID: " + tc.getID());
                     suggestedSpeedLabel.setText("Suggested Speed: " + tc.getSSpeed());
+                    setPointInput.setPromptText("" + tc.getsetpointSpeed());
+                    setTempInput.setPromptText("" + tc.getTemp());
                     trainButton.setDisable(false);
                     update();
                 } else {
@@ -95,7 +100,10 @@ public class TrainControllerController implements Initializable {
                     idLabel.setText("ID: ");
                     suggestedSpeedLabel.setText("Suggested Speed: ");
                     authLabel.setText("Authority: ");
+                    setPointInput.setText("");
+                    setTempInput.setText("");
                     setPointInput.setPromptText("");
+                    setTempInput.setPromptText("");
                     eBrakeToggle.setDisable(true);
                     trainButton.setDisable(true);
                     eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
@@ -195,6 +203,15 @@ public class TrainControllerController implements Initializable {
        try {
            try {
                float newSPSpeed = Float.parseFloat(setPointInput.getText());
+               float suggestedSpeed = tc.getSSpeed();
+               float speedLimit = tc.getSpeedLimit();
+               System.out.printf("SPI: " + newSPSpeed + " with ss: " + suggestedSpeed + " and sl: " + speedLimit);
+               if(newSPSpeed > suggestedSpeed){
+                   newSPSpeed = suggestedSpeed;
+               }
+               if(newSPSpeed > speedLimit){
+                   newSPSpeed = speedLimit;
+               }
                tc.setSetpointSpeed(newSPSpeed);
                tc.update();
                tc.updateModelCommandedSpeed();
@@ -213,7 +230,14 @@ public class TrainControllerController implements Initializable {
         try {
             try {
                 float newTemp = Float.parseFloat(setTempInput.getText());
+                if(newTemp < 55){
+                    newTemp = 55;
+                } else if (newTemp > 90){
+                    newTemp = 90;
+                }
                 tc.setTemp(newTemp);
+                setTempInput.setText("");
+                setTempInput.setPromptText("" + newTemp);
             } catch (NumberFormatException e) {
                 System.out.println("nfe found");
             }
@@ -234,7 +258,7 @@ public class TrainControllerController implements Initializable {
         }
     }
 
-    public void toggleOpMode(ActionEvent actionEvent) throws Exception {
+    public void toggleOpMode(Event event) throws Exception {
         boolean opMode = opModeToggle.isSelected();
         tc.changeOperationMode();
         opModeToggle.setSelected(opMode);
@@ -246,4 +270,101 @@ public class TrainControllerController implements Initializable {
             update();
         }
     }
+
+    public void toggleDoor0(Event event) throws Exception{
+        boolean[] doors = tc.getDoorStatus();
+        //System.out.println("you pressed it!");
+        doors[0]=!doors[0];
+        tc.adjustDoors(doors);
+        doors = tc.getDoorStatus();
+        if(doors[0]){
+            d1Status.setFill(Color.GREEN);
+        } else {
+            d1Status.setFill(Color.RED);
+        }
+    }
+
+    public void toggleDoor1(Event event) throws Exception{
+        boolean[] doors = tc.getDoorStatus();
+        doors[1]=!doors[1];
+        tc.adjustDoors(doors);
+        doors = tc.getDoorStatus();
+        if(doors[1]){
+            d2Status.setFill(Color.GREEN);
+        } else {
+            d2Status.setFill(Color.RED);
+        }
+    }
+
+    public void toggleDoor2(Event event) throws Exception{
+        boolean[] doors = tc.getDoorStatus();
+        doors[2]=!doors[2];
+        tc.adjustDoors(doors);
+        doors = tc.getDoorStatus();
+        if(doors[2]){
+            d3Status.setFill(Color.GREEN);
+        } else {
+            d3Status.setFill(Color.RED);
+        }
+    }
+
+    public void toggleDoor3(Event event) throws Exception{
+        boolean[] doors = tc.getDoorStatus();
+        doors[3]=!doors[3];
+        tc.adjustDoors(doors);
+        doors = tc.getDoorStatus();
+        if(doors[3]){
+            d4Status.setFill(Color.GREEN);
+        } else {
+            d4Status.setFill(Color.RED);
+        }
+    }
+
+    public void toggleDoor4(Event event) throws Exception{
+        boolean[] doors = tc.getDoorStatus();
+        doors[4]=!doors[4];
+        tc.adjustDoors(doors);
+        if(doors[4]){
+            d5Status.setFill(Color.GREEN);
+        } else {
+            d5Status.setFill(Color.RED);
+        }
+    }
+
+    public void toggleDoor5(Event event) throws Exception{
+        boolean[] doors = tc.getDoorStatus();
+        doors[5]=!doors[5];
+        tc.adjustDoors(doors);
+        if(doors[5]){
+            d6Status.setFill(Color.GREEN);
+        } else {
+            d6Status.setFill(Color.RED);
+        }
+    }
+
+    public void toggleDoor6(Event event) throws Exception{
+        boolean[] doors = tc.getDoorStatus();
+        doors[6]=!doors[6];
+        tc.adjustDoors(doors);
+        if(doors[6]){
+            d7Status.setFill(Color.GREEN);
+        } else {
+            d7Status.setFill(Color.RED);
+        }
+    }
+
+    public void toggleDoor7(Event event) throws Exception{
+        boolean[] doors = tc.getDoorStatus();
+        doors[7]=!doors[7];
+        tc.adjustDoors(doors);
+        if(doors[7]){
+            d8Status.setFill(Color.GREEN);
+        } else {
+            d8Status.setFill(Color.RED);
+        }
+    }
+
+
+
+
 }
