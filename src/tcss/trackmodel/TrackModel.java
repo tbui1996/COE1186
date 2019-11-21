@@ -18,7 +18,7 @@ public class TrackModel {
 
     private final int TRACK_FILE_NUM_COLS = 10;
 
-    public TrackModel() throws IOException {
+    public TrackModel() throws Exception {
         init();
 
         System.out.println("Verifying Red Line...");
@@ -283,7 +283,6 @@ public class TrackModel {
                     //stations
                     String stationName = infraSects[i+1];
                     stationName = stationName.trim();
-                    System.out.println(stationName);
                     b.setStation(new Station(stationName));
                 }else if(infraSects[i].startsWith("SWITCH") && infraSects.length > 1){
                     //switches
@@ -297,12 +296,11 @@ public class TrackModel {
                     for(String s: switchSplit){
                         try{
                             blockNum = Integer.parseInt(s);
-                            System.out.println(blockNum + "");
                             if(!tempSet.add(blockNum)){
                                 root = blockNum;
                             }
                         }catch(Exception e){
-
+                            //do nothing
                         }
                     }
 
@@ -324,9 +322,6 @@ public class TrackModel {
                     }
 
                     sw.setRoot(root);
-                    System.out.println("New switch on block " + root
-                        + ", Straight: " + sw.getStraightDest()
-                        + ", Branch: " + sw.getBranchDest());
 
                     builtSwitches.add(sw);
                 }
@@ -411,13 +406,13 @@ public class TrackModel {
         return true;
     }
 
-    public boolean verify(Track track){
+    public boolean verify(Track track) throws Exception {
 
         int travelCount = 0;
         Block currBlock = track.getBlock(1);
 
         while(travelCount < 200){
-
+            //test basic head tail connections
             if(currBlock.getHead().getBlockNum() != currBlock.getBlockNum() + 1){
                 if(currBlock.getBlockNum() >= track.getBlockHashMap().size()){
                     currBlock = track.getBlock(1);
@@ -431,6 +426,14 @@ public class TrackModel {
             }
 
             travelCount++;
+        }
+
+        Block testBlock = track.getBlock((int) (Math.random() * track.getBlockHashMap().size()) + 1);
+        currBlock.setDirection(Direction.FROM_TAIL);
+        System.out.println("From Tail: " + testBlock.getBlockNum());
+        for(int i=0;i<30;i++){
+            testBlock = testBlock.trainGetNextBlock();
+            System.out.println("=> " + testBlock.getBlockNum());
         }
 
         return true;
