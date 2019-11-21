@@ -27,7 +27,7 @@
                                     <Button fx:id="confirmLine" mnemonicParsing="false" onAction="#populateBlocks" text="Confirm" />
                                     <Label styleClass="text" text="Block:" />
                                     <ChoiceBox fx:id="blockSelector" prefWidth="150.0" />
-                                    <Button fx:id="confirmBlock" mnemonicParsing="false" text="Confirm" />
+                                    <Button fx:id="confirmBlock" mnemonicParsing="false" onAction="#closeBlock" text="Close Block" />
                                  </children>
                               </VBox>
                            </children>

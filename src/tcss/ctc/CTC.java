@@ -101,6 +101,7 @@ public class CTC {
                 if (11 >= temp.getDepartureTime()) { //This should be if departure time == current global time
                     temp.setSS(temp.getSpeed(temp.getCurrStop()+1));
                     temp.setAuth(temp.getAuth(temp.getCurrStop()+1));
+                    System.out.println("Train sent");
                     //Sends SS and Auth to new
                     //tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),YARD);
                 }
