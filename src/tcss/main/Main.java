@@ -17,6 +17,7 @@ public class Main extends Application {
 
     static SimTime T;
     static CTC ctc;
+    static public float[] kikp = {0,0};
     public static TrackController tc;
     public static Track track;
 
@@ -52,7 +53,11 @@ public class Main extends Application {
 
         // TODO DELETE THIS
         // TESTING TRAIN CONTROLLER GUI
+
         TrainModel train = new TrainModel(100);
+        TrainModel train2 = new TrainModel(100);
+        train.passCommands(50, 10);
+        train2.passCommands(50, 10);
 
 
 
