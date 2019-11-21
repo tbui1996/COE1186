@@ -49,13 +49,9 @@ public class TrackController {
         this.line = line;
 
     }
-    /*
 
-    public void getNextStop(float SS, int auth, int ID) {
-        this.ss = SS;
-        this.blockId = ID;
-        this.auth = auth;
-    }
+
+
 
     //GETTERS
     public int getLine(){
@@ -77,8 +73,12 @@ public class TrackController {
         track.getBlock(blockId).getSwitch().setStraight(status);
     }
 
-    public boolean getOccupancy(){
+    public boolean getOccupancy(int blockId){
         return this.occupancy;
+    }
+
+    public Block getSwitch(int blockId){
+        return switchHashMap.get(blockId);
     }
 
 
@@ -158,7 +158,6 @@ public class TrackController {
 
         boolean reverse = currentBlock.getPreviousBlock().getBlockNum() == nexBlock;
         int prev = reverse ? currentBlock.getNextBlock().getBlockNum() : currentBlock.getBlockNum();
-        Block previousBlock = getBlock(prev);
 
         //if next block is crossing enter RXR
         //need to know how next block is a light block
@@ -224,7 +223,7 @@ public class TrackController {
     }
 
     public boolean switchRequest(int line, int blockId, int destinationId){
-        Block currentswitchblock = track.getBlock(blockId);
+        Block currentswitchblock = getBlock(blockId);
         Block nextBlock = getBlock(currentswitchblock.getNextBlock().getBlockNum());
         boolean switchposition = currentswitchblock.getSwitch().getStraight();
 
@@ -236,6 +235,16 @@ public class TrackController {
         }
         return false;
 
+    }
+
+    public String switchStatus(int line, int blockId){
+        Block calledBlock = getSwitch(blockId);
+        if(calledBlock !=null && calledBlock.getSwitch().getStraight()) {
+            int x = calledBlock.getSwitch().getStraight() ? calledBlock.getBlockNum() : calledBlock.getNextBlock().getBlockNum();
+            String s = String.valueOf(x);
+            return s;
+        }
+        return "";
     }
     public String blockRequest(int line, int blockId) {
         Block cur = block.get(blockId);
@@ -264,8 +273,6 @@ public class TrackController {
         if(isOccupied)
             return "occupied";
         return "open";
-    }*/
-
-
+    }
 
 }

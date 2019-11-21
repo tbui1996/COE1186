@@ -10,7 +10,6 @@ import java.util.LinkedList;
 public class WaysideController {
     Track track;
     int line;
-    int blockId;
     Block block;
     boolean iSswitch;
     boolean iScrossing;
@@ -36,11 +35,13 @@ public class WaysideController {
     private final int beforelap = 2;
     private ArrayList<TrackController> redTrack;
     private Track greenTrack;
-    /*
-    public WaysideController(Track track, int blockId) throws IOException {
+    public float ss;
+    public int auth;
+    public int blockId;
+
+    public WaysideController(Track track) throws IOException {
         this.track = track;
         this.line = track.getBlock(blockId).getLine();
-        this.blockId = blockId;
 
         if (this.line == 1) {
             redtrackcontrollerConstructor(this.track, this.line, this.blockId);
@@ -52,6 +53,11 @@ public class WaysideController {
 
 
     }
+    public void getNextStop(float SS, int auth, int ID) {
+        this.ss = SS;
+        this.blockId = ID;
+        this.auth = auth;
+    }
 
     public TrackController redtrackcontrollerConstructor(Track track, int line, int blockId) throws IOException {
         listofredblocks = track.getBlockList();
@@ -62,7 +68,7 @@ public class WaysideController {
         for (int i = 0; i < listofredblocks.size(); i++) {
             Block currentBlock = listofredblocks.get(i);
             redblocks[i] = currentBlock.getBlockNum();
-            if (currentBlock.getCrossing()) {
+            if (currentBlock.getRXR() != null) {
                 listofredRXR.add(currentBlock);
             } else if (currentBlock.getSwitch().getStraight()) {
                 listofredswitches.add(currentBlock);
@@ -83,7 +89,7 @@ public class WaysideController {
                     calculate += listofredblocks.size();
                 Block curBlock = listofredblocks.get(calculate);
                 blocks.put(curBlock.getBlockNum(), curBlock);
-                if (curBlock.getCrossing()) {
+                if (curBlock.getRXR() != null) {
                     RXR.put(curBlock.getBlockNum(), curBlock);
                 } else calculateHashMaps(blocks, switching, curBlock, listofredblocks);
 
@@ -106,7 +112,7 @@ public class WaysideController {
         for (int i = 0; i < listofgreenblocks.size(); i++) {
             Block currentBlock = listofgreenblocks.get(i);
             greenblocks[i] = currentBlock.getBlockNum();
-            if (currentBlock.getCrossing()) {
+            if (currentBlock.getRXR() != null) {
                 listofgreenRXR.add(currentBlock);
             } else if (currentBlock.getSwitch().getStraight()) {
                 listofgreenswitches.add(currentBlock);
@@ -127,7 +133,7 @@ public class WaysideController {
                     calculate += listofgreenblocks.size();
                 Block curBlock = listofgreenblocks.get(calculate);
                 blocks1.put(curBlock.getBlockNum(), curBlock);
-                /*if (curBlock.getCrossing()) {
+                if (curBlock.getRXR()!=null) {
                     RXR1.put(curBlock.getBlockNum(), curBlock);
                 } else {
                     calculateHashMaps(blocks1, switching1, curBlock, listofgreenblocks);
@@ -144,7 +150,7 @@ public class WaysideController {
     }
 
     public void calculateHashMaps(HashMap<Integer, Block> blocks1, HashMap<Integer, Block> switching1, Block curBlock, LinkedList<Block> listofgreenblocks) {
-        /*if (curBlock.getSwitch().getStraight()) {
+        if (curBlock.getSwitch().getStraight()) {
             switching1.put(curBlock.getBlockNum(), curBlock);
             int switchid1 = curBlock.getBlockNum();
             Block switchblock1 = listofgreenblocks.get(switchid1);
@@ -264,7 +270,7 @@ public class WaysideController {
         }
         return null;
     }
-    /*
+
     public String blockRequest(int line, int blockId){
         TrackController tc;
         ArrayList<Integer> blocklist = new ArrayList<>();
@@ -276,43 +282,4 @@ public class WaysideController {
         return " ";
     }
 
-
-}
-
-/*
-
-    public TrackController getTC(int line, ArrayList<Integer> blok) {
-        //green
-        if (line == 0) {
-            if (1 <= blockId && blockId < 17) {
-                return waysideControllers[0];
-            }
-            if ((17 <= blockId && blockId <= 62) && (102 <= blockId && blockId <= 150)) {
-                return waysideControllers[1];
-            }
-            if ((85 <= blockId && blockId <= 100)) {
-                return waysideControllers[2];
-            }
-            if (((63 <= blockId) && (blockId <= 85)) && (blockId == 101)) {
-                return waysideControllers[3];
-            }
-        }
-        //red
-        if (line == 1) {
-            if (1 <= blockId && blockId <= 23) {
-                return waysideControllers[4];
-            }
-            if ((21 <= blockId && blockId <= 45) && (72 <= blockId && 76 <= blockId)) {
-                return waysideControllers[5];
-            }
-            if ((24 <= blockId && blockId <= 48) && (67 <= blockId && blockId <= 71)) {
-                return waysideControllers[6];
-            }
-            if (46 <= blockId && blockId <= 66) {
-                return waysideControllers[7];
-            }
-        }
-
-        return null;
-*/
 }
