@@ -5,14 +5,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import tcss.ctc.Dispatch;
 import tcss.trainmodel.TrainModel;
 
 import java.net.URL;
@@ -47,9 +45,9 @@ public class CTCController implements Initializable{
     }
 
     public void getDispatches() {
-        Dispatch currDispatch = Main.ctc.getFirstDispatch();
-        dispatch1 = new Label(currDispatch.toString());
-        dispatchList.getChildren().add(dispatch1);
+//        Dispatch currDispatch = Main.ctc.getFirstDispatch();
+//        dispatch1 = new Label(currDispatch.toString());
+//        dispatchList.getChildren().add(dispatch1);
 
         //dispatchList = 0;
     }
