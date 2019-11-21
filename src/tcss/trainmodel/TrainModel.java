@@ -3,13 +3,15 @@ package tcss.trainmodel;
 import tcss.trackmodel.Block;
 import tcss.traincontroller.TrainController;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import static java.lang.Math.*;
 
-//import static java.lang.Math.sin;
-
 public class TrainModel {
+
+    // Static ArrayList of all trains
+    private static ArrayList<TrainModel> trains = new ArrayList<TrainModel>();
 
     // Instance variables
     private TrainController controller;
@@ -28,6 +30,7 @@ public class TrainModel {
     private boolean lights;
     private boolean[] doors = new boolean[8];
     private int passengers;
+    private float temp;
 
     // Variables for physics
     private float grade;            // Grade of the current block
@@ -59,15 +62,53 @@ public class TrainModel {
         this.underground = false;
 
         controller = new TrainController(this);
-        controller.setSpeedLimit(speedLimit);
+        //TODO Talk to Pat about speed limit
+//        controller.setSpeedLimit(speedLimit);
         mass = 409000;
         curA = 0f;
         curV = 0f;
-
+        temp = 68f;
     }
 
+    /**
+     * The main TrainModel class constructor.
+     * @param suggestedSpeed Initial suggested speed for the train
+     * @param authority Initial authority
+     * @param block The Block object the train is on after leaving the yard
+     */
+    public TrainModel(float suggestedSpeed, int authority, Block block) {
+        this.suggestedSpeed = suggestedSpeed;
+        this.authority = authority;
+        this.block = block;
+
+        // Get initial block info
+        this.speedLimit = block.getSpeedLimit();
+        this.underground = block.isUnderground();
+        this.length = block.getLength();
+        this.grade = block.getGrade();
+
+        mass = 40900;
+        curA = 0;
+        curV = 0;
+
+        controller = new TrainController(this);
+        //TODO Talk to Pat about speed limit
+//        controller.setSpeedLimit(speedLimit);
+        controller.passCommands(authority, suggestedSpeed);
+
+        // Add to ArrayList
+        trains.add(this);
+        temp = 68f;
+    }
+
+    /**
+     * This constructor is used only for demonstration purposes in the
+     * individual submission. Length of a dummy block is passed; that block
+     * simply repeats to demonstrate train functionality.
+     * @param length The length of the dummy "block"
+     */
     public TrainModel(int length) {
-        id = 1;
+//        id = 1;
         eBrake = false;
         sBrake = false;
         underground = false;
@@ -79,6 +120,10 @@ public class TrainModel {
         lastV = 0;
         curA = 0;
         lastA = 0;
+        trains.add(this);
+        id = trains.size();
+        controller = new TrainController(this);
+        temp = 68f;
     }
 
     public TrainModel() {
@@ -104,8 +149,26 @@ public class TrainModel {
         this.underground = block.isUnderground();
         this.grade = block.getGrade();
 
-        controller = new TrainController(this);
-        controller.setSpeedLimit(speedLimit);
+        controller = new TrainController(this, 8);
+        controller.update();
+        //controller.setSpeedLimit(speedLimit);
+    }
+
+    /**
+     * This method returns an ArrayList containing all existing trains
+     *
+     * @return Reference to ArrayList of all trains
+     */
+    public static ArrayList<TrainModel> getAllTrains() {
+        return trains;
+    }
+
+    /**
+     * This method is called when a train returns to the yard. It
+     * removes the train from the ArrayList of active trains.
+     */
+    public void toYard() {
+        trains.remove(this);
     }
 
     /**
@@ -160,7 +223,7 @@ public class TrainModel {
             // group submission
             if(block != null) {
                 //TODO Uncomment when Justin adds getNextBlock() to Block class
-//                block = block.getNextBlock();
+//                block = block.trainGetNextBlock();
                 length = block.getLength();
                 grade = block.getGrade();
                 speedLimit = block.getSpeedLimit();
@@ -179,6 +242,12 @@ public class TrainModel {
                     curBeaconSignal = new String(block.getBeacon().getData());
                 }
             }
+        }
+    }
+
+    public static void updateAll() {
+        for(TrainModel t: trains) {
+            t.update();
         }
     }
 
@@ -471,4 +540,18 @@ public class TrainModel {
     public void setGrade(float grade) {
         this.grade = grade;
     }
+
+    public void setPWRCMD(float PWRCMD){
+        this.power = PWRCMD;
+    }
+
+    public void setTemp(float temp) {
+        this.temp = temp;
+    }
+
+    public float getTemp() {
+        return temp;
+    }
+
+
 }

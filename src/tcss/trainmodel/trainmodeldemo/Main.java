@@ -15,7 +15,6 @@ import java.util.TimerTask;
 public class Main extends Application {
 
 //    static ArrayList<TrainModel> trains = new ArrayList<>();
-
     static TrainModel train;
     static TrainModelController controller;
 
@@ -50,16 +49,17 @@ public class Main extends Application {
 //        controller.update();
 
         // Create Timer to update TrainModel in background
-        new Timer().schedule(
-                new TimerTask() {
+        Timer t = new Timer();
 
+        t.schedule(
+                new TimerTask() {
                     @Override
                     public void run() {
 //                        System.out.println("ping");
                         train.update();
                     }
-                }, 0, 200);
-
+                }, 0, 200
+        );
     }
 
     public static void main(String[] args) throws Exception {
