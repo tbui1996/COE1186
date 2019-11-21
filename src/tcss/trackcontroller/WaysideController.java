@@ -21,8 +21,8 @@ public class WaysideController {
     private final int green_line = 0;
     private final int red_line = 1;
     private LinkedList<Block> listofredblocks;
-    private ArrayList<TrackController> redTC;
-    private ArrayList<TrackController> greenTC;
+    public ArrayList<TrackController> redTC;
+    public ArrayList<TrackController> greenTC;
     private LinkedList<Block> listofgreenblocks;
     private LinkedList<Block> listofredswitches;
     private LinkedList<Block> listofgreenswitches;

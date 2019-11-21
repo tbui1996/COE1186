@@ -37,7 +37,7 @@
           <Label fx:id="authLabel" layoutX="14.0" layoutY="139.0" text="Authority:" />
           <Label fx:id="outputSwitch" layoutX="14.0" layoutY="174.0" text="Switch:" />
       <Label layoutX="12.0" layoutY="203.0" text="Crossing:" />
-      <ComboBox fx:id="blockChoice" layoutX="397.0" layoutY="91.0" prefWidth="150.0" />
-      <ComboBox fx:id="trackChoice" layoutX="398.0" layoutY="136.0" prefWidth="150.0" />
+      <ChoiceBox fx:id="blockChoice" layoutX="397.0" layoutY="91.0" prefWidth="150.0" />
+      <ChoiceBox fx:id="trackChoice" layoutX="398.0" layoutY="136.0" prefWidth="150.0" />
     </children>
 </AnchorPane>

@@ -77,6 +77,10 @@ public class TrackController {
         track.getBlock(blockId).getSwitch().setStraight(status);
     }
 
+    public boolean getOccupancy(){
+        return this.occupancy;
+    }
+
 
 
     public boolean loadPLC(String destination) throws IOException {
@@ -242,10 +246,24 @@ public class TrackController {
         boolean isOccupied = !cur.isOccupied();
 
         if(isClosed)
-            return "Block is closed";
+            return "closed";
         if(isOccupied)
-            return "Block is occupied";
-        return "Block is open";
+            return "occupied";
+        return "open";
+    }
+
+    public String blockState(int blockId){
+        Block newblock = block.get(blockId);
+        if(newblock==null)
+            return null;
+        boolean isOccupied = !newblock.isOccupied();
+        boolean isClosed = !newblock.isClosed();
+
+        if(isClosed)
+            return "closed";
+        if(isOccupied)
+            return "occupied";
+        return "open";
     }
 
 
