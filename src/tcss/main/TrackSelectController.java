@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class TrackSelect implements Initializable {
+public class TrackSelectController implements Initializable {
 
     @FXML private Button modelButton;
 
@@ -38,6 +38,11 @@ public class TrackSelect implements Initializable {
 
     public void showTrackController() {
 
+    }
+
+    public void closeWindow() {
+        Stage s = (Stage) modelButton.getScene().getWindow();
+        s.close();
     }
 
 
