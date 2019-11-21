@@ -1,9 +1,14 @@
 package tcss.main;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -40,6 +45,17 @@ public class SettingsController implements Initializable {
             file = temp;
         }
 
+    }
+
+    public void kikp() throws Exception{
+        FXMLLoader engineLoader = new FXMLLoader(getClass().getResource("fxml/Engine.fxml"));
+        Parent engineRoot = engineLoader.load();
+        Stage engine = new Stage();
+        engine.initModality(Modality.APPLICATION_MODAL);
+        engine.setScene(new Scene(engineRoot));
+        engine.setTitle("Engine Settings");
+        engine.getIcons().add(new Image("file:resources/train.png"));
+        engine.showAndWait();
     }
 
     public void submitSettings() throws Exception {

@@ -20,7 +20,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 import java.net.URL;
@@ -98,28 +97,31 @@ public class UserSelectionController implements Initializable {
         dispatch.setResizable(false);
         dispatch.getIcons().add(new Image("file:resources/train.png"));
 
-        dispatch.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-                windowEvent.consume();
-            }
-        });
-
         dispatch.show();
-
-
-
     }
 
-    public void trackEngineerView() {
+    public void trackEngineerView() throws Exception{
         System.out.println("OPEN TRACK ENGINEER VIEW");
     }
 
-    public void driverView() {
+    public void driverView() throws Exception{
         System.out.println("OPEN TRAIN DRIVER VIEW");
+
+        FXMLLoader driverLoader = new FXMLLoader(getClass().getResource("fxml/TrainController.fxml"));
+        Stage driver = new Stage();
+        Parent driverRoot = driverLoader.load();
+        driver.setTitle("Train Controller");
+        driver.setScene(new Scene(driverRoot));
+        driver.setResizable(false);
+        driver.getIcons().add(new Image("file:resources/train.png"));
+
+        driver.show();
+
+
+
     }
 
-    public void murphyView() {
+    public void murphyView() throws Exception{
         System.out.println("OPEN MURPHY VIEW");
     }
 

@@ -84,7 +84,7 @@ public class CTCController implements Initializable{
 
     }
 
-    public void goBack(ActionEvent actionEvent) throws Exception {
+    public void closeWindow(ActionEvent actionEvent) throws Exception {
 //        Parent trainModelParent = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
 //        Scene trainModelView = new Scene(trainModelParent);
 //
@@ -92,10 +92,14 @@ public class CTCController implements Initializable{
 //        Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
 //        window.setScene(trainModelView);
 //        window.show();
+//
+//        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("../Demo/ModuleSelection.fxml")));
+//        Stage window = (Stage) pane.getScene().getWindow();
+//        window.setScene(moduleSelect);
+//        window.setTitle("Module Selection");
 
-        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("../Demo/ModuleSelection.fxml")));
         Stage window = (Stage) pane.getScene().getWindow();
-        window.setScene(moduleSelect);
-        window.setTitle("Module Selection");
+        window.close();
+
     }
 }

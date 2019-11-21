@@ -1,9 +1,8 @@
-package tcss.Demo;
+package tcss.main;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,15 +12,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import tcss.traincontroller.TrainController;
-import tcss.trainmodel.TrainModel;
 
-import javax.swing.*;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TrainControllerController implements Initializable {
 
@@ -143,6 +138,11 @@ public class TrainControllerController implements Initializable {
         Stage window = (Stage) pane.getScene().getWindow();
         window.setScene(moduleSelect);
         window.setTitle("Module Selection");
+    }
+
+    public void closeWindow() {
+        Stage s = (Stage) trainChoice.getScene().getWindow();
+        s.close();
     }
 
     public void confirmSetpoint(ActionEvent actionEvent) throws Exception{

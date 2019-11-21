@@ -24,7 +24,7 @@
         </rowConstraints>
          <children>
             <Button fx:id="importTrackButton" mnemonicParsing="false" onAction="#importTrack" text="Import Track" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-            <Button mnemonicParsing="false" text="Set Ki/Kp" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+            <Button mnemonicParsing="false" onAction="#kikp" text="Set Ki/Kp" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
             <Button fx:id="submitButton" mnemonicParsing="false" onAction="#submitSettings" styleClass="submit-button" text="Submit" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelSettings" styleClass="cancel-button" text="Cancel" GridPane.columnIndex="2" GridPane.rowIndex="2" />
             <Label styleClass="title" text="Settings" GridPane.columnIndex="1" GridPane.columnSpan="2" />

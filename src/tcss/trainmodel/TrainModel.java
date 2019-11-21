@@ -61,7 +61,8 @@ public class TrainModel {
         this.underground = false;
 
         controller = new TrainController(this);
-        controller.setSpeedLimit(speedLimit);
+        //TODO Talk to Pat about speed limit
+//        controller.setSpeedLimit(speedLimit);
         mass = 409000;
         curA = 0f;
         curV = 0f;
@@ -89,7 +90,8 @@ public class TrainModel {
         curV = 0;
 
         controller = new TrainController(this);
-        controller.setSpeedLimit(speedLimit);
+        //TODO Talk to Pat about speed limit
+//        controller.setSpeedLimit(speedLimit);
         controller.passCommands(authority, suggestedSpeed);
 
         // Add to ArrayList
@@ -140,8 +142,9 @@ public class TrainModel {
         this.underground = block.isUnderground();
         this.grade = block.getGrade();
 
-        controller = new TrainController(this);
-        controller.setSpeedLimit(speedLimit);
+        controller = new TrainController(this, 8);
+        controller.update();
+        //controller.setSpeedLimit(speedLimit);
     }
 
     /**
@@ -232,6 +235,12 @@ public class TrainModel {
                     curBeaconSignal = new String(block.getBeacon().getData());
                 }
             }
+        }
+    }
+
+    public static void updateAll() {
+        for(TrainModel t: trains) {
+            t.update();
         }
     }
 
@@ -523,5 +532,9 @@ public class TrainModel {
 
     public void setGrade(float grade) {
         this.grade = grade;
+    }
+
+    public void setPWRCMD(float PWRCMD){
+        this.power = PWRCMD;
     }
 }
