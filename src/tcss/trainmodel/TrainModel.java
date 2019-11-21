@@ -67,6 +67,7 @@ public class TrainModel {
         mass = 409000;
         curA = 0f;
         curV = 0f;
+        temp = 68f;
     }
 
     /**
@@ -97,6 +98,7 @@ public class TrainModel {
 
         // Add to ArrayList
         trains.add(this);
+        temp = 68f;
     }
 
     /**
@@ -121,6 +123,7 @@ public class TrainModel {
         trains.add(this);
         id = trains.size();
         controller = new TrainController(this);
+        temp = 68f;
     }
 
     public TrainModel() {
@@ -543,7 +546,13 @@ public class TrainModel {
         this.power = PWRCMD;
     }
 
-    public float getTemp(){
-        return this.temp;
+    public void setTemp(float temp) {
+        this.temp = temp;
     }
+
+    public float getTemp() {
+        return temp;
+    }
+
+
 }

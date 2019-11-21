@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@TrackController.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.Demo.TrackControllerController">
+<AnchorPane fx:id="pane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@TrackController.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.Demo.TrackControllerController">
     <children>
-        <VBox alignment="CENTER_LEFT" layoutY="87.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane layoutX="14.0" layoutY="6.0" prefHeight="29.0" prefWidth="847.0" stylesheets="@TrackController.css">
             <children>
-                <ChoiceBox fx:id="trackChoice" minHeight="2.0" minWidth="2.0" prefHeight="35.0" prefWidth="154.0" />
-                <Label id="authLabel" fx:id="authLabel" text="Authority:" />
-                <Label fx:id="occupiedLabel" text="Occupancy:" />
-            <Label fx:id="sSpeedLabel" text="Suggested Speed:" />
+                <Label fx:id="title" layoutX="174.0" text="Track Controller">
+                </Label>
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutX="15.0" layoutY="289.0" prefHeight="106.0" prefWidth="418.0">
+            <children>
+                <Button fx:id="importPLC" alignment="CENTER" layoutX="432.0" layoutY="90.0" mnemonicParsing="false" onAction="#onPLCClick" prefHeight="56.0" prefWidth="112.0" text="Import PLC" textAlignment="CENTER" />
+            <Label fx:id="outputLights" layoutX="-1.0" layoutY="-11.0" text="Lights:" />
             </children>
             <padding>
                 <Insets left="25.0" />
             </padding>
-        </VBox>
+        </AnchorPane>
+
         <Button fx:id="backButton" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#goBack" prefHeight="55.0" prefWidth="70.0" styleClass="backButton" />
+          <Label fx:id="sSpeedLabel" layoutX="11.0" layoutY="237.0" text="Suggested Speed:" />
+          <Label fx:id="occupiedLabel" layoutX="14.0" layoutY="102.0" text="Occupancy:" />
+          <Label fx:id="authLabel" layoutX="14.0" layoutY="139.0" text="Authority:" />
+          <Label fx:id="outputSwitch" layoutX="14.0" layoutY="174.0" text="Switch:" />
+      <Label layoutX="12.0" layoutY="203.0" text="Crossing:" />
+      <ChoiceBox fx:id="blockChoice" layoutX="397.0" layoutY="91.0" prefWidth="150.0" />
+      <ChoiceBox fx:id="trackChoice" layoutX="398.0" layoutY="136.0" prefWidth="150.0" />
     </children>
 </AnchorPane>

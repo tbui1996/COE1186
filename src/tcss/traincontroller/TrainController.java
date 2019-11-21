@@ -257,6 +257,7 @@ public class TrainController {
 
     public void setTemp(float temp){
         this.temp = temp;
+        model.setTemp(this.temp);
     }
 
     public float getTemp(){

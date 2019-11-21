@@ -116,7 +116,7 @@ public class CTC {
     }
 
     public void sendNextStop(float SS, int auth, int ID) {
-        this.TC1.getNextStop(SS, auth, ID);
+        //this.TC1.getNextStop(SS, auth, ID);
     }
 
     public Dispatch getDispatch(int i) {
