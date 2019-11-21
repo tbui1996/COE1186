@@ -24,7 +24,10 @@ public class TrackModel {
 
     private void init() throws IOException {
         File trackFile = new File("resources/Sample_Track_File2.xlsx");
-        if (!buildTrack(trackFile)) {
+        //init red and green line
+        redLine = new Track();
+        greenLine = new Track();
+        if (!buildTrack(trackFile, redLine)) {
             System.out.println("Error Constructing Track!");
         }
     }
@@ -41,26 +44,29 @@ public class TrackModel {
         return greenLine;
     }
 
-    private boolean buildTrack(File trackFile) throws IOException {
+    private boolean buildTrack(File trackFile, Track track) throws IOException {
 
-        Map<Integer, Switch> switchMap = new HashMap<Integer, Switch>();
+        ArrayList<Switch> builtSwitches = new ArrayList<Switch>();
+        ArrayList<Integer> branchEnds = new ArrayList<Integer>();
         XSSFWorkbook myExcelBook = new XSSFWorkbook(new FileInputStream(trackFile));
 
-        //init red and green line
-        redLine = new Track();
-        greenLine = new Track();
+        XSSFSheet trackSheet;
+        if(track == getRedLine()){
+            trackSheet = myExcelBook.getSheet("Red Line");
+        }else{
+            trackSheet = myExcelBook.getSheet("Green Line");
+        }
 
-        XSSFSheet redLineSheet = myExcelBook.getSheet("Red Line");
+
         Row currRow;
 
-        Row firstRow = redLineSheet.getRow(0);
-        //Row firstRow = redLineSheet.getRow(redLineSheet.getFirstRowNum());
-
+        Row firstRow = trackSheet.getRow(0);
+        System.out.println(trackSheet.getLastRowNum());
         //iterate through sheet
-        for(int r=1;r<=redLineSheet.getLastRowNum();r++){
+        for(int r=1;!isRowEmpty(trackSheet.getRow(r));r++){
 
             //each row corresponds to a block
-            currRow = redLineSheet.getRow(r);
+            currRow = trackSheet.getRow(r);
             Block currBlock = new Block();
             for(int c=0;c<TRACK_FILE_NUM_COLS;c++){
                 //each column has a block property
@@ -105,7 +111,7 @@ public class TrackModel {
                         }
                         break;
                     case "Infrastructure":
-                        if(!infrastructureParse(currBlock, cell, switchMap)){
+                        if(!infrastructureParse(currBlock, cell, builtSwitches, branchEnds)){
                             return false;
                         }
                         break;
@@ -128,7 +134,7 @@ public class TrackModel {
 
             if(currBlock.getBlockNum() > 1){
                 //set tail of current block to be the previous block
-                currBlock.setTail(redLine.getBlock(currBlock.getBlockNum() - 1));
+                currBlock.setTail(track.getBlock(currBlock.getBlockNum() - 1));
 
                 //set head of previous block to be current block
                 currBlock.getPreviousBlock().setHead(currBlock);
@@ -140,10 +146,28 @@ public class TrackModel {
                         + currBlock.getPreviousBlock().getHead().getBlockNum());
             }
 
-            redLine.addToHashMap(currBlock);
-            redLine.getBlockList().add(currBlock);
+            track.addToHashMap(currBlock);
+            track.getBlockList().add(currBlock);
+            if(r == trackSheet.getLastRowNum()){
+                break;
+            }
         }
+
+        System.out.println("Placing switches...");
+        for(Switch sw: builtSwitches){
+            System.out.println("Setting switch on block " + sw.getRoot());
+            track.getBlock(sw.getRoot()).setSwitch(sw);
+        }
+
+        if(!connectBranches(track, branchEnds, builtSwitches)){
+            System.out.println("Track Build Error: Connecting Branches");
+            return false;
+        }
+
         myExcelBook.close();
+
+
+        System.out.println("Finished Building Track!");
         return true;
     }
 
@@ -232,11 +256,11 @@ public class TrackModel {
     }
 
     //parse infrastructure features into block, if applicable
-    private boolean infrastructureParse(Block b, Cell cell, Map<Integer, Switch> switchMap){
+    private boolean infrastructureParse(Block b, Cell cell, ArrayList<Switch> builtSwitches, ArrayList<Integer> branchEnds){
 
-        if(cell == null){
-            System.out.println("Null Infrastructure Cell");
-        }else if(cell.getCellType() == Cell.CELL_TYPE_STRING){
+        if(cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK){
+            System.out.println("Null/Blank Infrastructure Cell");
+        }else if(cell.getCellType() == Cell.CELL_TYPE_STRING || cell.getCachedFormulaResultType() == Cell.CELL_TYPE_STRING){
             String[] infraSects = cell.getStringCellValue().split(";",0);
 
             for(int i=0;i<infraSects.length;i++){
@@ -275,6 +299,9 @@ public class TrackModel {
                     Iterator<Integer> it = tempSet.iterator();
                     while (it.hasNext()){
                         int temp = it.next();
+                        if(!branchEnds.contains(temp)){
+                            branchEnds.add(temp);
+                        }
                         if(temp != root){
                             if(temp - root == -1 || temp - root == 1){
                                 sw.setStraightDest(temp);
@@ -284,10 +311,12 @@ public class TrackModel {
                         }
                     }
 
-                    switchMap.put(root, sw);
+                    sw.setRoot(root);
                     System.out.println("New switch on block " + root
                         + ", Straight: " + sw.getStraightDest()
                         + ", Branch: " + sw.getBranchDest());
+
+                    builtSwitches.add(sw);
                 }
             }
         }else{
@@ -315,6 +344,56 @@ public class TrackModel {
         }else{
             System.out.println("Track Build Error: Invalid Cumulative Elevation Cell Type");
             return false;
+        }
+        return true;
+    }
+
+    private boolean connectBranches(Track track, ArrayList<Integer> branchEnds, ArrayList<Switch> builtSwitches){
+        Collections.sort(branchEnds);
+
+        for(Switch sw: builtSwitches){
+
+            if(branchEnds.indexOf(sw.getRoot()) % 2 == 0){
+                track.getBlock(sw.getRoot()).setTail(track.getBlock(sw.getStraightDest()));
+            }else if(branchEnds.indexOf(sw.getRoot()) % 2 == 1){
+                track.getBlock(sw.getRoot()).setHead(track.getBlock(sw.getStraightDest()));
+            }else{
+                return false;
+            }
+
+            if(branchEnds.indexOf(sw.getStraightDest()) % 2 == 0){
+                track.getBlock(sw.getStraightDest()).setTail(track.getBlock(sw.getRoot()));
+            }else if(branchEnds.indexOf(sw.getStraightDest()) % 2 == 1){
+                track.getBlock(sw.getStraightDest()).setHead(track.getBlock(sw.getRoot()));
+            }else{
+                return false;
+            }
+
+            track.getBlock(sw.getRoot()).setBranch(track.getBlock(sw.getBranchDest()));
+
+            if(branchEnds.indexOf(sw.getBranchDest()) % 2 == 0){
+                track.getBlock(sw.getBranchDest()).setTail(track.getBlock(sw.getRoot()));
+            }else if(branchEnds.indexOf(sw.getBranchDest()) % 2 == 1){
+                track.getBlock(sw.getStraightDest()).setHead(track.getBlock(sw.getRoot()));
+            }else{
+                return false;
+            }
+
+            System.out.println("Straight " + track.getBlock(sw.getRoot()).getTail().getBlockNum() +
+                    " => " + track.getBlock(sw.getRoot()).getBlockNum() +
+                    " => " + track.getBlock(sw.getRoot()).getHead().getBlockNum());
+            System.out.println("Branch " + track.getBlock(sw.getRoot()).getTail().getBlockNum() +
+                    " => " + track.getBlock(sw.getRoot()).getBlockNum() +
+                    " => " + track.getBlock(sw.getRoot()).getBranch().getBlockNum());
+        }
+        return true;
+    }
+
+    public static boolean isRowEmpty(Row row) {
+        for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
+            Cell cell = row.getCell(c);
+            if (cell != null && cell.getCellType() != Cell.CELL_TYPE_BLANK)
+                return false;
         }
         return true;
     }
