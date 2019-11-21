@@ -147,7 +147,7 @@ public class TrainModel {
 
         controller = new TrainController(this, 8);
         controller.update();
-        //controller.setSpeedLimit(speedLimit);
+        controller.setSpeedLimit(speedLimit);
     }
 
     /**
@@ -223,6 +223,7 @@ public class TrainModel {
                 length = block.getLength();
                 grade = block.getGrade();
                 speedLimit = block.getSpeedLimit();
+                controller.setSpeedLimit(speedLimit);
             }
 
             blocksTraveled = blocksTraveled + 1;

@@ -41,8 +41,7 @@ public class TrainControllerController implements Initializable {
     @FXML private Label lightsDisplay;
     @FXML private Label powerCommandLabel, kilabel, kplabel;
     @FXML private Label currentSpeedLabel;
-    //@FXML private Button settings;
-    //@FXML private CheckBox light1, light2, light3, light4, light5, light6, light7, light8, door1, door2, door3, door4, door5, door6, door7, door8;
+    @FXML private TextField setTempInput;
 
     private TrainController tc;
 
@@ -50,6 +49,17 @@ public class TrainControllerController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         DecimalFormat format = new DecimalFormat( "#.0" );
         setPointInput.setTextFormatter( new TextFormatter<>(c -> {
+                if ( c.getControlNewText().isEmpty() )
+                    return c;
+                ParsePosition parsePosition = new ParsePosition( 0 );
+                Object object = format.parse( c.getControlNewText(), parsePosition );
+                if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() ){
+                    return null;
+                } else {
+                    return c;
+                }
+        }));
+        setTempInput.setTextFormatter( new TextFormatter<>(c -> {
             if ( c.getControlNewText().isEmpty() )
                 return c;
             ParsePosition parsePosition = new ParsePosition( 0 );
@@ -70,11 +80,14 @@ public class TrainControllerController implements Initializable {
         trainChoice.setTooltip(new Tooltip("Select a train to view"));
         trainChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
+
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
                 if((Integer) number2 > 0) {
                     TrainController cur = TrainController.TrainControllerList.get((Integer)number2-1);
                     cur.update();
                     tc = cur;
+                    idLabel.setText("ID: " + tc.getID());
+                    suggestedSpeedLabel.setText("Suggested Speed: " + tc.getSSpeed());
                     trainButton.setDisable(false);
                     update();
                 } else {
@@ -120,26 +133,18 @@ public class TrainControllerController implements Initializable {
     }
 
     public void update(){
-        if(tc == null) {
-            return;
-        }
-        idLabel.setText("ID: " + tc.getID());
-        System.out.println("tc is: " + tc.toString());
-        suggestedSpeedLabel.setText("Suggested Speed: " + tc.getSSpeed());
-        System.out.println("" + tc.getSSpeed() + " with model: ");
+        if(tc == null) { return; }
         if(opModeToggle.isSelected()){
             opModeToggle.setText("Exit Manual Mode");
         } else {
             opModeToggle.setText("Enter Manual Mode");
         }
-//        setPointInput.setText("");
-//        setPointInput.setPromptText("" + tc.getsetpointSpeed());
         authLabel.setText("Authority: " + tc.getAuthority());
         if (tc.getUnderground()){
-            lightsDisplay.setText("True");
+            lightsDisplay.setText("ON");
             lightsDisplay.setTextFill(Color.GREEN);
         } else {
-            lightsDisplay.setText("False");
+            lightsDisplay.setText("OFF");
             lightsDisplay.setTextFill(Color.RED);
         }
         eBrakeToggle.setDisable(false);
@@ -183,9 +188,7 @@ public class TrainControllerController implements Initializable {
         TrainModelController controller = trainloader.getController();
         controller.passTrain(tc.getTrain());
 
-        trainStage.showAndWait();
-
-        update();
+        trainStage.show();
     }
 
     public void confirmSetpoint(ActionEvent actionEvent) throws Exception{
@@ -205,6 +208,20 @@ public class TrainControllerController implements Initializable {
        }
        update();
     }
+
+    public void confirmTemp(ActionEvent actionEvent) throws Exception{
+        try {
+            try {
+                float newTemp = Float.parseFloat(setTempInput.getText());
+                tc.setTemp(newTemp);
+            } catch (NumberFormatException e) {
+                System.out.println("nfe found");
+            }
+        } catch (NullPointerException e){
+            System.out.println("Train is not selected!");
+        }
+    }
+
 
     public void toggleEBrake(ActionEvent actionEvent) throws Exception {
         boolean brakeStatus = eBrakeToggle.isSelected(); //get brake status - what we want to set it to

@@ -23,6 +23,8 @@ public class TrainController {
     private float setpointSpeed;
     private float commandedSpeed;
     private float currentSpeed;
+    private float speedLimit;
+    private float temp;
     public boolean opMode = false; //default to automatic
     int authority;
     private float ki;
@@ -48,6 +50,7 @@ public class TrainController {
         this.authority = model.getAuthority();
         this.suggestedSpeed = model.getSSpeed();
         this.setpointSpeed = suggestedSpeed; //since we start in auto, we can set sps to the suggested
+        this.speedLimit = model.getSpeedLimit();
         this.underground = model.getUnderground();
         this.eBrake = model.getEBrake(); //gets the ebrake status from the model.
         this.lastVerrs = new float[]{0, 0, 0}; //for use in the vital pwrcmd calcs
@@ -55,6 +58,7 @@ public class TrainController {
         this.PWRCMD = 0;
         this.ki = Main.kikp[0]; //get the current desired KI and KP
         this.kp = Main.kikp[1];
+        this.temp = model.getTemp();
         TrainController.TrainControllerList.add(this);
         //System.out.println(TrainControllerList.toString());
     }
@@ -128,6 +132,7 @@ public class TrainController {
     public float[] prepareVoters(){
         float[] votes = {0,0,0};
         commandedSpeed = setpointSpeed < suggestedSpeed ? setpointSpeed : suggestedSpeed;
+        commandedSpeed = suggestedSpeed < speedLimit ? suggestedSpeed : speedLimit;
         for(int id = 0; id < 3; id++){
             votes[id] = getPWRCMD(commandedSpeed, id);
         }
@@ -220,6 +225,10 @@ public class TrainController {
         this.opMode = opMode;
     }
 
+    public void setTemp(float temp){
+        this.temp = temp;
+    }
+
     public String toString(){
         return(this.id + " at " + this.setpointSpeed);
     }
@@ -242,6 +251,10 @@ public class TrainController {
 
     public TrainModel getTrain() {
         return model;
+    }
+
+    public void setSpeedLimit(float speedLimit){
+        this.speedLimit = speedLimit;
     }
 
     /**

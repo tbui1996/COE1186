@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -11,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@../css/TrainController.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.TrainControllerController">
+<AnchorPane fx:id="pane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@../css/TrainController.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.TrainControllerController">
    <children>
       <HBox prefHeight="460.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -24,6 +29,7 @@
                      </VBox.margin>
                   </Label>
                   <Label id="sSpeedLabel" fx:id="suggestedSpeedLabel" text="Suggested Speed:" />
+                  <Label id="authLabel" fx:id="authLabel" text="Authority:" />
                   <Label id="sSpeedLabel" fx:id="currentSpeedLabel" text="Current Speed: " />
                   <HBox prefHeight="47.0" prefWidth="376.0">
                      <children>
@@ -40,11 +46,25 @@
                         </Button>
                      </children>
                   </HBox>
-                  <Label id="authLabel" fx:id="authLabel" text="Authority:" />
+                  <HBox prefHeight="47.0" prefWidth="376.0">
+                     <children>
+                        <Label text="Temperature: " />
+                        <TextField fx:id="setTempInput" prefHeight="27.0" prefWidth="99.0">
+                           <HBox.margin>
+                              <Insets left="30.0" top="10.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Button fx:id="confirmSetpoint1" mnemonicParsing="false" onAction="#confirmTemp" text="OK">
+                           <HBox.margin>
+                              <Insets left="5.0" top="10.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
                   <HBox prefHeight="43.0" prefWidth="379.0">
                      <children>
-                        <Label text="Underground: " />
-                        <Label fx:id="undergroundDisplay" />
+                        <Label text="Lights: " />
+                        <Label fx:id="lightsDisplay" />
                      </children>
                   </HBox>
                </children>
@@ -77,8 +97,8 @@
                         <Font size="12.0" />
                      </font>
                   </Label>
-                  <Label fx:id="kilabel" text="Label" />
-                  <Label fx:id="kplabel" text="Label" />
+                  <Label fx:id="kilabel" text="Kilabel" />
+                  <Label fx:id="kplabel" text="kplabel" />
                </children>
             </VBox>
          </children>
