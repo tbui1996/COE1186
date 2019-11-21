@@ -26,6 +26,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         //init TrackModel
         tm = new TrackModel();
+        redLine = tm.getRedLine();
+        greenLine = tm.getGreenLine();
 
         // Init CTC
         ctc = new CTC();
@@ -73,6 +75,10 @@ public class Main extends Application {
 
     public static void main(String [] args) throws Exception {
         launch(args);
+    }
+
+    public SimTime getSimTime() {
+        return T;
     }
 
 }
