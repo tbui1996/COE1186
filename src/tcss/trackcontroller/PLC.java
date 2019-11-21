@@ -120,8 +120,8 @@ public class PLC {
         Expression expression = jexlEvaluator.createExpression(lightslogic);
         JexlContext jexlcontent = new MapContext();
         for(int i=0; i < 7; i++){
-            jexlcontent.set("Normal Block occupied", normalBlock.getSwitch().getDest1());
-            jexlcontent.set("Alternative Block occupied", alternativeBlock.getSwitch().getDest2());
+            jexlcontent.set("Normal Block occupied", normalBlock.getSwitch().getStraightDest());
+            jexlcontent.set("Alternative Block occupied", alternativeBlock.getSwitch().getBranchDest());
 
             result &= (boolean) expression.evaluate(jexlcontent);
         }
