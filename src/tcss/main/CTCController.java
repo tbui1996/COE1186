@@ -84,6 +84,27 @@ public class CTCController implements Initializable{
 
     }
 
+    //Closes a Block for Maintenance
+    public void closeBlock(ActionEvent e) throws Exception {
+        System.out.println("Close block ");
+
+        //Finds what line is selected
+        int temp = tcss.main.Main.ctc.lineStringToInt(lineSelector.getSelectionModel().getSelectedItem().toUpperCase());
+
+        //Assigns temp to blockId
+        //Red Line
+        if (temp == 1) {
+            temp = blockSelector.getSelectionModel().getSelectedItem();
+        }
+        //Green Line
+        else {
+            temp = blockSelector.getSelectionModel().getSelectedItem() + tcss.main.Main.ctc.lineLength(1);
+        }
+
+        System.out.println(temp);
+        //tcss.main.Main.tc.getNextStop(-1,-1,temp)
+    }
+
     public void closeWindow(ActionEvent actionEvent) throws Exception {
 //        Parent trainModelParent = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
 //        Scene trainModelView = new Scene(trainModelParent);

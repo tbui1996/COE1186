@@ -16,7 +16,7 @@ import tcss.trainmodel.TrainModel;
 public class Main extends Application {
 
     static SimTime T;
-    static CTC ctc;
+    static public CTC ctc;
     static public TrackModel tm;
     static public Track redLine;
     static public Track greenLine;
@@ -28,6 +28,9 @@ public class Main extends Application {
         tm = new TrackModel();
         redLine = tm.getRedLine();
         greenLine = tm.getGreenLine();
+
+        //init Track Model
+        tm = new TrackModel();
 
         // Init CTC
         ctc = new CTC();
@@ -71,13 +74,15 @@ public class Main extends Application {
     public static void update() {
         // Place update calls here
         TrainModel.updateAll();
+        ctc.updateTrackState();
+        ctc.checkDispatchList();
     }
 
     public static void main(String [] args) throws Exception {
         launch(args);
     }
 
-    public SimTime getSimTime() {
+    public static SimTime getSimTime() {
         return T;
     }
 
