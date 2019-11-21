@@ -48,7 +48,8 @@ public class Main extends Application {
         // Testing TrackModel UI
         TrackModel tm = new TrackModel();
         track = tm.getTrack();
-        tc.setTrack(track);
+        // TODO UNCOMMENT WHEN WORKING
+//        tc.setTrack(track);
 
         /*Block b1 = track.getBlock(1);
         Block b2 = track.getBlock(2);

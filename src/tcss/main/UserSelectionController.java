@@ -102,6 +102,19 @@ public class UserSelectionController implements Initializable {
 
     public void trackEngineerView() throws Exception{
         System.out.println("OPEN TRACK ENGINEER VIEW");
+
+        FXMLLoader trackLoader = new FXMLLoader(getClass().getResource("fxml/TrackController.fxml"));
+        Stage trackC = new Stage();
+        Parent trackCRoot = trackLoader.load();
+        trackC.setTitle("Track Controller");
+        trackC.setScene(new Scene(trackCRoot));
+        trackC.setResizable(false);
+        trackC.getIcons().add(new Image("file:resources/train.png"));
+
+        trackC.show();
+
+
+
     }
 
     public void driverView() throws Exception{
