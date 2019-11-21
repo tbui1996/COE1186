@@ -128,7 +128,19 @@ public class CTC {
             Dispatch temp = dispatchList.get(i);
             //if train is not dispatched yet
             if (temp.getCurrStop() == -1 && temp.getSS() == 0) {
-                if (11 >= temp.getDepartureTime()) { //This should be if departure time == current global time
+                //tcss.main.Main.T.getHour()
+                //tcss.main.Main.T.getMin()
+                /*if (tcss.main.Main.T.getHour() >= temp.getDepartureHour()) {
+                    //If the current hour is passed the departure hour or the current hour is the departure hour and the current minute is greater than or equal to the departure minute
+                    if (tcss.main.Main.t.getHour() > temp.getDepartureHour() || tcss.main.Main.getMin() >= temp.getDepartureMin()) {
+                        temp.setSS(temp.getSpeed(temp.getCurrStop()+1));
+                        temp.setAuth(temp.getAuth(temp.getCurrStop()+1));
+                        System.out.println("Train sent");
+                        //Sends SS and Auth to new
+                        tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),YARD);
+                    }
+                }*/
+                if (11 >= temp.getDepartureHour()) { //This should be if departure time == current global time
                     temp.setSS(temp.getSpeed(temp.getCurrStop()+1));
                     temp.setAuth(temp.getAuth(temp.getCurrStop()+1));
                     System.out.println("Train sent");
