@@ -10,7 +10,6 @@ import java.util.LinkedList;
 public class WaysideController {
     Track track;
     int line;
-    int blockId;
     Block block;
     boolean iSswitch;
     boolean iScrossing;
@@ -36,7 +35,10 @@ public class WaysideController {
     private final int beforelap = 2;
     private ArrayList<TrackController> redTrack;
     private Track greenTrack;
-    /*
+    public float ss;
+    public int auth;
+    public int blockId;
+
     public WaysideController(Track track, int blockId) throws IOException {
         this.track = track;
         this.line = track.getBlock(blockId).getLine();
@@ -51,6 +53,11 @@ public class WaysideController {
         }
 
 
+    }
+    public void getNextStop(float SS, int auth, int ID) {
+        this.ss = SS;
+        this.blockId = ID;
+        this.auth = auth;
     }
 
     public TrackController redtrackcontrollerConstructor(Track track, int line, int blockId) throws IOException {
