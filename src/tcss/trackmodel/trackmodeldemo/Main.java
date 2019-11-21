@@ -29,8 +29,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        //tc = new TrackController();
-        //ctc = new CTC(tc);
+        tc = new TrackController();
+        ctc = new CTC(tc);
         Parent root = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
         primaryStage.setTitle("Module Selection");
         primaryStage.setScene(new Scene(root));

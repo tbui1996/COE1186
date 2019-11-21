@@ -30,6 +30,7 @@ public class TrainModel {
     private boolean lights;
     private boolean[] doors = new boolean[8];
     private int passengers;
+    private float temp;
 
     // Variables for physics
     private float grade;            // Grade of the current block
@@ -66,6 +67,7 @@ public class TrainModel {
         mass = 409000;
         curA = 0f;
         curV = 0f;
+        temp = 68f;
     }
 
     /**
@@ -96,6 +98,7 @@ public class TrainModel {
 
         // Add to ArrayList
         trains.add(this);
+        temp = 68f;
     }
 
     /**
@@ -120,6 +123,7 @@ public class TrainModel {
         trains.add(this);
         id = trains.size();
         controller = new TrainController(this);
+        temp = 68f;
     }
 
     public TrainModel() {
@@ -147,7 +151,7 @@ public class TrainModel {
 
         controller = new TrainController(this, 8);
         controller.update();
-        //controller.setSpeedLimit(speedLimit);
+        controller.setSpeedLimit(speedLimit);
     }
 
     /**
@@ -177,7 +181,7 @@ public class TrainModel {
     public void update() {
 
         // If braking, set acceleration manually
-        // If service brake...
+        // If emergency brake...
         if(eBrake) {
             if(curV <= 0) {
                 lastA = curA;
@@ -189,7 +193,7 @@ public class TrainModel {
                 curA = -2.73f;
             }
         }
-        // If emergency brake...
+        // If service brake...
         else if(sBrake) {
             if(curV <= 0) {
                 lastA = curA;
@@ -223,6 +227,7 @@ public class TrainModel {
                 length = block.getLength();
                 grade = block.getGrade();
                 speedLimit = block.getSpeedLimit();
+                controller.setSpeedLimit(speedLimit);
             }
 
             blocksTraveled = blocksTraveled + 1;
@@ -540,4 +545,14 @@ public class TrainModel {
     public void setPWRCMD(float PWRCMD){
         this.power = PWRCMD;
     }
+
+    public void setTemp(float temp) {
+        this.temp = temp;
+    }
+
+    public float getTemp() {
+        return temp;
+    }
+
+
 }

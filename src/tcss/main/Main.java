@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import tcss.ctc.CTC;
+import tcss.trackmodel.Track;
 import tcss.trackmodel.TrackModel;
 import tcss.trainmodel.TrainModel;
 
@@ -17,10 +18,17 @@ public class Main extends Application {
     public static TrackModel tm;
     static SimTime T;
     static CTC ctc;
-    static public float[] kikp = {0,0};
+    static public TrackModel tm;
+    static public Track redLine;
+    static public Track greenLine;
+    static public float[] kikp = {1, 1};
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        //init TrackModel
+        tm = new TrackModel();
+        redLine = tm.getRedLine();
+        greenLine = tm.getGreenLine();
 
         //init Track Model
         tm = new TrackModel();
@@ -73,6 +81,10 @@ public class Main extends Application {
 
     public static void main(String [] args) throws Exception {
         launch(args);
+    }
+
+    public SimTime getSimTime() {
+        return T;
     }
 
 }

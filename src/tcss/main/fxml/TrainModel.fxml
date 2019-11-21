@@ -155,6 +155,7 @@
                               </Label>
                            </children>
                         </HBox>
+                        <Label fx:id="tempLabel" text="Temp:" />
                         <Label fx:id="distanceLabel" layoutX="55.0" layoutY="208.0" text="Δx in Block:" />
                         <Label fx:id="blocksLabel" layoutX="55.0" layoutY="241.0" text="Blocks Traveled:" />
                         <Label fx:id="curBeaconLabel" layoutX="55.0" layoutY="274.0" text="Current Beacon:" VBox.vgrow="ALWAYS" />

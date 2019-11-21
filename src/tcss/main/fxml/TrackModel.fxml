@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="pane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@TrackModel.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.Demo.TrackModelController">
+<AnchorPane fx:id="pane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@../css/TrackModel.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.TrackModelController">
     <children>
         <VBox alignment="CENTER_LEFT" layoutY="62.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="398.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="62.0">
             <children>
