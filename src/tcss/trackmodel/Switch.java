@@ -2,25 +2,59 @@ package tcss.trackmodel;
 
 public class Switch{
     
-    private int dest1;
-    private int dest2;
-    private boolean orientation;
+    private int straightDest;
+    private int branchDest;
+    private int root;
+    private boolean straight;
+    private boolean lights;
 
     public Switch(){
-        dest1 = 0;
-        dest2 = 0;
-        orientation = true;
+        straightDest = -1;
+        branchDest = -1;
+        root = -1;
+        straight = true; //true == straight, false == curved
+        lights = false; //true == on, false == off
     }
 
-    public int getDest1(){
-        return dest1;
+    //****************** GETTERS **********************************
+
+    public int getStraightDest(){
+        return straightDest;
     }
 
-    public int getDest2(){
-        return dest2;
+    public int getBranchDest(){
+        return branchDest;
     }
 
-    public boolean getOrientation(){
-        return orientation;
+    public int getRoot(){
+        return root;
+    }
+
+    public boolean getStraight() {
+        return straight;
+    }
+
+    public boolean lightsOn(){
+        return lights;
+    }
+
+    //****************** SETTERS **********************************
+
+    public void setStraightDest(int straightDest){
+        this.straightDest = straightDest;
+    }
+
+    public void setBranchDest(int branchDest){ this.branchDest = branchDest;}
+
+    public void setRoot(int root){
+        this.root = root;
+    }
+
+    public void setStraight(boolean straight){
+        this.straight = straight;
+    }
+
+    public void setLights(boolean lights){
+        this.lights = lights;
     }
 }
