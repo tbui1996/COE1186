@@ -28,6 +28,8 @@ public class Main extends Application {
     static TrackController tc;
     static CTC ctc;
 
+    static public float[] kikp = {0,0};
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         //tc = new TrackController();

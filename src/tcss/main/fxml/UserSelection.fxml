@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@../css/UserSelection.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.UserSelectionController">
+   <children>
+      <Button fx:id="dispatcher" layoutX="90.0" layoutY="100.0" mnemonicParsing="false" onAction="#dispatcherView" styleClass="userButton" text="Dispatcher" textFill="#120a22">
+         <tooltip>
+            <Tooltip autoHide="true" text="Testing" />
+         </tooltip>
+      </Button>
+      <Button fx:id="driver" layoutX="335.0" layoutY="100.0" mnemonicParsing="false" onAction="#driverView" styleClass="userButton" text="Train Driver" />
+      <Button fx:id="trackEngineer" layoutX="90.0" layoutY="245.0" mnemonicParsing="false" onAction="#trackEngineerView" prefHeight="100.0" prefWidth="175.0" styleClass="userButton" text="Track Engineer" />
+      <Button fx:id="murphy" layoutX="335.0" layoutY="245.0" mnemonicParsing="false" onAction="#murphyView" styleClass="userButton" text="Error Simulations" />
+      <Pane layoutY="376.0" prefHeight="85.0" prefWidth="600.0" styleClass="timebar">
+         <children>
+            <Button id="playpausebutton" fx:id="playpause" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" layoutX="275.0" layoutY="21.0" mnemonicParsing="false" onAction="#togglePlay" prefHeight="50.0" prefWidth="50.0" styleClass="play">
+               <padding>
+                  <Insets left="5.0" />
+               </padding>
+            </Button>
+            <HBox alignment="CENTER" layoutX="40.0" layoutY="27.0" prefHeight="37.0" prefWidth="218.0">
+               <children>
+                  <Label text="Simulation Speed:">
+                     <HBox.margin>
+                        <Insets bottom="6.0" right="8.0" top="7.0" />
+                     </HBox.margin>
+                  </Label>
+                  <ChoiceBox fx:id="rate" maxHeight="-Infinity" prefHeight="27.0" prefWidth="58.0" />
+               </children>
+               <padding>
+                  <Insets bottom="3.0" />
+               </padding>
+            </HBox>
+            <HBox layoutX="363.0" layoutY="36.0">
+               <children>
+                  <Label text="Time: " />
+                  <Label fx:id="clockLabel" text="00:00" />
+               </children>
+            </HBox>
+         </children>
+      </Pane>
+      <Text fill="#dfdfdf" layoutX="266.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Users">
+         <font>
+            <Font name="Calibri" size="30.0" />
+         </font>
+      </Text>
+      <Button fx:id="close" ellipsisString="" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#closeWindow" styleClass="exit-button" />
+      <Button fx:id="settingsButton" layoutX="554.0" layoutY="11.0" mnemonicParsing="false" onAction="#openSettings" styleClass="settings" />
+   </children>
+</AnchorPane>
