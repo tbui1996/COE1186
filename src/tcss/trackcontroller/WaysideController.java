@@ -68,7 +68,7 @@ public class WaysideController {
         for (int i = 0; i < listofredblocks.size(); i++) {
             Block currentBlock = listofredblocks.get(i);
             redblocks[i] = currentBlock.getBlockNum();
-            if (currentBlock.getCrossing()) {
+            if (currentBlock.getRXR() != null) {
                 listofredRXR.add(currentBlock);
             } else if (currentBlock.getSwitch().getStraight()) {
                 listofredswitches.add(currentBlock);
@@ -89,7 +89,7 @@ public class WaysideController {
                     calculate += listofredblocks.size();
                 Block curBlock = listofredblocks.get(calculate);
                 blocks.put(curBlock.getBlockNum(), curBlock);
-                if (curBlock.getCrossing()) {
+                if (curBlock.getRXR() != null) {
                     RXR.put(curBlock.getBlockNum(), curBlock);
                 } else calculateHashMaps(blocks, switching, curBlock, listofredblocks);
 
@@ -112,7 +112,7 @@ public class WaysideController {
         for (int i = 0; i < listofgreenblocks.size(); i++) {
             Block currentBlock = listofgreenblocks.get(i);
             greenblocks[i] = currentBlock.getBlockNum();
-            if (currentBlock.getCrossing()) {
+            if (currentBlock.getRXR() != null) {
                 listofgreenRXR.add(currentBlock);
             } else if (currentBlock.getSwitch().getStraight()) {
                 listofgreenswitches.add(currentBlock);
@@ -133,7 +133,7 @@ public class WaysideController {
                     calculate += listofgreenblocks.size();
                 Block curBlock = listofgreenblocks.get(calculate);
                 blocks1.put(curBlock.getBlockNum(), curBlock);
-                if (curBlock.getCrossing()) {
+                if (curBlock.getRXR()!=null) {
                     RXR1.put(curBlock.getBlockNum(), curBlock);
                 } else {
                     calculateHashMaps(blocks1, switching1, curBlock, listofgreenblocks);
