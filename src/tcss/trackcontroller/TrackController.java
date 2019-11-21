@@ -49,7 +49,7 @@ public class TrackController {
         this.line = line;
 
     }
-
+    /*
 
     public void getNextStop(float SS, int auth, int ID) {
         this.ss = SS;
@@ -264,7 +264,7 @@ public class TrackController {
         if(isOccupied)
             return "occupied";
         return "open";
-    }
+    }*/
 
 
 

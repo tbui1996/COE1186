@@ -57,7 +57,7 @@ public class TrackControllerController implements Initializable {
     this.track = track;
     this.wc = waysideController;
     this.plcFile = plcFile;
-    curTC.loadPLC(plcFile);
+    //curTC.loadPLC(plcFile);
   }
 
   @Override
@@ -80,11 +80,11 @@ public class TrackControllerController implements Initializable {
             return;
         if((st[new_value.intValue()]==st[0] || (st[new_value.intValue()]==st[1]) || ((st[new_value.intValue()]==st[2])||(st[new_value.intValue()]==st[3])))){
           for(TrackController tc: wc.redTC){
-            trackChoice.setValue(tc.getTCID());
+            //trackChoice.setValue(tc.getTCID());
           }
         }else{
           for(TrackController tc: wc.greenTC){
-            trackChoice.setValue(tc.getTCID());
+            //trackChoice.setValue(tc.getTCID());
           }
         }
         updateBlockChoiceBox();
@@ -113,7 +113,7 @@ public class TrackControllerController implements Initializable {
       public void changed(ObservableValue ov, Number value, Number new_value) {
           if(!blockChoice.getSelectionModel().isEmpty()){
             for(Block block: currBlocks){
-              String blockstatus = curTC.blockState(block.getBlockNum());
+              //String blockstatus = curTC.blockState(block.getBlockNum());
             }
             String occupied = (currBlocks.get(blockChoice.getSelectionModel().getSelectedIndex()).isOccupied()) ? "Occupied" : "Not Occupied";
             occupiedLabel.setText("Occupancy: "+ occupied);

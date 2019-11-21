@@ -24,6 +24,7 @@ public class TrackModelController implements Initializable {
     // UI variables
     @FXML private AnchorPane pane;
 
+    @FXML private ChoiceBox lineChoice;
     @FXML private ChoiceBox blockChoice;
 
     @FXML private Label blockNumLabel;
@@ -42,15 +43,45 @@ public class TrackModelController implements Initializable {
     @FXML private Label rxrLabel;
     @FXML private Label beaconLabel;
 
+    private Track currTrack;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        blockChoice.getItems().add("Select Block");
-        Track t = Main.track;
+        lineChoice.getItems().add("Select Line");
+        lineChoice.getItems().add("Red Line");
+        lineChoice.getItems().add("Green Line");
 
-        // Testing
-        for(Block b: t.getBlockList()) {
-            blockChoice.getItems().add(b.getSection() + Integer.toString(b.getBlockNum()));
-        }
+        blockChoice.getItems().add("Select Block");
+
+        Track redLine = Main.redLine;
+        Track greenLine = Main.greenLine;
+
+
+        lineChoice.setValue("Select Line");
+        lineChoice.setTooltip(new Tooltip("Select a line to view"));
+        lineChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+                if((Integer) number2 > 0) {
+//                    System.out.println(trainChoice.getItems().get((Integer) number2));
+//                    System.out.println("ID: " + Main.trains.get((Integer)number2 - 1).getID());
+
+                    if((Integer) number2 == 1){
+                        currTrack = redLine;
+                    }else if((Integer) number2 == 2){
+                        currTrack = greenLine;
+                    }
+
+                    blockChoice = new ChoiceBox();
+                    blockChoice.getItems().add("Select Block");
+                    // Populate Line Blocks
+                    for(int i=1;i<=redLine.getBlockHashMap().size();i++) {
+                        Block b = redLine.getBlock(i);
+                        blockChoice.getItems().add(b.getSection() + Integer.toString(b.getBlockNum()));
+                    }
+                }
+            }
+        });
 
         blockChoice.setValue("Select Block");
         blockChoice.setTooltip(new Tooltip("Select a block to view"));
@@ -61,7 +92,7 @@ public class TrackModelController implements Initializable {
 //                    System.out.println(trainChoice.getItems().get((Integer) number2));
 //                    System.out.println("ID: " + Main.trains.get((Integer)number2 - 1).getID());
 
-                    Block cur = t.getBlockList().get((Integer) number2-1);
+                    Block cur = redLine.getBlock((Integer) number2-1);
 
                     blockNumLabel.setText("Block #: " + cur.getBlockNum());
                     sectionLabel.setText("Section #: " + cur.getSection());

@@ -36,7 +36,7 @@ public class WaysideController {
     private final int beforelap = 2;
     private ArrayList<TrackController> redTrack;
     private Track greenTrack;
-
+    /*
     public WaysideController(Track track, int blockId) throws IOException {
         this.track = track;
         this.line = track.getBlock(blockId).getLine();
@@ -127,7 +127,7 @@ public class WaysideController {
                     calculate += listofgreenblocks.size();
                 Block curBlock = listofgreenblocks.get(calculate);
                 blocks1.put(curBlock.getBlockNum(), curBlock);
-                if (curBlock.getCrossing()) {
+                /*if (curBlock.getCrossing()) {
                     RXR1.put(curBlock.getBlockNum(), curBlock);
                 } else {
                     calculateHashMaps(blocks1, switching1, curBlock, listofgreenblocks);
@@ -144,7 +144,7 @@ public class WaysideController {
     }
 
     public void calculateHashMaps(HashMap<Integer, Block> blocks1, HashMap<Integer, Block> switching1, Block curBlock, LinkedList<Block> listofgreenblocks) {
-        if (curBlock.getSwitch().getStraight()) {
+        /*if (curBlock.getSwitch().getStraight()) {
             switching1.put(curBlock.getBlockNum(), curBlock);
             int switchid1 = curBlock.getBlockNum();
             Block switchblock1 = listofgreenblocks.get(switchid1);
@@ -264,7 +264,7 @@ public class WaysideController {
         }
         return null;
     }
-
+    /*
     public String blockRequest(int line, int blockId){
         TrackController tc;
         ArrayList<Integer> blocklist = new ArrayList<>();
@@ -279,9 +279,9 @@ public class WaysideController {
 
 }
 
+/*
 
-
-    /*public TrackController getTC(int line, ArrayList<Integer> blok) {
+    public TrackController getTC(int line, ArrayList<Integer> blok) {
         //green
         if (line == 0) {
             if (1 <= blockId && blockId < 17) {
@@ -314,5 +314,5 @@ public class WaysideController {
         }
 
         return null;
-
-}*/
+*/
+}
