@@ -47,15 +47,21 @@ public class TrackControllerController implements Initializable {
   @FXML
   private Label outputSwitch;
 
+  @FXML
+  private Label railroadcrossing;
+
   public WaysideController wc;
   private TrackController curTC;
+  private Main main;
   private Track track;
   private PLC plc;
   private String plcFile;
   private ArrayList<Block> currBlocks;
+  private int line;
 
   public void setTrainApp(Main main, String plcFile, Track track, WaysideController waysideController) throws IOException {
     this.track = track;
+    this.main = main;
     this.wc = waysideController;
     this.plcFile = plcFile;
     curTC.loadPLC(plcFile);
@@ -82,13 +88,17 @@ public class TrackControllerController implements Initializable {
             return;
         if((st[new_value.intValue()]==st[0] || (st[new_value.intValue()]==st[1]) || ((st[new_value.intValue()]==st[2])||(st[new_value.intValue()]==st[3])))){
           for(TrackController tc: wc.redTC){
+            line = 1;
             trackChoice.setValue(tc.getTCID());
           }
         }else{
           for(TrackController tc: wc.greenTC){
+            line = 0;
             trackChoice.setValue(tc.getTCID());
+
           }
         }
+        trackChoice.getSelectionModel().isSelected(0);
         blockChoice = updateBlockChoiceBox();
       }
     });
@@ -102,14 +112,17 @@ public class TrackControllerController implements Initializable {
           occupiedLabel.setText("Occupancy: "+ occupied);
           sSpeedLabel.setText("Suggested Speed: "+ block.getSuggestedSpeed());
           authLabel.setText("Authority: "+block.getAuthority());
-          String switches = (block.getSwitch().getStraight()) ? "Not switched" : "Switched";
+          String switches = (curTC.switchRequest(line,blockId,blockId+1)) ? "Not switched" : "Switched";
           outputSwitch.setText("Switch: "+ switches);
+          String rxrs = (curTC.railroadCrossingRequest(line,blockId) ? "Up": "Down");
+          railroadcrossing.setText("Railroad Crossing: "+ rxrs);
         }
         else{
           occupiedLabel.setText("Occupancy: ");
           sSpeedLabel.setText("Suggested Speed: ");
           authLabel.setText("Authority: ");
           outputSwitch.setText("Switch: ");
+          railroadcrossing.setText("Railroad Crossing: ");
         }
       }
     });
