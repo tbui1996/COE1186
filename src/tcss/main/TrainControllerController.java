@@ -1,8 +1,11 @@
 package tcss.main;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import tcss.traincontroller.TrainController;
 
 import java.net.URL;
@@ -89,6 +93,18 @@ public class TrainControllerController implements Initializable {
                 }
             }
         });
+
+        // Create Timeline for periodic updating
+        Timeline loop = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                update();
+//                System.out.println("GUI Updated!!");
+            }
+        }));
+        loop.setCycleCount(Timeline.INDEFINITE);
+        loop.play();
+
     }
 
     /**
@@ -104,6 +120,9 @@ public class TrainControllerController implements Initializable {
     }
 
     public void update(){
+        if(tc == null) {
+            return;
+        }
         idLabel.setText("ID: " + tc.getID());
         System.out.println("tc is: " + tc.toString());
         suggestedSpeedLabel.setText("Suggested Speed: " + tc.getSSpeed());
