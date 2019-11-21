@@ -3,6 +3,7 @@ package tcss.ctc;
 import tcss.trackcontroller.TrackController;
 import tcss.trackmodel.Block;
 import tcss.trackmodel.Station;
+import tcss.trackmodel.Track;
 import tcss.trainmodel.TrainModel;
 
 import java.util.ArrayList;
@@ -15,13 +16,14 @@ public class CTC {
     public ArrayList<TrainModel> trainList = new ArrayList<TrainModel>(); /*Number of Trains*/
 
     //Temporary Red and Green Line setup for creating a Dispatch
-    private LinkedList<Block> redLine;
-    private LinkedList<Block> greenLine;
+    private HashMap<Integer, Block> redLine;
+    private HashMap<Integer, Block> greenLine;
     private String [] stationNames; //This will be deleted
 
     //What I might need
     //This would be Station name to block number
-    private HashMap<String,Integer> stationToBlockNum;
+    private HashMap<String,Integer> stationToBlockNumRed;
+    private HashMap<String,Integer> stationToBlockNumGreen;
 
     //String ArrayLists of all of the stations on each line
     private String [] redStations;
@@ -36,8 +38,33 @@ public class CTC {
 //        this.TC1 = track;
 
         //Temporary Red and Green Line setup for creating a Dispatch
-        redLine = new LinkedList<Block>();
-        greenLine = new LinkedList<Block>();
+        //redLine = tcss.main.Main.TrackModel.getRedLine().getBlockHashMap;     Red Line Hash Map
+        //greenLine = tcss.main.Main.TrackModel.getRedLine();                   Green Line Hash Map
+
+        /*
+
+        //Loads in block hashmaps with new instances of blocks with the same values
+        Iterator redIterator = redLine.entrySet().iterator();
+        Iterator greenIterator = greenLine.entrySet().iterator();
+
+        while (redIterator.hasNext()) {
+            Map.Entry mapElement = (Map.Entry)redIterator.next();
+            redLine.setValue(mapElement.getKey()) = new Block(mapElement.getValue());
+            updates station to block number hash map
+            if (mapElement.getValue().getStation != null) {
+
+            }
+        }
+
+        while (greenIterator.hasNext()) {
+           Map.Entry mapElement = (Map.Entry)greenIterator.next();
+           greenLine.setValue(mapElement.getKey()) = new Block(mapElement.getValue());
+        }
+        */
+
+        redLine = new HashMap<Integer, Block>();
+        greenLine = new HashMap<Integer, Block>();
+
         stationNames = new String[5];
         stationNames[0] = "Dormont";
         stationNames[1] = "Shadyside";
@@ -57,14 +84,17 @@ public class CTC {
             Block temp = new Block();
             temp.setStation(new Station(stationNames[i]));
             if (i%2 == 0) {
-                redLine.add(temp);
-                greenLine.add(new Block());
+                redLine.put(i,temp);
+                greenLine.put(i,new Block());
+                //Populates Station to Block Number hash map
+                //stationToBlockNumRed()
                 redStations[redCount] = stationNames[i]; //Adding the station name on the block the the Array
                 redCount++;
+                //stationToBlockNumGreen()
             }
             else {
-                greenLine.add(temp);
-                redLine.add(new Block());
+                greenLine.put(i,temp);
+                redLine.put(i,new Block());
                 greenStations[greenCount] = stationNames[i];
                 greenCount++;
             }
@@ -119,6 +149,24 @@ public class CTC {
                     }
                 }*/
                 //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
+            }
+        }
+    }
+
+    public void updateTrackState() {
+        for (int j = 0; j < (redLine.size() + greenLine.size()); j++) {
+            //updating red line
+            if (j < redLine.size()) {
+                //redLine.get(j).setOccupancy(tcss.main.Main.tc.getOccupancy(j));
+                //redLine.get(j).setSwitchPosition(tcss.main.Main.tc.getSwitchPosition(j));
+                //redLine.get(j).setLightState(tcss.main.Main.tc.getSwitchPosition(j));
+            }
+
+            //updating green line
+            else {
+                //greenLine.get(j - redLine.size()).setOccupancy(tcss.main.Main.tc.getOccupancy(j));
+                //greenLine.get(j - redLine.size()).setSwitchPosition(tcss.main.Main.tc.getSwitchPosition(j));
+                //greenLine.get(j - redLine.size()).setLightState(tcss.main.Main.tc.getLightState(j));
             }
         }
     }

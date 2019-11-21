@@ -62,6 +62,7 @@ public class Main extends Application {
     public static void update() {
         // Place update calls here
         TrainModel.updateAll();
+        ctc.updateTrackState();
         ctc.checkDispatchList();
     }
 
