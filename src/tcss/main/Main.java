@@ -9,15 +9,21 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import tcss.ctc.CTC;
+import tcss.trackcontroller.TrackController;
+import tcss.trackmodel.Track;
 import tcss.trainmodel.TrainModel;
 
 public class Main extends Application {
 
     static SimTime T;
     static CTC ctc;
+    public static TrackController tc;
+    public static Track track;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        track = new Track();
 
         // Init CTC
         ctc = new CTC();
