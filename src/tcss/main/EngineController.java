@@ -11,7 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import tcss.Demo.Main;
 
 import java.net.URL;
 import java.text.DecimalFormat;

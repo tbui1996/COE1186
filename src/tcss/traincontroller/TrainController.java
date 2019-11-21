@@ -1,7 +1,7 @@
 package tcss.traincontroller;
 
 import tcss.trainmodel.TrainModel;
-import tcss.Demo.Main;
+import tcss.main.Main;
 
 import java.util.ArrayList;
 
@@ -76,6 +76,7 @@ public class TrainController {
     determines new commanded speed and
      */
     public void update(){
+        // TODO Remove calls to update model; that's handled by SimTime
         model.update();
         commandedSpeed = setpointSpeed < suggestedSpeed ? setpointSpeed : suggestedSpeed;
         float result1 = getPWRCMD1(commandedSpeed);
@@ -234,4 +235,9 @@ public class TrainController {
     public float getCurrentSpeed(){
         return currentSpeed;
     }
+
+    public TrainModel getTrain() {
+        return model;
+    }
+
 }
