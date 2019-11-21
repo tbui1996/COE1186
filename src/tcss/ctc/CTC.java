@@ -152,7 +152,11 @@ public class CTC {
                         temp.setAuth(temp.getAuth(temp.getCurrStop() + 1));
                         System.out.println("Train sent");
                         //Sends SS and Auth to new
-                        //tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),YARD);
+                        if (temp.getLine() == 1)
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),stationToBlockNumRed.get(redStations.get(temp.getCurrStop()+1)));
+                        else
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),stationToBlockNumGreen.get(greenStations.get(temp.getCurrStop()+1)));
+
                     }
                 }
                 /*
@@ -161,7 +165,7 @@ public class CTC {
                     temp.setAuth(temp.getAuth(temp.getCurrStop()+1));
                     System.out.println("Train sent");
                     //Sends SS and Auth to new
-                    //tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),YARD);
+                    tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),YARD)
                 }*/
             }
             //If train is already dispatched
@@ -170,11 +174,11 @@ public class CTC {
                 if (temp.getLine() == 1) {
                     if (redLine.get(stationToBlockNumRed.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
                         temp.setCurrStop(temp.getCurrStop() + 1);
-                        //tcss.main.Main.tc.getNextStop(temp);
+                        tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),stationToBlockNumRed.get(redStations.get(temp.getCurrStop()+1)));
                     } else {
                         if (greenLine.get(stationToBlockNumGreen.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
                             temp.setCurrStop(temp.getCurrStop() + 1);
-                            //tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop));
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),stationToBlockNumGreen.get(greenStations.get(temp.getCurrStop()+1)));
                         }
                     }
                     //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
