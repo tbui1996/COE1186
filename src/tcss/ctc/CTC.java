@@ -6,6 +6,7 @@ import tcss.trackmodel.Station;
 import tcss.trainmodel.TrainModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class CTC {
@@ -17,6 +18,10 @@ public class CTC {
     private LinkedList<Block> redLine;
     private LinkedList<Block> greenLine;
     private String [] stationNames; //This will be deleted
+
+    //What I might need
+    //This would be Station name to block number
+    private HashMap<String,Integer> stationToBlockNum;
 
     //String ArrayLists of all of the stations on each line
     private String [] redStations;
@@ -103,8 +108,14 @@ public class CTC {
             //If train is already dispatched
             else {
                 //Check block occupancy list to see if next stop block is currently occupied.  If so, a new request must be sent to keep train moving
-                /*if () {
-
+                /*if (temp.getLine() == 1) {
+                    if (redLineBlocks(stationToBlockNum(temp.schedule.getStopName(temp.getCurrStop()+1))).getOccupancy() == 1) {
+                        temp.setCurrStop(temp.getCurrStop()+1);
+                    }
+                else {
+                    if (greenLineBlocks(stationToBlockNum(temp.schedule.getStopName(temp.getCurrStop()+1))).getOccupancy() == 1) {
+                        temp.setCurrStop(temp.getCurrStop()+1);
+                    }
                 }*/
                 //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
             }
