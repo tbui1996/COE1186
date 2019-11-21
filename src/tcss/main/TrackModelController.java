@@ -1,4 +1,4 @@
-package tcss.Demo;
+package tcss.main;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,7 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
+import tcss.Demo.Main;
 import tcss.trackmodel.Block;
 import tcss.trackmodel.Track;
 
@@ -53,8 +53,8 @@ public class TrackModelController implements Initializable {
 
         blockChoice.getItems().add("Select Block");
 
-        Track redLine = Main.redLine;
-        Track greenLine = Main.greenLine;
+        Track redLine = tcss.main.Main.redLine;
+        Track greenLine = tcss.main.Main.greenLine;
 
 
         lineChoice.setValue("Select Line");
