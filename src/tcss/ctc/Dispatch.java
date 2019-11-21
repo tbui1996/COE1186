@@ -1,6 +1,9 @@
 package tcss.ctc;
 
+import tcss.trackmodel.Track;
 import tcss.trainmodel.TrainModel;
+
+import java.util.ArrayList;
 
 
 public class Dispatch {
@@ -10,7 +13,7 @@ public class Dispatch {
     private int line; //Red == 1, Green == 2
     public Schedule schedule;
     //public String trainName;
-    private int mode;
+    //private int mode;
     //private TrainModel train;
     private int currStop = -1;
     private float [] speedList;
@@ -19,6 +22,7 @@ public class Dispatch {
     private int aMin;
     private int dHr;
     private int dMin;
+    //private ArrayList<String> stations;
 
     public Dispatch(String l, String n) {
         this.line = this.lineStringToInt(l);
@@ -54,19 +58,23 @@ public class Dispatch {
         authList = new int[schedule.getStopNums() + 1];
 
 
-        for (int i = 0; i < schedule.getStopNums(); i++) {
-            //Calculates speed and authority for each stop
-            //(distance between blocks) / ((station w/ dwell) - dwell), unit is blocks/sec
-            if (i == 0) {
-                speedList[i] = (1 / (float) (this.schedule.getStopDwell(i) - 35)); //stationToYard((schedule.getStopName(i)) / schedule.getStopDwell(i) - 35
-                authList[i] = 1; //stationToYard(schedule.getStopName(i))
+        if (this.line == 1) {
+            for (int i = 0; i < schedule.getStopNums(); i++) {
+                //Calculates speed and authority for each stop
+                //(distance between blocks) / ((station w/ dwell) - dwell), unit is blocks/sec
+                if (i == 0) {
+                    speedList[i] = (float) (tcss.main.Main.redLine.distanceToYard(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))) / (float) (this.schedule.getStopDwell(i) - 35)); //stationToYard((schedule.getStopName(i)) / schedule.getStopDwell(i) - 35
+                    authList[i] = (int) tcss.main.Main.redLine.distanceToYard(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))); //stationToYard(schedule.getStopName(i))
+                } else {
+                    //speedList[i] = stationToStation((schedule.getStopName(i-1),schedule.getStopName(i)) / schedule.getStopDwell(i)*60 - 35;
+                    //authList = stationToStation(schedule.getStopName(i-1), schedule.getStopName(i));
+                    speedList[i] = (float) (tcss.main.Main.redLine.distanceBetweenTwoBlocks(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))),tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))) / (float) (this.schedule.getStopDwell(i) - 35));;
+                    authList[i] = (int) tcss.main.Main.redLine.distanceBetweenTwoBlocks(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))),tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))));
+                }
             }
-            else {
-                //speedList[i] = stationToStation((schedule.getStopName(i-1),schedule.getStopName(i)) / schedule.getStopDwell(i)*60 - 35;
-                //authList = stationToStation(schedule.getStopName(i-1), schedule.getStopName(i));
-                speedList[i] = (3 / (float) (1.5 * 60 - 35));
-                authList[i] = 3;
-            }
+        }
+        else {
+
         }
 
         speedList[speedList.length-1] = 10/*Min Speed*/;

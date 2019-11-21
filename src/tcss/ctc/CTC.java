@@ -15,14 +15,14 @@ public class CTC {
     public ArrayList<TrainModel> trainList = new ArrayList<TrainModel>(); /*Number of Trains*/
 
     //Temporary Red and Green Line setup for creating a Dispatch
-    private Map<Integer,Block> redLine;
-    private Map<Integer,Block> greenLine;
+    protected Map<Integer,Block> redLine;
+    protected Map<Integer,Block> greenLine;
     private String [] stationNames; //This will be deleted
 
     //What I might need
     //This would be Station name to block number
-    private HashMap<String,Integer> stationToBlockNumRed;
-    private HashMap<String,Integer> stationToBlockNumGreen;
+    protected HashMap<String,Integer> stationToBlockNumRed;
+    protected HashMap<String,Integer> stationToBlockNumGreen;
 
     //String ArrayLists of all of the stations on each line
     private ArrayList<String> redStations;
@@ -147,9 +147,9 @@ public class CTC {
             if (temp.getCurrStop() == -1 && temp.getSS() == 0) {
                 if (tcss.main.Main.getSimTime().getHour() >= temp.getDepartureHour()) {
                     //If the current hour is passed the departure hour or the current hour is the departure hour and the current minute is greater than or equal to the departure minute
-                    if (tcss.main.Main.getSimTime().getHour() > temp.getDepartureHour() || tcss.main.Main.getMin() >= temp.getDepartureMin()) {
-                        temp.setSS(temp.getSpeed(temp.getCurrStop()+1));
-                        temp.setAuth(temp.getAuth(temp.getCurrStop()+1));
+                    if (tcss.main.Main.getSimTime().getHour() > temp.getDepartureHour() || tcss.main.Main.getSimTime().getMin() >= temp.getDepartureMin()) {
+                        temp.setSS(temp.getSpeed(temp.getCurrStop() + 1));
+                        temp.setAuth(temp.getAuth(temp.getCurrStop() + 1));
                         System.out.println("Train sent");
                         //Sends SS and Auth to new
                         //tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),YARD);
@@ -167,17 +167,18 @@ public class CTC {
             //If train is already dispatched
             else {
                 //Check block occupancy list to see if next stop block is currently occupied.  If so, a new request must be sent to keep train moving
-                /*if (temp.getLine() == 1) {
-                    if (redLineBlocks(stationToBlockNum(temp.schedule.getStopName(temp.getCurrStop()+1))).isOccupied()) {
-                        temp.setCurrStop(temp.getCurrStop()+1);
-                        tcss.main.Main.tc.getNextStop(temp);
+                if (temp.getLine() == 1) {
+                    if (redLine.get(stationToBlockNumRed.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
+                        temp.setCurrStop(temp.getCurrStop() + 1);
+                        //tcss.main.Main.tc.getNextStop(temp);
+                    } else {
+                        if (greenLine.get(stationToBlockNumGreen.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
+                            temp.setCurrStop(temp.getCurrStop() + 1);
+                            //tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop));
+                        }
                     }
-                else {
-                    if (greenLineBlocks(stationToBlockNum(temp.schedule.getStopName(temp.getCurrStop()+1))).isOccupied()) {
-                        temp.setCurrStop(temp.getCurrStop()+1);
-                    }
-                }*/
-                //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
+                    //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
+                }
             }
         }
     }

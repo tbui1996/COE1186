@@ -69,10 +69,18 @@ public class DispatchSelectController implements Initializable {
     public void confirmDispatch(ActionEvent e) throws Exception {
         //Set Departure Time if one was entered
         if (!dHour.getText().equals("")) {
-            if (dHalf.getText().equals("AM"))
-                curr.setDepartureTime(Integer.parseInt(dHour.getText()), Integer.parseInt(dMin.getText()));
-            else
-                curr.setDepartureTime(Integer.parseInt(dHour.getText()) + 12, Integer.parseInt(dMin.getText()));
+            if (dHalf.getText().equals("AM")) {
+                if (dHour.getText().equals("12"))
+                    curr.setDepartureTime(0, Integer.parseInt(dMin.getText()));
+                else
+                    curr.setDepartureTime(Integer.parseInt(dHour.getText()), Integer.parseInt(dMin.getText()));
+            }
+            else {
+                if (dHour.getText().equals("12"))
+                    curr.setDepartureTime( 12, Integer.parseInt(dMin.getText()));
+                else
+                    curr.setDepartureTime(Integer.parseInt(dHour.getText()) + 12, Integer.parseInt(dMin.getText()));
+            }
         }
 
         //Set Arrival Time if one was entered

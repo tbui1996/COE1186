@@ -16,7 +16,7 @@ import tcss.trainmodel.TrainModel;
 public class Main extends Application {
 
     static SimTime T;
-    static CTC ctc;
+    static public CTC ctc;
     static public TrackModel tm;
     static public Track redLine;
     static public Track greenLine;
