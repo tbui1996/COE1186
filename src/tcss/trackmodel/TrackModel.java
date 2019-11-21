@@ -20,6 +20,20 @@ public class TrackModel {
 
     public TrackModel() throws IOException {
         init();
+
+        System.out.println("Verifying Red Line...");
+        if(!verify(getRedLine())){
+            System.out.println("Red Line Verification Failed!");
+        }else {
+            System.out.println("Red Line Verification Passed");
+        }
+
+        System.out.println("Verifying Green Line");
+        if(!verify(getGreenLine())){
+            System.out.println("Green Line Verification Failed!");
+        }else {
+            System.out.println("Green Line Verification Passed");
+        }
     }
 
     private void init() throws IOException {
@@ -28,7 +42,11 @@ public class TrackModel {
         redLine = new Track();
         greenLine = new Track();
         if (!buildTrack(trackFile, redLine)) {
-            System.out.println("Error Constructing Track!");
+            System.out.println("Error Constructing Red Line!");
+        }
+
+        if (!buildTrack(trackFile, greenLine)) {
+            System.out.println("Error Constructing Green Line!");
         }
     }
 
@@ -57,9 +75,7 @@ public class TrackModel {
             trackSheet = myExcelBook.getSheet("Green Line");
         }
 
-
         Row currRow;
-
         Row firstRow = trackSheet.getRow(0);
         System.out.println(trackSheet.getLastRowNum());
         //iterate through sheet
@@ -140,12 +156,6 @@ public class TrackModel {
                 currBlock.getPreviousBlock().setHead(currBlock);
             }
 
-            if(currBlock.getBlockNum() > 2){
-                System.out.println(currBlock.getPreviousBlock().getTail().getBlockNum() + " => "
-                        + currBlock.getPreviousBlock().getBlockNum() + " => "
-                        + currBlock.getPreviousBlock().getHead().getBlockNum());
-            }
-
             track.addToHashMap(currBlock);
             track.getBlockList().add(currBlock);
             if(r == trackSheet.getLastRowNum()){
@@ -155,7 +165,6 @@ public class TrackModel {
 
         System.out.println("Placing switches...");
         for(Switch sw: builtSwitches){
-            System.out.println("Setting switch on block " + sw.getRoot());
             track.getBlock(sw.getRoot()).setSwitch(sw);
         }
 
@@ -259,8 +268,9 @@ public class TrackModel {
     private boolean infrastructureParse(Block b, Cell cell, ArrayList<Switch> builtSwitches, ArrayList<Integer> branchEnds){
 
         if(cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK){
-            System.out.println("Null/Blank Infrastructure Cell");
+            //System.out.println("Null/Blank Infrastructure Cell");
         }else if(cell.getCellType() == Cell.CELL_TYPE_STRING || cell.getCachedFormulaResultType() == Cell.CELL_TYPE_STRING){
+
             String[] infraSects = cell.getStringCellValue().split(";",0);
 
             for(int i=0;i<infraSects.length;i++){
@@ -272,6 +282,7 @@ public class TrackModel {
                 }else if(infraSects[i].startsWith("STATION")){
                     //stations
                     String stationName = infraSects[i+1];
+                    stationName = stationName.trim();
                     System.out.println(stationName);
                     b.setStation(new Station(stationName));
                 }else if(infraSects[i].startsWith("SWITCH") && infraSects.length > 1){
@@ -286,6 +297,7 @@ public class TrackModel {
                     for(String s: switchSplit){
                         try{
                             blockNum = Integer.parseInt(s);
+                            System.out.println(blockNum + "");
                             if(!tempSet.add(blockNum)){
                                 root = blockNum;
                             }
@@ -323,6 +335,7 @@ public class TrackModel {
             System.out.println("Track Build Error: Invalid Infrastructure Cell Type");
             return false;
         }
+
         return true;
     }
 
@@ -374,7 +387,7 @@ public class TrackModel {
             if(branchEnds.indexOf(sw.getBranchDest()) % 2 == 0){
                 track.getBlock(sw.getBranchDest()).setTail(track.getBlock(sw.getRoot()));
             }else if(branchEnds.indexOf(sw.getBranchDest()) % 2 == 1){
-                track.getBlock(sw.getStraightDest()).setHead(track.getBlock(sw.getRoot()));
+                track.getBlock(sw.getBranchDest()).setHead(track.getBlock(sw.getRoot()));
             }else{
                 return false;
             }
@@ -395,6 +408,31 @@ public class TrackModel {
             if (cell != null && cell.getCellType() != Cell.CELL_TYPE_BLANK)
                 return false;
         }
+        return true;
+    }
+
+    public boolean verify(Track track){
+
+        int travelCount = 0;
+        Block currBlock = track.getBlock(1);
+
+        while(travelCount < 200){
+
+            if(currBlock.getHead().getBlockNum() != currBlock.getBlockNum() + 1){
+                if(currBlock.getBlockNum() >= track.getBlockHashMap().size()){
+                    currBlock = track.getBlock(1);
+                    System.out.println("Jumping to beginning of track...");
+                }else{
+                    currBlock = track.getBlock(currBlock.getBlockNum() + 1);
+                    System.out.println("Jumping to next branch...");
+                }
+            }else{
+                currBlock = currBlock.getHead();
+            }
+
+            travelCount++;
+        }
+
         return true;
     }
 }

@@ -65,4 +65,8 @@ public class Track {
     public Block getBlock(int blockNum){
         return blockHashMap.get(blockNum);
     }
+
+    public Map<Integer, Block> getBlockHashMap(){
+        return blockHashMap;
+    }
 }
