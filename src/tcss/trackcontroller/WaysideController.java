@@ -36,6 +36,8 @@ public class WaysideController {
     private final int beforelap = 2;
     private Track redTrack;
     private Track greenTrack;
+    private TrackController redtrackController;
+    TrackController greentrackController;
     public float ss;
     public int auth;
     public int blockId;
@@ -45,19 +47,28 @@ public class WaysideController {
         //this.line = track.getBlock(blockId).getLine();
         this.greenTrack = greenTrack;
         if (this.redTrack == redTrack) {
-            TrackController redtrackController = redtrackcontrollerConstructor(this.redTrack, 1, redTrack.getBlockList().getFirst().getBlockNum());
+            redtrackController = redtrackcontrollerConstructor(this.redTrack, 1, redTrack.getBlockList().getFirst().getBlockNum());
         }
 
         if (this.greenTrack == greenTrack) {
-            TrackController greentrackController = greentrackcontrollerConstructor(this.greenTrack, 0, greenTrack.getBlockList().getFirst().getBlockNum());
+            greentrackController = greentrackcontrollerConstructor(this.greenTrack, 0, greenTrack.getBlockList().getFirst().getBlockNum());
         }
 
 
     }
-    public void getNextStop(float SS, int auth, int ID) {
-        this.ss = SS;
-        this.blockId = ID;
-        this.auth = auth;
+    public void getNextStop(float SS, int auth, int line, int ID) {
+        this.line = line;
+        if(this.line == 0){
+            this.blockId = greenTrack.getBlock(ID).getBlockNum();
+            this.ss = SS;
+            this.auth = auth;
+        }
+        if(this.line==1){
+            this.blockId = redTrack.getBlock(ID).getBlockNum();
+            this.ss = SS;
+            this.auth = auth;
+        }
+
     }
 
     public TrackController redtrackcontrollerConstructor(Track track, int line, int blockId) throws IOException {
@@ -252,6 +263,33 @@ public class WaysideController {
         if(tc!= null)
             tc.waysideLights(line, blockId, occupancy);
         return false;
+    }
+
+    public boolean getOccupied(int line, int blockId) {
+        if (line == 1) {
+            return redTrack.getBlock(blockId).isOccupied();
+        }
+        else {
+            return greenTrack.getBlock(blockId).isOccupied();
+        }
+    }
+
+    public boolean getSwitchStraight(int line, int blockId) {
+        if (line == 1) {
+            return redTrack.getBlock(blockId).getSwitch().getStraight();
+        }
+        else {
+            return greenTrack.getBlock(blockId).getSwitch().getStraight();
+        }
+    }
+
+    public boolean getLightState(int line, int blockId) {
+        if (line == 1) {
+            return redTrack.getBlock(blockId).getSwitch().lightsOn();
+        }
+        else {
+            return greenTrack.getBlock(blockId).getSwitch().lightsOn();
+        }
     }
 
     private TrackController getTC(int line, ArrayList<Integer> blocklist){

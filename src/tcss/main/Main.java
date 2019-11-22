@@ -33,7 +33,7 @@ public class Main extends Application {
         greenLine = tm.getGreenLine();
 
         //init Track Model
-        tm = new TrackModel();
+//        tm = new TrackModel();
 
         //init wc
         tc = new WaysideController(redLine, greenLine);

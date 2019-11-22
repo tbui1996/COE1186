@@ -189,4 +189,11 @@ public class Dispatch {
         else
             return 0;
     }
+
+    public int lineToTc() {
+        if (this.line == 1)
+            return this.line;
+        else
+            return 0;
+    }
 }
