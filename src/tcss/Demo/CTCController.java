@@ -47,9 +47,9 @@ public class CTCController implements Initializable{
     }
 
     public void getDispatches() {
-        //Dispatch currDispatch = Main.ctc.getFirstDispatch();
-        //dispatch1 = new Label(currDispatch.toString());
-        dispatchList.getChildren().add(dispatch1);
+//        Dispatch currDispatch = Main.ctc.getFirstDispatch();
+//        dispatch1 = new Label(currDispatch.toString());
+//        dispatchList.getChildren().add(dispatch1);
 
         //dispatchList = 0;
     }

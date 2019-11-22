@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import tcss.ctc.CTC;
+import tcss.trackcontroller.TrackController;
 import tcss.trackmodel.Track;
 import tcss.trackmodel.TrackModel;
 import tcss.trainmodel.TrainModel;
@@ -17,6 +18,7 @@ public class Main extends Application {
 
     static SimTime T;
     static public CTC ctc;
+    static public TrackController tc;
     static public TrackModel tm;
     static public Track redLine;
     static public Track greenLine;
