@@ -36,7 +36,19 @@ public class TrackSelectController implements Initializable {
 
     }
 
-    public void showTrackController() {
+    public void showTrackController() throws Exception{
+    FXMLLoader controlLoader = new FXMLLoader(getClass().getResource("fxml/TrackController.fxml"));
+    Stage controller = new Stage();
+    Parent controllerRoot = controlLoader.load();
+    controller.setTitle("Track Controller");
+    controller.setScene(new Scene(controllerRoot));
+    controller.setResizable(false);
+    controller.getIcons().add(new Image("file:resources/train.png"));
+    controller.show();
+
+    Stage s = (Stage) modelButton.getScene().getWindow();
+    s.close();
+
 
     }
 

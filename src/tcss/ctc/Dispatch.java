@@ -1,6 +1,9 @@
 package tcss.ctc;
 
+import tcss.trackmodel.Track;
 import tcss.trainmodel.TrainModel;
+
+import java.util.ArrayList;
 
 
 public class Dispatch {
@@ -10,13 +13,16 @@ public class Dispatch {
     private int line; //Red == 1, Green == 2
     public Schedule schedule;
     //public String trainName;
-    private int mode;
+    //private int mode;
     //private TrainModel train;
     private int currStop = -1;
     private float [] speedList;
     private int [] authList;
-    private int arrivalTime;
-    private int departureTime;
+    private int aHr;
+    private int aMin;
+    private int dHr;
+    private int dMin;
+    //private ArrayList<String> stations;
 
     public Dispatch(String l, String n) {
         this.line = this.lineStringToInt(l);
@@ -41,29 +47,38 @@ public class Dispatch {
         //this.schedule.addStop("First Ave", (float) 2.1);
         //this.schedule.addStop("Station Square", (float) 1.7);
         //this.schedule.addStop("South Hills Junction", (float) 2.3);
-        this.arrivalTime = 500;
-        this.departureTime = 100;
+        this.aHr = 11;
+        this.aMin = 0;
+        this.dHr = 14;
+        this.dMin = 0;
     }
 
     public void setRequests() {
-        speedList = new float[schedule.getStopNums()];
-        authList = new int[schedule.getStopNums()];
+        speedList = new float[schedule.getStopNums() + 1];
+        authList = new int[schedule.getStopNums() + 1];
 
 
-        for (int i = 0; i < schedule.getStopNums(); i++) {
-            //Calculates speed and authority for each stop
-            //(distance between blocks) / ((station w/ dwell) - dwell), unit is blocks/sec
-            if (i == 0) {
-                speedList[i] = (1 / (float) (this.schedule.getStopDwell(i) - 35)); //stationToYard((schedule.getStopName(i)) / schedule.getStopDwell(i) - 35
-                authList[i] = 1; //stationToYard(schedule.getStopName(i))
-            }
-            else {
-                //speedList[i] = stationToStation((schedule.getStopName(i-1),schedule.getStopName(i)) / schedule.getStopDwell(i)*60 - 35;
-                //authList = stationToStation(schedule.getStopName(i-1), schedule.getStopName(i));
-                speedList[i] = (3 / (float) (1.5 * 60 - 35));
-                authList[i] = 3;
+        if (this.line == 1) {
+            for (int i = 0; i < schedule.getStopNums(); i++) {
+                //Calculates speed and authority for each stop
+                //(distance between blocks) / ((station w/ dwell) - dwell), unit is blocks/sec
+                if (i == 0) {
+                    speedList[i] = (float) (tcss.main.Main.redLine.distanceToYard(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))) / (float) (this.schedule.getStopDwell(i) - 35)); //stationToYard((schedule.getStopName(i)) / schedule.getStopDwell(i) - 35
+                    authList[i] = (int) tcss.main.Main.redLine.distanceToYard(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))); //stationToYard(schedule.getStopName(i))
+                } else {
+                    //speedList[i] = stationToStation((schedule.getStopName(i-1),schedule.getStopName(i)) / schedule.getStopDwell(i)*60 - 35;
+                    //authList = stationToStation(schedule.getStopName(i-1), schedule.getStopName(i));
+                    speedList[i] = (float) (tcss.main.Main.redLine.distanceBetweenTwoBlocks(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))),tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))) / (float) (this.schedule.getStopDwell(i) - 35));;
+                    authList[i] = (int) tcss.main.Main.redLine.distanceBetweenTwoBlocks(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))),tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))));
+                }
             }
         }
+        else {
+
+        }
+
+        speedList[speedList.length-1] = 10/*Min Speed*/;
+        authList[authList.length-1] = 0/*YARD*/;
     }
 
     public void setSS(float SS) {
@@ -94,37 +109,47 @@ public class Dispatch {
         /**/
     }
 
-    public int getArrivalTime() {
-        return this.arrivalTime;
+    public int getArrivalHour() {
+        return this.aHr;
     }
 
-    public void setArrivalTime(int t) {
-        this.arrivalTime = t;
+    public int getArrivalMin() {
+        return this.aMin;
+    }
+
+    public void setArrivalTime(int h, int m) {
+        this.aHr = h;
+        this.aMin = m;
     }
 
     public String arrivalTimeString() {
-        if (this.arrivalTime > 12) {
-            return (this.arrivalTime % 12) + "PM";
+        if (this.aHr > 12) {
+            return (this.aHr % 12) + " : " + this.aMin + " PM";
         }
         else {
-            return (this.arrivalTime) + "AM";
+            return (this.aHr) + " : " + this.aMin + " AM";
         }
     }
 
-    public int getDepartureTime() {
-        return this.departureTime;
+    public int getDepartureHour() {
+        return this.dHr;
     }
 
-    public void setDepartureTime(int t) {
-        this.departureTime = t;
+    public int getDepartureMin() {
+        return this.dMin;
+    }
+
+    public void setDepartureTime(int h, int m) {
+        this.dHr = h;
+        this.dMin = m;
     }
 
     public String departureTimeString() {
-        if (this.departureTime > 12) {
-            return (this.departureTime % 12) + " PM";
+        if (this.dHr > 12) {
+            return (this.dHr % 12) + " : " + this.dMin + " PM";
         }
         else {
-            return (this.departureTime) + " AM";
+            return (this.dHr) + " : " +  this.dMin + " AM";
         }
     }
 
@@ -161,6 +186,13 @@ public class Dispatch {
             return 1;
         else if (line.equals("GREEN"))
             return 2;
+        else
+            return 0;
+    }
+
+    public int lineToTc() {
+        if (this.line == 1)
+            return this.line;
         else
             return 0;
     }

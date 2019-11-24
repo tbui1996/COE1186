@@ -54,6 +54,7 @@ public class DispatchSelectController implements Initializable {
         curr.createSchedule(curr.getLine());
 
         //Populates stop drop down once line is selected
+        stopSelector.getItems().clear();
         String [] temp = tcss.main.Main.ctc.getAllStops(curr.getLine());
         for (int i = 0; i < temp.length; i++)
             stopSelector.getItems().add(temp[i]);
@@ -68,20 +69,28 @@ public class DispatchSelectController implements Initializable {
     public void confirmDispatch(ActionEvent e) throws Exception {
         //Set Departure Time if one was entered
         if (!dHour.getText().equals("")) {
-            if (dHalf.getText().equals("AM"))
-                curr.setDepartureTime(Integer.parseInt(dHour.getText()));
-            else
-                curr.setDepartureTime(Integer.parseInt(dHour.getText()) + 12);
+            if (dHalf.getText().equals("AM")) {
+                if (dHour.getText().equals("12"))
+                    curr.setDepartureTime(0, Integer.parseInt(dMin.getText()));
+                else
+                    curr.setDepartureTime(Integer.parseInt(dHour.getText()), Integer.parseInt(dMin.getText()));
+            }
+            else {
+                if (dHour.getText().equals("12"))
+                    curr.setDepartureTime( 12, Integer.parseInt(dMin.getText()));
+                else
+                    curr.setDepartureTime(Integer.parseInt(dHour.getText()) + 12, Integer.parseInt(dMin.getText()));
+            }
         }
 
         //Set Arrival Time if one was entered
         if (!aHour.getText().equals("")) {
             System.out.println("aHalf: " + aHalf.getText().equals("AM"));
             if (aHalf.getText().equals("AM")) {
-                curr.setArrivalTime(Integer.parseInt(aHour.getText()));
+                curr.setArrivalTime(Integer.parseInt(aHour.getText()), Integer.parseInt(aMin.getText()));
             }
             else {
-                curr.setArrivalTime(Integer.parseInt((aHour.getText())) + 12);
+                curr.setArrivalTime(Integer.parseInt((aHour.getText())) + 12, Integer.parseInt(aMin.getText()));
             }
         }
 

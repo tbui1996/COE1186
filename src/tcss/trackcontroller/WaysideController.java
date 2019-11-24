@@ -4,13 +4,13 @@ import tcss.trackmodel.Block;
 import tcss.trackmodel.Track;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 public class WaysideController {
     Track track;
     int line;
-    int blockId;
     Block block;
     boolean iSswitch;
     boolean iScrossing;
@@ -34,22 +34,40 @@ public class WaysideController {
     private final int numberofRedTrackControllers = 4;
     private final int overlap = 2;
     private final int beforelap = 2;
-    private ArrayList<TrackController> redTrack;
+    private Track redTrack;
     private Track greenTrack;
-    /*
-    public WaysideController(Track track, int blockId) throws IOException {
-        this.track = track;
-        this.line = track.getBlock(blockId).getLine();
-        this.blockId = blockId;
+    private TrackController redtrackController;
+    TrackController greentrackController;
+    public float ss;
+    public int auth;
+    public int blockId;
 
-        if (this.line == 1) {
-            redtrackcontrollerConstructor(this.track, this.line, this.blockId);
+    public WaysideController(Track redtrack, Track greenTrack) throws IOException {
+        this.redTrack = redtrack;
+        //this.line = track.getBlock(blockId).getLine();
+        this.greenTrack = greenTrack;
+        if (this.redTrack == redTrack) {
+            redtrackController = redtrackcontrollerConstructor(this.redTrack, 1, redTrack.getBlockList().getFirst().getBlockNum());
         }
 
-        if (this.line == 0) {
-            greentrackcontrollerConstructor(this.track, this.line, this.blockId);
+        if (this.greenTrack == greenTrack) {
+            greentrackController = greentrackcontrollerConstructor(this.greenTrack, 0, greenTrack.getBlockList().getFirst().getBlockNum());
         }
 
+
+    }
+    public void getNextStop(float SS, int auth, int line, int ID) {
+        this.line = line;
+        if(this.line == 0){
+            this.blockId = greenTrack.getBlock(ID).getBlockNum();
+            this.ss = SS;
+            this.auth = auth;
+        }
+        if(this.line==1){
+            this.blockId = redTrack.getBlock(ID).getBlockNum();
+            this.ss = SS;
+            this.auth = auth;
+        }
 
     }
 
@@ -57,14 +75,15 @@ public class WaysideController {
         listofredblocks = track.getBlockList();
         listofredRXR = new LinkedList<>();
         listofredswitches = new LinkedList<>();
+        redblocks = new int[listofredblocks.size()];
         TrackController redTrC;
 
         for (int i = 0; i < listofredblocks.size(); i++) {
             Block currentBlock = listofredblocks.get(i);
             redblocks[i] = currentBlock.getBlockNum();
-            if (currentBlock.getCrossing()) {
+            if (currentBlock.getRXR() != null) {
                 listofredRXR.add(currentBlock);
-            } else if (currentBlock.getSwitch().getStraight()) {
+            } else if (currentBlock.getSwitch() != null) {
                 listofredswitches.add(currentBlock);
             }
         }
@@ -83,14 +102,14 @@ public class WaysideController {
                     calculate += listofredblocks.size();
                 Block curBlock = listofredblocks.get(calculate);
                 blocks.put(curBlock.getBlockNum(), curBlock);
-                if (curBlock.getCrossing()) {
+                if (curBlock.getRXR() != null) {
                     RXR.put(curBlock.getBlockNum(), curBlock);
                 } else calculateHashMaps(blocks, switching, curBlock, listofredblocks);
 
             }
             redTrC = new TrackController(i, 1, blocks, switching, RXR);
             redTC.add(redTrC);
-            redTrC.loadPLC("/Users/thomasbui/Desktop/COE1186_Code1/src/tcss/trackcontroller/plc.plc");
+            redTrC.loadPLC("C:\\Users\\kjs08\\OneDrive\\Documents\\Senior_Year\\1186\\Project\\src\\tcss\\trackcontroller\\plctest.plc");
             return redTrC;
 
         }
@@ -101,14 +120,15 @@ public class WaysideController {
         listofgreenblocks = track.getBlockList();
         listofgreenRXR = new LinkedList<>();
         listofgreenswitches = new LinkedList<>();
+        greenblocks = new int[listofgreenblocks.size()];
         TrackController greenTrC;
 
         for (int i = 0; i < listofgreenblocks.size(); i++) {
             Block currentBlock = listofgreenblocks.get(i);
             greenblocks[i] = currentBlock.getBlockNum();
-            if (currentBlock.getCrossing()) {
+            if (currentBlock.getRXR() != null) {
                 listofgreenRXR.add(currentBlock);
-            } else if (currentBlock.getSwitch().getStraight()) {
+            } else if (currentBlock.getSwitch() != null) {
                 listofgreenswitches.add(currentBlock);
             }
         }
@@ -127,7 +147,7 @@ public class WaysideController {
                     calculate += listofgreenblocks.size();
                 Block curBlock = listofgreenblocks.get(calculate);
                 blocks1.put(curBlock.getBlockNum(), curBlock);
-                /*if (curBlock.getCrossing()) {
+                if (curBlock.getRXR()!=null) {
                     RXR1.put(curBlock.getBlockNum(), curBlock);
                 } else {
                     calculateHashMaps(blocks1, switching1, curBlock, listofgreenblocks);
@@ -136,7 +156,7 @@ public class WaysideController {
             }
             greenTrC = new TrackController(i, 1, blocks1, switching1, RXR1);
             greenTC.add(greenTrC);
-            greenTrC.loadPLC("/Users/thomasbui/Desktop/COE1186_Code1/src/tcss/trackcontroller/plc.plc");
+            greenTrC.loadPLC("C:\\Users\\kjs08\\OneDrive\\Documents\\Senior_Year\\1186\\Project\\src\\tcss\\trackcontroller\\plctest.plc");
             return greenTrC;
 
         }
@@ -144,7 +164,7 @@ public class WaysideController {
     }
 
     public void calculateHashMaps(HashMap<Integer, Block> blocks1, HashMap<Integer, Block> switching1, Block curBlock, LinkedList<Block> listofgreenblocks) {
-        /*if (curBlock.getSwitch().getStraight()) {
+        if (curBlock.getSwitch()!= null) {
             switching1.put(curBlock.getBlockNum(), curBlock);
             int switchid1 = curBlock.getBlockNum();
             Block switchblock1 = listofgreenblocks.get(switchid1);
@@ -245,6 +265,33 @@ public class WaysideController {
         return false;
     }
 
+    public boolean getOccupied(int line, int blockId) {
+        if (line == 1) {
+            return redTrack.getBlock(blockId).isOccupied();
+        }
+        else {
+            return greenTrack.getBlock(blockId).isOccupied();
+        }
+    }
+
+    public boolean getSwitchStraight(int line, int blockId) {
+        if (line == 1) {
+            return redTrack.getBlock(blockId).getSwitch().getStraight();
+        }
+        else {
+            return greenTrack.getBlock(blockId).getSwitch().getStraight();
+        }
+    }
+
+    public boolean getLightState(int line, int blockId) {
+        if (line == 1) {
+            return redTrack.getBlock(blockId).getSwitch().lightsOn();
+        }
+        else {
+            return greenTrack.getBlock(blockId).getSwitch().lightsOn();
+        }
+    }
+
     private TrackController getTC(int line, ArrayList<Integer> blocklist){
         ArrayList<TrackController> tc;
 
@@ -264,7 +311,7 @@ public class WaysideController {
         }
         return null;
     }
-    /*
+
     public String blockRequest(int line, int blockId){
         TrackController tc;
         ArrayList<Integer> blocklist = new ArrayList<>();
@@ -276,43 +323,4 @@ public class WaysideController {
         return " ";
     }
 
-
-}
-
-/*
-
-    public TrackController getTC(int line, ArrayList<Integer> blok) {
-        //green
-        if (line == 0) {
-            if (1 <= blockId && blockId < 17) {
-                return waysideControllers[0];
-            }
-            if ((17 <= blockId && blockId <= 62) && (102 <= blockId && blockId <= 150)) {
-                return waysideControllers[1];
-            }
-            if ((85 <= blockId && blockId <= 100)) {
-                return waysideControllers[2];
-            }
-            if (((63 <= blockId) && (blockId <= 85)) && (blockId == 101)) {
-                return waysideControllers[3];
-            }
-        }
-        //red
-        if (line == 1) {
-            if (1 <= blockId && blockId <= 23) {
-                return waysideControllers[4];
-            }
-            if ((21 <= blockId && blockId <= 45) && (72 <= blockId && 76 <= blockId)) {
-                return waysideControllers[5];
-            }
-            if ((24 <= blockId && blockId <= 48) && (67 <= blockId && blockId <= 71)) {
-                return waysideControllers[6];
-            }
-            if (46 <= blockId && blockId <= 66) {
-                return waysideControllers[7];
-            }
-        }
-
-        return null;
-*/
 }

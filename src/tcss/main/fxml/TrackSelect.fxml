@@ -14,7 +14,7 @@
                   <Insets right="45.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Track Controller" />
+            <Button mnemonicParsing="false" onAction="#showTrackController" text="Track Controller" />
          </children>
       </HBox>
       <Button mnemonicParsing="false" onAction="#closeWindow" styleClass="exit-button" text="Button" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
