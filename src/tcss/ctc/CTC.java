@@ -174,21 +174,21 @@ public class CTC {
                 if (temp.getLine() == 1) {
                     if (redLine.get(stationToBlockNumRed.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
                         temp.setCurrStop(temp.getCurrStop() + 1);
-                        tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1), temp.lineToTc(), stationToBlockNumRed.get(redStations.get(temp.getCurrStop()+1)));
-                    } else {
+                        tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), stationToBlockNumRed.get(redStations.get(temp.getCurrStop() + 1)));
+                    }
+                } else {
                         if (greenLine.get(stationToBlockNumGreen.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
                             temp.setCurrStop(temp.getCurrStop() + 1);
                             tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1), temp.lineToTc(), stationToBlockNumGreen.get(greenStations.get(temp.getCurrStop()+1)));
                         }
-                    }
-                    //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
                 }
+                    //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
             }
         }
     }
 
     public void updateTrackState() {
-        for (int j = 0; j < (redLine.size()); j++) {
+        for (int j = 1; j < (redLine.size()); j++) {
             //updating red line
             redLine.get(j).setOccupied(tcss.main.Main.tc.getOccupied(1,j));
             if (redLine.get(j).getSwitch() != null) {
@@ -198,7 +198,7 @@ public class CTC {
         }
 
         //updating green line
-        for (int j = 0; j < (greenLine.size()); j++) {
+        for (int j = 1; j < (greenLine.size()); j++) {
             greenLine.get(j).setOccupied(tcss.main.Main.tc.getOccupied(0,j));
             if (greenLine.get(j).getSwitch() != null) {
                 greenLine.get(j).getSwitch().setStraight(tcss.main.Main.tc.getSwitchStraight(0,j));
