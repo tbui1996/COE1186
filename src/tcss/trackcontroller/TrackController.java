@@ -12,7 +12,7 @@ public class TrackController {
     private int trackControllerID;
     CTC CTC;
     float ss;
-    int blockId;
+    int trackId;
     int auth;
     boolean railroadcrossing;
     boolean switches;
@@ -42,7 +42,7 @@ public class TrackController {
 
     public TrackController(int id, int line, HashMap<Integer, Block> blocks, HashMap<Integer, Block> switches, HashMap<Integer,Block>rxr){
 
-        this.blockId = id;
+        this.trackId = id;
         this.switchHashMap = switches;
         this.RXR = rxr;
         this.block = blocks;
@@ -58,7 +58,7 @@ public class TrackController {
         return this.line;
     }
     public int getTCID(){
-        return blockId;
+        return trackId;
     }
     public Block getBlock(int blockId){
         return block.get(blockId);
@@ -273,6 +273,10 @@ public class TrackController {
         if(isOccupied)
             return "occupied";
         return "open";
+    }
+
+    public int getAuthority(){
+        return this.auth;
     }
 
 }

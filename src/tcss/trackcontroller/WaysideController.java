@@ -4,7 +4,6 @@ import tcss.trackmodel.Block;
 import tcss.trackmodel.Track;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -37,7 +36,7 @@ public class WaysideController {
     private Track redTrack;
     private Track greenTrack;
     private TrackController redtrackController;
-    TrackController greentrackController;
+    private TrackController greentrackController;
     public float ss;
     public int auth;
     public int blockId;
@@ -46,16 +45,90 @@ public class WaysideController {
         this.redTrack = redtrack;
         //this.line = track.getBlock(blockId).getLine();
         this.greenTrack = greenTrack;
-        if (this.redTrack == redTrack) {
-            redtrackController = redtrackcontrollerConstructor(this.redTrack, 1, redTrack.getBlockList().getFirst().getBlockNum());
+        if (this.redTrack == redtrack) {
+            listofredblocks = this.redTrack.getBlockList();
+            listofredRXR = new LinkedList<>();
+            listofredswitches = new LinkedList<>();
+            redblocks = new int[listofredblocks.size()];
+
+            for (int i = 0; i < listofredblocks.size(); i++) {
+                Block currentBlock = listofredblocks.get(i);
+                redblocks[i] = currentBlock.getBlockNum();
+                if (currentBlock.getRXR() != null) {
+                    listofredRXR.add(currentBlock);
+                } else if (currentBlock.getSwitch() != null) {
+                    listofredswitches.add(currentBlock);
+                }
+            }
+            int blocksinRedTC = (listofredblocks.size() / numberofRedTrackControllers) + 4;
+            redTC = new ArrayList<>();
+            for (int i = 0; i < numberofRedTrackControllers; i++) {
+                HashMap<Integer, Block> blocks = new HashMap<>();
+                HashMap<Integer, Block> RXR = new HashMap<>();
+                HashMap<Integer, Block> switching = new HashMap<>();
+
+                int over = blocksinRedTC - 4;
+                for (int x = (i * over - beforelap); x < (blocksinRedTC + (i * over - 2)); x++) {
+                    int calculate;
+                    calculate = x % listofredblocks.size();
+                    if (calculate < 0)
+                        calculate += listofredblocks.size();
+                    Block curBlock = listofredblocks.get(calculate);
+                    blocks.put(curBlock.getBlockNum(), curBlock);
+                    if (curBlock.getRXR() != null) {
+                        RXR.put(curBlock.getBlockNum(), curBlock);
+                    } else calculateHashMaps(blocks, switching, curBlock, listofredblocks);
+
+                }
+                TrackController redTrC = new TrackController(i, 1, blocks, switching, RXR);
+                redTC.add(redTrC);
+                redTrC.loadPLC("resources/plctest.plc");
+            }
         }
 
         if (this.greenTrack == greenTrack) {
-            greentrackController = greentrackcontrollerConstructor(this.greenTrack, 0, greenTrack.getBlockList().getFirst().getBlockNum());
+            listofgreenblocks = this.greenTrack.getBlockList();
+            listofgreenRXR = new LinkedList<>();
+            listofgreenswitches = new LinkedList<>();
+            greenblocks = new int[listofgreenblocks.size()];
+
+            for (int i = 0; i < listofgreenblocks.size(); i++) {
+                Block currentBlock = listofgreenblocks.get(i);
+                greenblocks[i] = currentBlock.getBlockNum();
+                if (currentBlock.getRXR() != null) {
+                    listofgreenRXR.add(currentBlock);
+                } else if (currentBlock.getSwitch() != null) {
+                    listofgreenswitches.add(currentBlock);
+                }
+            }
+            int blocksinGreenTC = (listofgreenblocks.size() / numberofGreenTrackControllers) + 4;
+            greenTC = new ArrayList<>();
+            for (int i = 0; i < numberofGreenTrackControllers; i++) {
+                HashMap<Integer, Block> blocks1 = new HashMap<>();
+                HashMap<Integer, Block> RXR1 = new HashMap<>();
+                HashMap<Integer, Block> switching1 = new HashMap<>();
+
+                int over = blocksinGreenTC - 4;
+                for (int x = (i * over - beforelap); x < (blocksinGreenTC + (i * over - 2)); x++) {
+                    int calculate;
+                    calculate = x % listofgreenblocks.size();
+                    if (calculate < 0)
+                        calculate += listofgreenblocks.size();
+                    Block curBlock = listofgreenblocks.get(calculate);
+                    blocks1.put(curBlock.getBlockNum(), curBlock);
+                    if (curBlock.getRXR()!=null) {
+                        RXR1.put(curBlock.getBlockNum(), curBlock);
+                    } else {
+                        calculateHashMaps(blocks1, switching1, curBlock, listofgreenblocks);
+                    }
+
+                }
+                TrackController greenTrC = new TrackController(i, 1, blocks1, switching1, RXR1);
+                greenTC.add(greenTrC);
+                greenTrC.loadPLC("resources/plctest.plc");
+                }
+            }
         }
-
-
-    }
     public void getNextStop(float SS, int auth, int line, int ID) {
         this.line = line;
         if(this.line == 0){
@@ -71,97 +144,6 @@ public class WaysideController {
 
     }
 
-    public TrackController redtrackcontrollerConstructor(Track track, int line, int blockId) throws IOException {
-        listofredblocks = track.getBlockList();
-        listofredRXR = new LinkedList<>();
-        listofredswitches = new LinkedList<>();
-        redblocks = new int[listofredblocks.size()];
-        TrackController redTrC;
-
-        for (int i = 0; i < listofredblocks.size(); i++) {
-            Block currentBlock = listofredblocks.get(i);
-            redblocks[i] = currentBlock.getBlockNum();
-            if (currentBlock.getRXR() != null) {
-                listofredRXR.add(currentBlock);
-            } else if (currentBlock.getSwitch() != null) {
-                listofredswitches.add(currentBlock);
-            }
-        }
-        int blocksinRedTC = (listofredblocks.size() / numberofRedTrackControllers) + 4;
-        redTC = new ArrayList<>();
-        for (int i = 0; i < numberofRedTrackControllers; i++) {
-            HashMap<Integer, Block> blocks = new HashMap<>();
-            HashMap<Integer, Block> RXR = new HashMap<>();
-            HashMap<Integer, Block> switching = new HashMap<>();
-
-            int over = blocksinRedTC - 4;
-            for (int x = (i * over - beforelap); x < (blocksinRedTC + (i * over - 2)); x++) {
-                int calculate;
-                calculate = x % listofredblocks.size();
-                if (calculate < 0)
-                    calculate += listofredblocks.size();
-                Block curBlock = listofredblocks.get(calculate);
-                blocks.put(curBlock.getBlockNum(), curBlock);
-                if (curBlock.getRXR() != null) {
-                    RXR.put(curBlock.getBlockNum(), curBlock);
-                } else calculateHashMaps(blocks, switching, curBlock, listofredblocks);
-
-            }
-            redTrC = new TrackController(i, 1, blocks, switching, RXR);
-            redTC.add(redTrC);
-            redTrC.loadPLC("C:\\Users\\kjs08\\OneDrive\\Documents\\Senior_Year\\1186\\Project\\src\\tcss\\trackcontroller\\plctest.plc");
-            return redTrC;
-
-        }
-        return null;
-    }
-
-    public TrackController greentrackcontrollerConstructor(Track track, int line, int blockId) throws IOException {
-        listofgreenblocks = track.getBlockList();
-        listofgreenRXR = new LinkedList<>();
-        listofgreenswitches = new LinkedList<>();
-        greenblocks = new int[listofgreenblocks.size()];
-        TrackController greenTrC;
-
-        for (int i = 0; i < listofgreenblocks.size(); i++) {
-            Block currentBlock = listofgreenblocks.get(i);
-            greenblocks[i] = currentBlock.getBlockNum();
-            if (currentBlock.getRXR() != null) {
-                listofgreenRXR.add(currentBlock);
-            } else if (currentBlock.getSwitch() != null) {
-                listofgreenswitches.add(currentBlock);
-            }
-        }
-        int blocksinGreenTC = (listofgreenblocks.size() / numberofGreenTrackControllers) + 4;
-        greenTC = new ArrayList<>();
-        for (int i = 0; i < numberofGreenTrackControllers; i++) {
-            HashMap<Integer, Block> blocks1 = new HashMap<>();
-            HashMap<Integer, Block> RXR1 = new HashMap<>();
-            HashMap<Integer, Block> switching1 = new HashMap<>();
-
-            int over = blocksinGreenTC - 4;
-            for (int x = (i * over - beforelap); x < (blocksinGreenTC + (i * over - 2)); x++) {
-                int calculate;
-                calculate = x % listofgreenblocks.size();
-                if (calculate < 0)
-                    calculate += listofgreenblocks.size();
-                Block curBlock = listofgreenblocks.get(calculate);
-                blocks1.put(curBlock.getBlockNum(), curBlock);
-                if (curBlock.getRXR()!=null) {
-                    RXR1.put(curBlock.getBlockNum(), curBlock);
-                } else {
-                    calculateHashMaps(blocks1, switching1, curBlock, listofgreenblocks);
-                }
-
-            }
-            greenTrC = new TrackController(i, 1, blocks1, switching1, RXR1);
-            greenTC.add(greenTrC);
-            greenTrC.loadPLC("C:\\Users\\kjs08\\OneDrive\\Documents\\Senior_Year\\1186\\Project\\src\\tcss\\trackcontroller\\plctest.plc");
-            return greenTrC;
-
-        }
-        return null;
-    }
 
     public void calculateHashMaps(HashMap<Integer, Block> blocks1, HashMap<Integer, Block> switching1, Block curBlock, LinkedList<Block> listofgreenblocks) {
         if (curBlock.getSwitch()!= null) {
@@ -204,9 +186,17 @@ public class WaysideController {
     public boolean maintenanceRequest(int line, int blockId){
         TrackController tc;
         ArrayList<Integer> blocklist = new ArrayList<>();
-        this.line = track.getBlockList().get(blockId).getLine();
-        Block curBlock;
-        curBlock = track.getBlockList().get(blockId);
+
+        Block curBlock = null;
+
+        if(line == 0){
+            this.line = greenTrack.getBlockList().get(blockId).getLine();
+            curBlock = track.getBlockList().get(blockId);
+        }
+        if(line == 1){
+            this.line = redTrack.getBlockList().get(blockId).getLine();
+            curBlock = track.getBlockList().get(blockId);
+        }
         int next = curBlock.getNextBlock().getBlockNum();
         int prev = curBlock.getPreviousBlock().getBlockNum();
         if(next>=0)
@@ -277,7 +267,7 @@ public class WaysideController {
     public boolean getSwitchStraight(int line, int blockId) {
         if (line == 1) {
             return redTrack.getBlock(blockId).getSwitch().getStraight();
-        }
+        } 
         else {
             return greenTrack.getBlock(blockId).getSwitch().getStraight();
         }
@@ -322,5 +312,9 @@ public class WaysideController {
 
         return " ";
     }
+
+
+
+
 
 }
