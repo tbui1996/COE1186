@@ -23,9 +23,11 @@
         </AnchorPane>
         <AnchorPane layoutX="15.0" layoutY="289.0" prefHeight="106.0" prefWidth="418.0">
             <children>
-                <Button fx:id="importPLC" alignment="CENTER" layoutX="432.0" layoutY="90.0" mnemonicParsing="false" onAction="#onPLCClick" prefHeight="56.0" prefWidth="112.0" text="Import PLC" textAlignment="CENTER" />
+                <Button fx:id="importPLC" alignment="CENTER" layoutX="432.0" layoutY="90.0" mnemonicParsing="false" prefHeight="56.0" prefWidth="112.0" text="Import PLC" textAlignment="CENTER" />
             <Label fx:id="outputLights" layoutX="-1.0" layoutY="-11.0" text="Lights:" />
             <Label fx:id="railroadcrossing" layoutX="-1.0" layoutY="26.0" text="Railroad Crossing:" />
+                <ToggleButton fx:id="manualMode" layoutX="435.0" layoutY="50.0" mnemonicParsing="false" onAction="#setManualMode" text="Manual Mode" textFill="WHITE" />
+
             </children>
             <padding>
                 <Insets left="25.0" />
@@ -38,7 +40,7 @@
           <Label fx:id="authLabel" layoutX="14.0" layoutY="139.0" text="Authority:" />
           <Label fx:id="outputSwitch" layoutX="14.0" layoutY="174.0" text="Switch:" />
       <Label layoutX="12.0" layoutY="203.0" text="Crossing:" />
-      <ChoiceBox fx:id="blockChoice" layoutX="397.0" layoutY="91.0" prefWidth="150.0" />
-      <ChoiceBox fx:id="trackChoice" layoutX="398.0" layoutY="136.0" prefWidth="150.0" />
+      <ChoiceBox fx:id="trackChoice" layoutX="397.0" layoutY="91.0" prefWidth="150.0" value="Select a Track Controller"/>
+      <ChoiceBox fx:id="blockChoice" layoutX="398.0" layoutY="136.0" prefWidth="150.0" value="Select a block"/>
     </children>
 </AnchorPane>
