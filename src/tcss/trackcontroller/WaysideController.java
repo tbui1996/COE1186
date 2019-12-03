@@ -135,11 +135,13 @@ public class WaysideController {
             this.blockId = greenTrack.getBlock(ID).getBlockNum();
             this.ss = SS;
             this.auth = auth;
+            greenTrack.getBlock(ID).setSuggSpeedAndAuth(this.ss,this.auth);
         }
         if(this.line==1){
             this.blockId = redTrack.getBlock(ID).getBlockNum();
             this.ss = SS;
             this.auth = auth;
+            redTrack.getBlock(ID).setSuggSpeedAndAuth(this.ss,this.auth);
         }
 
     }

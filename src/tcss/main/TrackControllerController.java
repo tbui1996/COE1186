@@ -196,6 +196,15 @@ public class TrackControllerController implements Initializable {
           }
       });
 
+      manualMode.setOnAction(new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent actionEvent) {
+              if(manualMode.isSelected()){
+
+              }
+          }
+      });
+
       // Create Timeline for periodic updating
       Timeline loop = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
           @Override
@@ -259,19 +268,25 @@ public class TrackControllerController implements Initializable {
       thread.start();
   }
 
-  private void update(){
+  public void update(){
         if (curTC == null)
             return;
         if(manualMode.isSelected())
             manualMode.setText("Entering manual mode...");
-        else
+        else {
+            importPLC.setDisable(true);
             manualMode.setText("Exiting manual mode...");
+        }
+        curTC.trasmitAuthority(curTC.getBlock(blockId).getSuggestedSpeed(),blockId,curTC.getBlock(blockId).getAuthority());
         //TODO: need to rewrite getAuthority to get the actual authority from wayside controller
         authLabel.setText("Authority: " + curTC.getBlock(blockId).getAuthority() + " blocks");
         sSpeedLabel.setText("Suggesed Speed: "+ curTC.getBlock(blockId).getSuggestedSpeed() + " mph");
         outputLights.setText("Lights: " + curTC.getBlock(blockId).getSwitch().getStraight());
   }
 
-
+    public void closeWindow() {
+        Stage s = (Stage) trackChoice.getScene().getWindow();
+        s.close();
+    }
 
 }

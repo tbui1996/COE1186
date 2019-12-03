@@ -58,7 +58,7 @@ public class TrackController {
         return this.line;
     }
     public int getTCID(){
-        return trackId;
+        return trackControllerID;
     }
     public Block getBlock(int blockId){
         return block.get(blockId);
@@ -71,6 +71,9 @@ public class TrackController {
     //updaters
     public void transmitLightState(int blockId, boolean status){
         track.getBlock(blockId).getSwitch().setStraight(status);
+    }
+    public void trasmitAuthority(float ss, int blockId, int authority){
+        track.getBlock(blockId).setSuggSpeedAndAuth(ss, authority);
     }
 
     public boolean getOccupancy(int blockId){
