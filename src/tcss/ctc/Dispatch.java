@@ -63,7 +63,7 @@ public class Dispatch {
                 //Calculates speed and authority for each stop
                 //(distance between blocks) / ((station w/ dwell) - dwell), unit is blocks/sec
                 if (i == 0) {
-                    speedList[i] = (float) (tcss.main.Main.redLine.distanceToYard(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))) / (float) (this.schedule.getStopDwell(i) - 35)); //stationToYard((schedule.getStopName(i)) / schedule.getStopDwell(i) - 35
+                    speedList[i] = (float) (tcss.main.Main.redLine.distanceToYard(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))) / (this.schedule.getStopDwell(i) - 35)); //stationToYard((schedule.getStopName(i)) / schedule.getStopDwell(i) - 35
                     authList[i] = (int) tcss.main.Main.redLine.distanceToYard(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))); //stationToYard(schedule.getStopName(i))
                 } else {
                     //speedList[i] = stationToStation((schedule.getStopName(i-1),schedule.getStopName(i)) / schedule.getStopDwell(i)*60 - 35;

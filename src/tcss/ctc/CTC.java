@@ -10,7 +10,6 @@ import java.util.*;
 
 
 public class CTC {
-    TrackController TC1;
     private ArrayList<Dispatch> dispatchList = new ArrayList<Dispatch>(); /*Number of Trains*/
     public ArrayList<TrainModel> trainList = new ArrayList<TrainModel>(); /*Number of Trains*/
 
@@ -207,10 +206,6 @@ public class CTC {
         }
     }
 
-    public TrackController getTrackController(int index){
-        return this.TC1;
-    }
-
     public void sendNextStop(float SS, int auth, int ID) {
         //this.TC1.getNextStop(SS, auth, ID);
     }
@@ -230,16 +225,25 @@ public class CTC {
     //Return a String array of all stops in a line
     public String [] getAllStops(int l) {
         if (l == 1) {
-            String [] temp = new String[redStations.size()];
-            for (int i = 0; i < redStations.size(); i++) {
-                temp[i] = redStations.get(i);
+            String [] temp = new String[redLine.size()];
+            for (int i = 1; i < redLine.size(); i++) {
+                Block b = redLine.get(i);
+                if (b.getStation() != null)
+                    temp[i] = b.getStation().getName();
+                else
+                    temp[i] = Integer.toString(i);
             }
             return temp;
         }
         else {
-            String [] temp = new String[greenStations.size()];
-            for (int i = 0; i < greenStations.size(); i++) {
-                temp[i] = greenStations.get(i);
+            String [] temp = new String[greenLine.size()];
+            for (int i = 1; i < greenLine.size(); i++) {
+                Block b = greenLine.get(i);
+                if (b.getStation() != null)
+                    temp[i] = b.getStation().getName();
+                else
+                    temp[i] = Integer.toString(i);
+
             }
             return temp;
         }
