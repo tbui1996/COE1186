@@ -315,7 +315,7 @@ public class Block{
     }
 
     public boolean isOccupied(){
-        return getTrain() == null;
+        return getTrain() != null;
     }
 
     public boolean isClosed(){

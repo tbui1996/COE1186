@@ -31,6 +31,10 @@ public class CTC {
     private ArrayList<String> redStations;
     private ArrayList<String> greenStations;
 
+    //Line Throughput
+    private int redTicketTotal;
+    private int greenTicketTotal;
+
 
 
 
@@ -159,6 +163,10 @@ public class CTC {
                 greenLine.get(j).getSwitch().setLights(tcss.main.Main.tc.getLightState(0,j));
             }
         }
+    }
+
+    public void updateThroughput() {
+        
     }
 
     public Dispatch getDispatch(int i) {
