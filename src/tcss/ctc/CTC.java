@@ -33,8 +33,6 @@ public class CTC {
 
     public CTC() {
 
-//        this.TC1 = track;
-
         redLine = new HashMap<>();
         greenLine = new HashMap<>();
 
@@ -81,58 +79,7 @@ public class CTC {
 
         System.out.println("Red Stations: \n" + redStations.size());
         System.out.println("Green Stations: \n" + greenStations.size());
-
-
-        /*
-        stationNames = new String[5];
-        stationNames[0] = "Dormont";
-        stationNames[1] = "Shadyside";
-        stationNames[2] = "First Ave";
-        stationNames[3] = "South Hills Junction";
-        stationNames[4] = "Swissvale";
-
-
-
-        //Initialize Station lists for each line
-        redStations = new ArrayList<>();
-        greenStations = new ArrayList<>();
-
-        for (int i=0; i < 5; i++) {
-            Block temp = new Block();
-            temp.setStation(new Station(stationNames[i]));
-            if (i%2 == 0) {
-                redLine.put(i,temp);
-                greenLine.put(i,new Block());
-                //Populates Station to Block Number hash map
-                //stationToBlockNumRed()
-                redStations.add(); //Adding the station name on the block the the Array
-                //stationToBlockNumGreen()
-            }
-            else {
-                greenLine.put(i,temp);
-                redLine.put(i,new Block());
-                greenStations[greenCount] = stationNames[i];
-            }
-        }
-        */
-
     }
-
-    /*public void createDispatch(String name, float SS, int auth, TrainModel train) {
-        //TrainModel temp = new TrainModel(SS, auth, trainList.size(), 55);
-        //this.trainList.add(new TrainModel(name, trainList.size()));
-        //Start here and Fix this
-        for (int i = 0; i < redLine.size(); i++) {
-            System.out.println("Red Block " + i + ": " + redLine.get(i).toString());
-            System.out.println("Green Block " + i + ": " + greenLine.get(i).toString());
-        }
-        this.trainList.add(train);
-        this.dispatchList.add(new Dispatch(SS, auth, this.trainList.get(this.trainList.size()-1)));
-        //this.dispatchList.get(this.dispatchList.size()-1).createSchedule();
-        this.dispatchList.get(this.dispatchList.size()-1).setRequests();
-        System.out.println(this.dispatchList.get(this.dispatchList.size()-1));
-        sendNextStop(SS, auth, train.getID());
-    }*/
 
     public void addDispatch(Dispatch d) {
         this.dispatchList.add(d);
@@ -152,10 +99,9 @@ public class CTC {
                         System.out.println("Train sent");
                         //Sends SS and Auth to new
                         if (temp.getLine() == 1)
-                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),1,stationToBlockNumRed.get(redStations.get(temp.getCurrStop()+1)));
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),1,9);
                         else
-                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),0,stationToBlockNumGreen.get(greenStations.get(temp.getCurrStop()+1)));
-
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),0,63);
                     }
                 }
                 /*
@@ -204,10 +150,6 @@ public class CTC {
                 greenLine.get(j).getSwitch().setLights(tcss.main.Main.tc.getLightState(0,j));
             }
         }
-    }
-
-    public void sendNextStop(float SS, int auth, int ID) {
-        //this.TC1.getNextStop(SS, auth, ID);
     }
 
     public Dispatch getDispatch(int i) {
