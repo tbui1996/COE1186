@@ -151,7 +151,7 @@ public class TrainModel {
 
         controller = new TrainController(this, 8);
         controller.update();
-        //controller.setSpeedLimit(speedLimit);
+        controller.setSpeedLimit(speedLimit);
     }
 
     /**
@@ -181,7 +181,7 @@ public class TrainModel {
     public void update() {
 
         // If braking, set acceleration manually
-        // If service brake...
+        // If emergency brake...
         if(eBrake) {
             if(curV <= 0) {
                 lastA = curA;
@@ -193,7 +193,7 @@ public class TrainModel {
                 curA = -2.73f;
             }
         }
-        // If emergency brake...
+        // If service brake...
         else if(sBrake) {
             if(curV <= 0) {
                 lastA = curA;
@@ -227,6 +227,7 @@ public class TrainModel {
                 length = block.getLength();
                 grade = block.getGrade();
                 speedLimit = block.getSpeedLimit();
+                controller.setSpeedLimit(speedLimit);
             }
 
             blocksTraveled = blocksTraveled + 1;

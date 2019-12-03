@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="pane" prefHeight="463.0" prefWidth="658.0" styleClass="body" stylesheets="@../css/CTC.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.CTCController">
+<AnchorPane fx:id="pane" prefHeight="564.0" prefWidth="814.0" styleClass="body" stylesheets="@../css/CTC.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.CTCController">
    <children>
       <SplitPane dividerPositions="0.75" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -27,24 +27,36 @@
                                     <Button fx:id="confirmLine" mnemonicParsing="false" onAction="#populateBlocks" text="Confirm" />
                                     <Label styleClass="text" text="Block:" />
                                     <ChoiceBox fx:id="blockSelector" prefWidth="150.0" />
-                                    <Button fx:id="confirmBlock" mnemonicParsing="false" text="Confirm" />
+                                    <Button fx:id="confirmBlock" mnemonicParsing="false" onAction="#closeBlock" text="Close Block" />
                                  </children>
                               </VBox>
                            </children>
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" styleClass="body">
                            <children>
-                              <VBox alignment="CENTER" prefHeight="398.0" prefWidth="295.0">
-                                 <children>
-                                    <Button fx:id="dispatch" mnemonicParsing="false" onAction="#sendDispatch" prefHeight="56.0" prefWidth="120.0" styleClass="userButton" text="Dispatch">
-                                       <VBox.margin>
-                                          <Insets bottom="17.0" />
-                                       </VBox.margin>
-                                    </Button>
-                                    <Button fx:id="newDispatch" mnemonicParsing="false" onAction="#openDispatchWindow" styleClass="userButton" text="create Dispatch" />
-                                 </children>
-                              </VBox>
-                              <Button layoutX="8.0" layoutY="7.0" mnemonicParsing="false" onAction="#closeWindow" styleClass="exit-button" />
+                              <SplitPane dividerPositions="0.75" layoutX="239.0" layoutY="40.0" orientation="VERTICAL" prefHeight="560.0" prefWidth="421.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <items>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" styleClass="body">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#closeWindow" styleClass="exit-button" />
+                                       </children>
+                                    </AnchorPane>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" styleClass="body">
+                                       <children>
+                                          <VBox alignment="CENTER" prefHeight="96.0" prefWidth="158.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <Button fx:id="dispatch" mnemonicParsing="false" onAction="#sendDispatch" prefHeight="56.0" prefWidth="120.0" styleClass="userButton" text="Dispatch">
+                                                   <VBox.margin>
+                                                      <Insets bottom="17.0" />
+                                                   </VBox.margin>
+                                                </Button>
+                                                <Button fx:id="newDispatch" mnemonicParsing="false" onAction="#openDispatchWindow" styleClass="userButton" text="create Dispatch" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                </items>
+                              </SplitPane>
                            </children>
                         </AnchorPane>
                     </items>

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -11,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@../css/TrainController.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.TrainControllerController">
+<AnchorPane fx:id="pane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@../css/TrainController.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.TrainControllerController">
    <children>
       <HBox prefHeight="460.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -24,6 +30,7 @@
                      </VBox.margin>
                   </Label>
                   <Label id="sSpeedLabel" fx:id="suggestedSpeedLabel" text="Suggested Speed:" />
+                  <Label id="authLabel" fx:id="authLabel" text="Authority:" />
                   <Label id="sSpeedLabel" fx:id="currentSpeedLabel" text="Current Speed: " />
                   <HBox prefHeight="47.0" prefWidth="376.0">
                      <children>
@@ -40,11 +47,25 @@
                         </Button>
                      </children>
                   </HBox>
-                  <Label id="authLabel" fx:id="authLabel" text="Authority:" />
+                  <HBox prefHeight="47.0" prefWidth="376.0">
+                     <children>
+                        <Label text="Thermostat: " />
+                        <TextField fx:id="setTempInput" prefHeight="27.0" prefWidth="99.0">
+                           <HBox.margin>
+                              <Insets left="45.0" top="10.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Button fx:id="confirmSetpoint1" mnemonicParsing="false" onAction="#confirmTemp" text="OK">
+                           <HBox.margin>
+                              <Insets left="5.0" top="10.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
                   <HBox prefHeight="43.0" prefWidth="379.0">
                      <children>
-                        <Label text="Underground: " />
-                        <Label fx:id="undergroundDisplay" />
+                        <Label text="Lights: " />
+                        <Label fx:id="lightsDisplay" />
                      </children>
                   </HBox>
                </children>
@@ -65,7 +86,7 @@
                   </HBox>
                   <ToggleButton fx:id="eBrakeToggle" mnemonicParsing="false" onAction="#toggleEBrake" prefHeight="27.0" prefWidth="156.0" text="Emergency Break">
                      <VBox.margin>
-                        <Insets bottom="25.0" top="85.0" />
+                        <Insets bottom="25.0" top="50.0" />
                      </VBox.margin>
                   </ToggleButton>
                   <ToggleButton fx:id="opModeToggle" mnemonicParsing="false" onAction="#toggleOpMode" prefHeight="27.0" prefWidth="156.0" text="Manual Mode" />
@@ -77,8 +98,71 @@
                         <Font size="12.0" />
                      </font>
                   </Label>
-                  <Label fx:id="kilabel" text="Label" />
-                  <Label fx:id="kplabel" text="Label" />
+                  <Label fx:id="kilabel" text="Kilabel" />
+                  <Label fx:id="kplabel" text="kplabel" />
+                  <Label text="Doors:">
+                     <font>
+                        <Font size="5.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="CENTER" prefHeight="115.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="CENTER" prefHeight="112.0" prefWidth="0.0">
+                           <children>
+                              <Circle fx:id="d1Status" fill="RED" onMouseClicked="#toggleDoor0" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Circle>
+                              <Circle fx:id="d3Status" fill="RED" layoutX="30.0" layoutY="65.0" onMouseClicked="#toggleDoor2" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Circle>
+                              <Circle fx:id="d5Status" fill="RED" layoutX="30.0" layoutY="79.0" onMouseClicked="#toggleDoor4" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Circle>
+                              <Circle fx:id="d7Status" fill="RED" layoutX="30.0" layoutY="88.0" onMouseClicked="#toggleDoor6" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Circle>
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </VBox>
+                        <VBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="115.0" prefWidth="30.0">
+                           <children>
+                              <Circle fx:id="d2Status" fill="RED" onMouseClicked="#toggleDoor1" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Circle>
+                              <Circle fx:id="d4Status" fill="RED" onMouseClicked="#toggleDoor3" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Circle>
+                              <Circle fx:id="d6Status" fill="RED" onMouseClicked="#toggleDoor5" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Circle>
+                              <Circle fx:id="d8Status" fill="RED" onMouseClicked="#toggleDoor7" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Circle>
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </VBox>
+                     </children>
+                  </HBox>
                </children>
             </VBox>
          </children>

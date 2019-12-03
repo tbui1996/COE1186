@@ -9,9 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import tcss.trackcontroller.PLC;
@@ -46,15 +44,27 @@ public class TrackControllerController implements Initializable {
   @FXML
   private Label outputSwitch;
 
+  @FXML
+  private Label railroadcrossing;
+
+  @FXML
+  private RadioButton manualMode;
+
+  @FXML
+  private Button importPLC;
+
   public WaysideController wc;
   private TrackController curTC;
+  private Main main;
   private Track track;
   private PLC plc;
   private String plcFile;
   private ArrayList<Block> currBlocks;
+  private int line;
 
   public void setTrainApp(Main main, String plcFile, Track track, WaysideController waysideController) throws IOException {
     this.track = track;
+    this.main = main;
     this.wc = waysideController;
     this.plcFile = plcFile;
     //curTC.loadPLC(plcFile);
@@ -68,6 +78,7 @@ public class TrackControllerController implements Initializable {
     trackChoice.setValue("Select Track Controller");
     trackChoice.setTooltip(new Tooltip("Select a Track Controller"));
 
+    blockChoice.getItems().add("Select a Block");
     blockChoice.setValue("Select Block:");
     blockChoice.setTooltip(new Tooltip("Select a Block"));
 
@@ -80,23 +91,55 @@ public class TrackControllerController implements Initializable {
             return;
         if((st[new_value.intValue()]==st[0] || (st[new_value.intValue()]==st[1]) || ((st[new_value.intValue()]==st[2])||(st[new_value.intValue()]==st[3])))){
           for(TrackController tc: wc.redTC){
-            //trackChoice.setValue(tc.getTCID());
+            line = 1;
+            trackChoice.setValue(tc.getTCID());
           }
         }else{
           for(TrackController tc: wc.greenTC){
-            //trackChoice.setValue(tc.getTCID());
+            line = 0;
+            trackChoice.setValue(tc.getTCID());
+
           }
         }
-        updateBlockChoiceBox();
+        trackChoice.getSelectionModel().isSelected(0);
+        blockChoice = updateBlockChoiceBox();
+      }
+    });
+
+    blockChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+      public void changed(ObservableValue ov, Number value, Number new_value) {
+        if(!blockChoice.getSelectionModel().isEmpty()){
+          Integer blockId = (Integer) blockChoice.getValue();
+          Block block = curTC.getBlock(blockId);
+          String occupied = (block.isOccupied()) ? "Occupied" : "Not Occupied";
+          occupiedLabel.setText("Occupancy: "+ occupied);
+          sSpeedLabel.setText("Suggested Speed: "+ block.getSuggestedSpeed());
+          authLabel.setText("Authority: "+block.getAuthority());
+          String switches = (curTC.switchRequest(line,blockId,blockId+1)) ? "Not switched" : "Switched";
+          outputSwitch.setText("Switch: "+ switches);
+          String rxrs = (curTC.railroadCrossingRequest(line,blockId) ? "Up": "Down");
+          railroadcrossing.setText("Railroad Crossing: "+ rxrs);
+        }
+        else{
+          occupiedLabel.setText("Occupancy: ");
+          sSpeedLabel.setText("Suggested Speed: ");
+          authLabel.setText("Authority: ");
+          outputSwitch.setText("Switch: ");
+          railroadcrossing.setText("Railroad Crossing: ");
+        }
       }
     });
 
 
+
+
+
+
   }
-  private void updateBlockChoiceBox(){
-    int tcID = trackChoice.getSelectionModel().getSelectedIndex();
+  private ChoiceBox updateBlockChoiceBox(){
+    Integer tcID = (Integer) trackChoice.getValue();
     if(tcID<0)
-      return;
+      return null;
 
     if(0<=tcID && tcID<=3)
       curTC = wc.redTC.get(tcID);
@@ -109,43 +152,23 @@ public class TrackControllerController implements Initializable {
 
     currBlocks = blocks;
     blockChoice= new ChoiceBox(FXCollections.observableArrayList(currBlocks));
-    blockChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-      public void changed(ObservableValue ov, Number value, Number new_value) {
-          if(!blockChoice.getSelectionModel().isEmpty()){
-            for(Block block: currBlocks){
-              //String blockstatus = curTC.blockState(block.getBlockNum());
-            }
-            String occupied = (currBlocks.get(blockChoice.getSelectionModel().getSelectedIndex()).isOccupied()) ? "Occupied" : "Not Occupied";
-            occupiedLabel.setText("Occupancy: "+ occupied);
-            sSpeedLabel.setText("Suggested Speed: "+ currBlocks.get(blockChoice.getSelectionModel().getSelectedIndex()).getSuggestedSpeed());
-            authLabel.setText("Authority: "+currBlocks.get(blockChoice.getSelectionModel().getSelectedIndex()).getAuthority());
-            String switches = (currBlocks.get(blockChoice.getSelectionModel().getSelectedIndex()).getSwitch() != null) ? "Switch" : "Not switched";
-            outputSwitch.setText("Switch: "+ switches);
-          }
-          else{
-            occupiedLabel.setText("Occupancy: ");
-            sSpeedLabel.setText("Suggested Speed: ");
-            authLabel.setText("Authority: ");
-            outputSwitch.setText("Switch: ");
-          }
-        }
-    });
+    return blockChoice;
 
   }
   public void goBack(ActionEvent actionEvent) throws Exception {
-//        Parent trainModelParent = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
-//        Scene trainModelView = new Scene(trainModelParent);
-//
-//        // Get stage info
-//        Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-//        window.setScene(trainModelView);
-//        window.show();
 
     Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("ModuleSelection.fxml")));
     Stage window = (Stage) pane.getScene().getWindow();
     window.setScene(moduleSelect);
     window.setTitle("Module Selection");
 
+  }
+
+  @FXML
+  void setManualMode(ActionEvent event){
+    if(manualMode.isSelected()){
+
+    }
   }
 
 }

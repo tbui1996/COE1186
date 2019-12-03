@@ -6,13 +6,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import tcss.Demo.Main;
 import tcss.trackmodel.Block;
 import tcss.trackmodel.Track;
 
@@ -195,10 +196,24 @@ public class TrackModelController implements Initializable {
 //        window.setScene(trainModelView);
 //        window.show();
 
-        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("ModuleSelection.fxml")));
-        Stage window = (Stage) pane.getScene().getWindow();
-        window.setScene(moduleSelect);
-        window.setTitle("Module Selection");
+//        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("ModuleSelection.fxml")));
+//        Stage window = (Stage) pane.getScene().getWindow();
+//        window.setScene(moduleSelect);
+//        window.setTitle("Module Selection");
+
+        FXMLLoader trackLoader = new FXMLLoader(getClass().getResource("fxml/TrackSelect.fxml"));
+        Stage trackStage = new Stage();
+        Parent trackRoot = trackLoader.load();
+        trackStage.setTitle("Select Track Module");
+        trackStage.setScene(new Scene(trackRoot));
+        trackStage.setResizable(false);
+        trackStage.getIcons().add(new Image("file:resources/train.png"));
+
+        trackStage.show();
+
+        Stage s = (Stage) lengthLabel.getScene().getWindow();
+        s.close();
+
 
     }
 }
