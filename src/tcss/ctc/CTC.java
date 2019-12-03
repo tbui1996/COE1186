@@ -3,6 +3,7 @@ package tcss.ctc;
 import tcss.trackcontroller.TrackController;
 import tcss.trackmodel.Block;
 import tcss.trackmodel.Station;
+import tcss.trackmodel.Track;
 import tcss.trackmodel.TrackModel;
 import tcss.trainmodel.TrainModel;
 
@@ -16,6 +17,9 @@ public class CTC {
     //Temporary Red and Green Line setup for creating a Dispatch
     protected Map<Integer,Block> redLine;
     protected Map<Integer,Block> greenLine;
+    protected TrackModel privateTrack;
+    protected Track redLayout;
+    protected Track greenLayout;
     private String [] stationNames; //This will be deleted
 
     //What I might need
@@ -31,7 +35,7 @@ public class CTC {
 
 
 
-    public CTC() {
+    public CTC() throws Exception {
 
         redLine = new HashMap<>();
         greenLine = new HashMap<>();
@@ -40,6 +44,11 @@ public class CTC {
         redLine = tcss.main.Main.tm.getRedLine().getBlockHashMap();     //Red Line Hash Map
         greenLine = tcss.main.Main.tm.getGreenLine().getBlockHashMap();                   //Green Line Hash Map
         System.out.println(redLine);
+
+        //Private Track Model
+        privateTrack = new TrackModel();
+        greenLayout = privateTrack.getGreenLine();
+        redLayout = privateTrack.getRedLine();
 
         stationToBlockNumRed = new HashMap<>();
         stationToBlockNumGreen = new HashMap<>();
