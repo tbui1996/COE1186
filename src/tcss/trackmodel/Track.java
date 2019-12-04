@@ -14,6 +14,7 @@ public class Track {
 
     LinkedList<Block> blockList;
 
+    ArrayList<Station> stations;
     ArrayList<Block> rxrBlocks;
     ArrayList<Block> switchBlocks;
 
@@ -155,5 +156,9 @@ public class Track {
 
     public Map<Integer, Branch> getBranchMap(){
         return branchMap;
+    }
+
+    public ArrayList<Station> getStations(){
+        return stations;
     }
 }
