@@ -25,6 +25,7 @@ public class Track {
         branchMap = new HashMap<>();
         startBlock = null;
         blockList = new LinkedList<Block>();
+        stations = new ArrayList<Station>();
     }
 
     public boolean initTrain(float ss, int auth, int id){
