@@ -7,6 +7,7 @@ import tcss.trackmodel.Track;
 import tcss.trackmodel.TrackModel;
 import tcss.trainmodel.TrainModel;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 
@@ -166,7 +167,8 @@ public class CTC {
     }
 
     public void updateThroughput() {
-        if (tcss.main.Main.getSimTime().getSec() % 3 == 0) {
+        DecimalFormat df = new DecimalFormat("#.#");
+        if (Double.parseDouble(df.format(tcss.main.Main.getSimTime().getSec())) % 3 == 0) {
             redTicketTotal += tcss.main.Main.tm.updateThroughput(0);
             greenTicketTotal += tcss.main.Main.tm.updateThroughput(1);
             System.out.println(redTicketTotal);
