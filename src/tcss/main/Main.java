@@ -82,6 +82,7 @@ public class Main extends Application {
         TrainModel.updateAll();
         ctc.updateTrackState();
         ctc.checkDispatchList();
+        ctc.updateThroughput();
     }
 
     public static void main(String [] args) throws Exception {
