@@ -22,15 +22,18 @@ public class Main extends Application {
 
     // Testing Track Model UI
     static ArrayList<Block> blocks = new ArrayList<Block>();
-    static Track track;
+    static Track redLine;
+    static Track greenLine;
 
     static TrackController tc;
     static CTC ctc;
 
+    static public float[] kikp = {0,0};
+
     @Override
     public void start(Stage primaryStage) throws Exception{
-        tc = new TrackController();
-        ctc = new CTC(tc);
+        //tc = new TrackController();
+//        ctc = new CTC(tc);
         Parent root = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
         primaryStage.setTitle("Module Selection");
         primaryStage.setScene(new Scene(root));
@@ -45,8 +48,9 @@ public class Main extends Application {
 
         // Testing TrackModel UI
         TrackModel tm = new TrackModel();
-        track = tm.getTrack();
-        tc.setTrack(track);
+        redLine = tm.getRedLine();
+        greenLine = tm.getGreenLine();
+        //tc.setTrack(track);
 
         /*Block b1 = track.getBlock(1);
         Block b2 = track.getBlock(2);

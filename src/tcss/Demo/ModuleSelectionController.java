@@ -60,10 +60,17 @@ public class ModuleSelectionController implements Initializable {
         window.setTitle("Track Controller");
     }
     public void viewCTC(ActionEvent actionEvent) throws Exception {
-        Scene trackModelView = new Scene(FXMLLoader.load(getClass().getResource("CTC.fxml")));
+        Scene trackModelView = new Scene(FXMLLoader.load(getClass().getResource("../main/fxml/CTC.fxml")));
         Stage window = (Stage) pane.getScene().getWindow();
         window.setScene(trackModelView);
         window.setTitle("CTC");
+    }
+
+    public void viewEngine(ActionEvent actionEvent) throws Exception {
+        Scene engineView = new Scene(FXMLLoader.load(getClass().getResource("Engine.fxml")));
+        Stage window = (Stage) pane.getScene().getWindow();
+        window.setScene(engineView);
+        window.setTitle("Engine");
     }
 
 }
