@@ -167,8 +167,10 @@ public class CTC {
 
     public void updateThroughput() {
         if (tcss.main.Main.getSimTime().getSec() % 3 == 0) {
-            //redTicketTotal += tcss.main.Main.tm.updateThroughput(0);
-            //greenTicketTotal += tcss.main.Main.tm.updateThroughput(1);
+            redTicketTotal += tcss.main.Main.tm.updateThroughput(0);
+            greenTicketTotal += tcss.main.Main.tm.updateThroughput(1);
+            System.out.println(redTicketTotal);
+            System.out.println(greenTicketTotal);
         }
     }
 
