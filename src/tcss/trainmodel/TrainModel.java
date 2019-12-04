@@ -140,18 +140,35 @@ public class TrainModel {
     }
 
     public TrainModel(float suggestedSpeed, int authority, int id, Block block) {
-        this.block = block;
         this.suggestedSpeed = suggestedSpeed;
         this.authority = authority;
+        this.block = block;
         this.id = id;
-        this.speedLimit = block.getSpeedLimit();
         this.eBrake = false;
+
+        // Get initial block info
+        this.speedLimit = block.getSpeedLimit();
         this.underground = block.isUnderground();
+        this.length = block.getLength();
         this.grade = block.getGrade();
 
-        controller = new TrainController(this, 8);
-        controller.update();
+        mass = 40900;
+        curA = 0;
+        curV = 0;
+
+        controller = new TrainController(this);
         controller.setSpeedLimit(speedLimit);
+        controller.passCommands(authority, suggestedSpeed);
+
+        // Add to ArrayList
+        trains.add(this);
+        temp = 68f;
+
+        // TODO Delete this test
+        System.out.println("\nAll trains:\n");
+        for(TrainModel t: trains) {
+            System.out.println(t);
+        }
     }
 
     /**
