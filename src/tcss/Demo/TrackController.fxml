@@ -23,9 +23,10 @@
         </AnchorPane>
         <AnchorPane layoutX="15.0" layoutY="289.0" prefHeight="106.0" prefWidth="418.0">
             <children>
-                <Button fx:id="importPLC" alignment="CENTER" layoutX="432.0" layoutY="90.0" mnemonicParsing="false" onAction="#onPLCClick" prefHeight="56.0" prefWidth="112.0" text="Import PLC" textAlignment="CENTER" />
+                <Button fx:id="importPLC" alignment="CENTER" layoutX="432.0" layoutY="90.0" mnemonicParsing="false" prefHeight="56.0" prefWidth="112.0" text="Import PLC" textAlignment="CENTER" />
             <Label fx:id="outputLights" layoutX="-1.0" layoutY="-11.0" text="Lights:" />
             <Label fx:id="railroadcrossing" layoutX="-1.0" layoutY="26.0" text="Railroad Crossing:" />
+            <RadioButton fx:id="manualMode" layoutX="435.0" layoutY="50.0" mnemonicParsing="false" onAction="#setManualMode" text="Manual Mode" textFill="WHITE" />
             </children>
             <padding>
                 <Insets left="25.0" />

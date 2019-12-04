@@ -3,6 +3,7 @@ package tcss.ctc;
 import tcss.trackcontroller.TrackController;
 import tcss.trackmodel.Block;
 import tcss.trackmodel.Station;
+import tcss.trackmodel.Track;
 import tcss.trackmodel.TrackModel;
 import tcss.trainmodel.TrainModel;
 
@@ -10,13 +11,15 @@ import java.util.*;
 
 
 public class CTC {
-    TrackController TC1;
     private ArrayList<Dispatch> dispatchList = new ArrayList<Dispatch>(); /*Number of Trains*/
     public ArrayList<TrainModel> trainList = new ArrayList<TrainModel>(); /*Number of Trains*/
 
     //Temporary Red and Green Line setup for creating a Dispatch
     protected Map<Integer,Block> redLine;
     protected Map<Integer,Block> greenLine;
+    protected TrackModel privateTrack;
+    protected Track redLayout;
+    protected Track greenLayout;
     private String [] stationNames; //This will be deleted
 
     //What I might need
@@ -28,13 +31,15 @@ public class CTC {
     private ArrayList<String> redStations;
     private ArrayList<String> greenStations;
 
+    //Line Throughput
+    private int redTicketTotal = 0;
+    private int greenTicketTotal = 0;
 
 
 
 
-    public CTC() {
 
-//        this.TC1 = track;
+    public CTC() throws Exception {
 
         redLine = new HashMap<>();
         greenLine = new HashMap<>();
@@ -43,6 +48,11 @@ public class CTC {
         redLine = tcss.main.Main.tm.getRedLine().getBlockHashMap();     //Red Line Hash Map
         greenLine = tcss.main.Main.tm.getGreenLine().getBlockHashMap();                   //Green Line Hash Map
         System.out.println(redLine);
+
+        //Private Track Model
+        privateTrack = new TrackModel();
+        greenLayout = privateTrack.getGreenLine();
+        redLayout = privateTrack.getRedLine();
 
         stationToBlockNumRed = new HashMap<>();
         stationToBlockNumGreen = new HashMap<>();
@@ -82,58 +92,7 @@ public class CTC {
 
         System.out.println("Red Stations: \n" + redStations.size());
         System.out.println("Green Stations: \n" + greenStations.size());
-
-
-        /*
-        stationNames = new String[5];
-        stationNames[0] = "Dormont";
-        stationNames[1] = "Shadyside";
-        stationNames[2] = "First Ave";
-        stationNames[3] = "South Hills Junction";
-        stationNames[4] = "Swissvale";
-
-
-
-        //Initialize Station lists for each line
-        redStations = new ArrayList<>();
-        greenStations = new ArrayList<>();
-
-        for (int i=0; i < 5; i++) {
-            Block temp = new Block();
-            temp.setStation(new Station(stationNames[i]));
-            if (i%2 == 0) {
-                redLine.put(i,temp);
-                greenLine.put(i,new Block());
-                //Populates Station to Block Number hash map
-                //stationToBlockNumRed()
-                redStations.add(); //Adding the station name on the block the the Array
-                //stationToBlockNumGreen()
-            }
-            else {
-                greenLine.put(i,temp);
-                redLine.put(i,new Block());
-                greenStations[greenCount] = stationNames[i];
-            }
-        }
-        */
-
     }
-
-    /*public void createDispatch(String name, float SS, int auth, TrainModel train) {
-        //TrainModel temp = new TrainModel(SS, auth, trainList.size(), 55);
-        //this.trainList.add(new TrainModel(name, trainList.size()));
-        //Start here and Fix this
-        for (int i = 0; i < redLine.size(); i++) {
-            System.out.println("Red Block " + i + ": " + redLine.get(i).toString());
-            System.out.println("Green Block " + i + ": " + greenLine.get(i).toString());
-        }
-        this.trainList.add(train);
-        this.dispatchList.add(new Dispatch(SS, auth, this.trainList.get(this.trainList.size()-1)));
-        //this.dispatchList.get(this.dispatchList.size()-1).createSchedule();
-        this.dispatchList.get(this.dispatchList.size()-1).setRequests();
-        System.out.println(this.dispatchList.get(this.dispatchList.size()-1));
-        sendNextStop(SS, auth, train.getID());
-    }*/
 
     public void addDispatch(Dispatch d) {
         this.dispatchList.add(d);
@@ -153,10 +112,9 @@ public class CTC {
                         System.out.println("Train sent");
                         //Sends SS and Auth to new
                         if (temp.getLine() == 1)
-                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),stationToBlockNumRed.get(redStations.get(temp.getCurrStop()+1)));
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),1,9);
                         else
-                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),stationToBlockNumGreen.get(greenStations.get(temp.getCurrStop()+1)));
-
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),0,63);
                     }
                 }
                 /*
@@ -174,43 +132,44 @@ public class CTC {
                 if (temp.getLine() == 1) {
                     if (redLine.get(stationToBlockNumRed.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
                         temp.setCurrStop(temp.getCurrStop() + 1);
-                        tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),stationToBlockNumRed.get(redStations.get(temp.getCurrStop()+1)));
-                    } else {
+                        tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), stationToBlockNumRed.get(redStations.get(temp.getCurrStop() + 1)));
+                    }
+                } else {
                         if (greenLine.get(stationToBlockNumGreen.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
                             temp.setCurrStop(temp.getCurrStop() + 1);
-                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),stationToBlockNumGreen.get(greenStations.get(temp.getCurrStop()+1)));
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1), temp.lineToTc(), stationToBlockNumGreen.get(greenStations.get(temp.getCurrStop()+1)));
                         }
-                    }
-                    //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
                 }
+                    //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
             }
         }
     }
 
     public void updateTrackState() {
-        for (int j = 0; j < (redLine.size() + greenLine.size()); j++) {
+        for (int j = 1; j < (redLine.size()); j++) {
             //updating red line
-            if (j < redLine.size()) {
-                //redLine.get(j).setOccupancy(tcss.main.Main.tc.getOccupancy(j));
-                //redLine.get(j).setSwitchPosition(tcss.main.Main.tc.getSwitchPosition(j));
-                //redLine.get(j).setLightState(tcss.main.Main.tc.getSwitchPosition(j));
+            redLine.get(j).setOccupied(tcss.main.Main.tc.getOccupied(1,j));
+            if (redLine.get(j).getSwitch() != null) {
+                redLine.get(j).getSwitch().setStraight(tcss.main.Main.tc.getSwitchStraight(1, j));
+                redLine.get(j).getSwitch().setLights(tcss.main.Main.tc.getLightState(1, j));
             }
+        }
 
-            //updating green line
-            else {
-                //greenLine.get(j - redLine.size()).setOccupancy(tcss.main.Main.tc.getOccupancy(j));
-                //greenLine.get(j - redLine.size()).setSwitchPosition(tcss.main.Main.tc.getSwitchPosition(j));
-                //greenLine.get(j - redLine.size()).setLightState(tcss.main.Main.tc.getLightState(j));
+        //updating green line
+        for (int j = 1; j < (greenLine.size()); j++) {
+            greenLine.get(j).setOccupied(tcss.main.Main.tc.getOccupied(0,j));
+            if (greenLine.get(j).getSwitch() != null) {
+                greenLine.get(j).getSwitch().setStraight(tcss.main.Main.tc.getSwitchStraight(0,j));
+                greenLine.get(j).getSwitch().setLights(tcss.main.Main.tc.getLightState(0,j));
             }
         }
     }
 
-    public TrackController getTrackController(int index){
-        return this.TC1;
-    }
-
-    public void sendNextStop(float SS, int auth, int ID) {
-        //this.TC1.getNextStop(SS, auth, ID);
+    public void updateThroughput() {
+        if (tcss.main.Main.getSimTime().getSec() % 3 == 0) {
+            //redTicketTotal += tcss.main.Main.tm.updateThroughput(0);
+            //greenTicketTotal += tcss.main.Main.tm.updateThroughput(1);
+        }
     }
 
     public Dispatch getDispatch(int i) {
@@ -228,16 +187,25 @@ public class CTC {
     //Return a String array of all stops in a line
     public String [] getAllStops(int l) {
         if (l == 1) {
-            String [] temp = new String[redStations.size()];
-            for (int i = 0; i < redStations.size(); i++) {
-                temp[i] = redStations.get(i);
+            String [] temp = new String[redLine.size()];
+            for (int i = 1; i < redLine.size(); i++) {
+                Block b = redLine.get(i);
+                if (b.getStation() != null)
+                    temp[i] = b.getStation().getName();
+                else
+                    temp[i] = Integer.toString(i);
             }
             return temp;
         }
         else {
-            String [] temp = new String[greenStations.size()];
-            for (int i = 0; i < greenStations.size(); i++) {
-                temp[i] = greenStations.get(i);
+            String [] temp = new String[greenLine.size()];
+            for (int i = 1; i < greenLine.size(); i++) {
+                Block b = greenLine.get(i);
+                if (b.getStation() != null)
+                    temp[i] = b.getStation().getName();
+                else
+                    temp[i] = Integer.toString(i);
+
             }
             return temp;
         }

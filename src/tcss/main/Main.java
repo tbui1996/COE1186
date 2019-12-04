@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import tcss.ctc.CTC;
 import tcss.trackcontroller.TrackController;
+import tcss.trackcontroller.WaysideController;
 import tcss.trackmodel.Track;
 import tcss.trackmodel.TrackModel;
 import tcss.trainmodel.TrainModel;
@@ -18,7 +19,7 @@ public class Main extends Application {
 
     static SimTime T;
     static public CTC ctc;
-    static public TrackController tc;
+    static public WaysideController tc;
     static public TrackModel tm;
     static public Track redLine;
     static public Track greenLine;
@@ -32,7 +33,10 @@ public class Main extends Application {
         greenLine = tm.getGreenLine();
 
         //init Track Model
-        tm = new TrackModel();
+//        tm = new TrackModel();
+
+        //init wc
+        tc = new WaysideController(redLine, greenLine);
 
         // Init CTC
         ctc = new CTC();
@@ -78,6 +82,7 @@ public class Main extends Application {
         TrainModel.updateAll();
         ctc.updateTrackState();
         ctc.checkDispatchList();
+        ctc.updateThroughput();
     }
 
     public static void main(String [] args) throws Exception {

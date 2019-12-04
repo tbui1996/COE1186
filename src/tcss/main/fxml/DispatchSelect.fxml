@@ -31,11 +31,6 @@
                   <Label text=":" textFill="WHITE" />
                   <TextField fx:id="dMin" prefHeight="25.0" prefWidth="36.0" promptText="Min" />
                   <TextField fx:id="dHalf" prefHeight="25.0" prefWidth="34.0" promptText="AM" />
-                  <Label text="Arrival Time: " textFill="WHITE" />
-                  <TextField fx:id="aHour" prefHeight="25.0" prefWidth="32.0" promptText="Hr" />
-                  <Label text=":" textFill="WHITE" />
-                  <TextField fx:id="aMin" prefHeight="25.0" prefWidth="36.0" promptText="Min" />
-                  <TextField fx:id="aHalf" prefHeight="25.0" prefWidth="34.0" promptText="PM" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="64.0" prefWidth="600.0" spacing="10.0">

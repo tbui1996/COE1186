@@ -1,5 +1,6 @@
 package tcss.ctc;
 
+import tcss.main.Main;
 import tcss.trackmodel.Track;
 import tcss.trainmodel.TrainModel;
 
@@ -18,8 +19,6 @@ public class Dispatch {
     private int currStop = -1;
     private float [] speedList;
     private int [] authList;
-    private int aHr;
-    private int aMin;
     private int dHr;
     private int dMin;
     //private ArrayList<String> stations;
@@ -47,8 +46,6 @@ public class Dispatch {
         //this.schedule.addStop("First Ave", (float) 2.1);
         //this.schedule.addStop("Station Square", (float) 1.7);
         //this.schedule.addStop("South Hills Junction", (float) 2.3);
-        this.aHr = 11;
-        this.aMin = 0;
         this.dHr = 14;
         this.dMin = 0;
     }
@@ -63,15 +60,18 @@ public class Dispatch {
                 //Calculates speed and authority for each stop
                 //(distance between blocks) / ((station w/ dwell) - dwell), unit is blocks/sec
                 if (i == 0) {
-                    speedList[i] = (float) (tcss.main.Main.redLine.distanceToYard(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))) / (float) (this.schedule.getStopDwell(i) - 35)); //stationToYard((schedule.getStopName(i)) / schedule.getStopDwell(i) - 35
-                    authList[i] = (int) tcss.main.Main.redLine.distanceToYard(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))); //stationToYard(schedule.getStopName(i))
+                    speedList[i] = (float) (Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))) / (this.schedule.getStopDwell(i) - 35)); //stationToYard((schedule.getStopName(i)) / schedule.getStopDwell(i) - 35
+                    authList[i] = (int) Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))); //stationToYard(schedule.getStopName(i))
                 } else {
                     //speedList[i] = stationToStation((schedule.getStopName(i-1),schedule.getStopName(i)) / schedule.getStopDwell(i)*60 - 35;
                     //authList = stationToStation(schedule.getStopName(i-1), schedule.getStopName(i));
-                    speedList[i] = (float) (tcss.main.Main.redLine.distanceBetweenTwoBlocks(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))),tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))) / (float) (this.schedule.getStopDwell(i) - 35));;
-                    authList[i] = (int) tcss.main.Main.redLine.distanceBetweenTwoBlocks(tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))),tcss.main.Main.ctc.redLine.get(tcss.main.Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))));
+                    speedList[i] = (float) (Main.redLine.distanceBetweenTwoBlocks(Main.ctc.redLine.get(Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))), Main.ctc.redLine.get(Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i)))) / (float) (this.schedule.getStopDwell(i) - 35));;
+                    authList[i] = (int) Main.redLine.distanceBetweenTwoBlocks(Main.ctc.redLine.get(Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))), Main.ctc.redLine.get(Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))));
                 }
             }
+            //Send back to yard when done
+            speedList[speedList.length-1] = 10/*Min Speed*/;
+            authList[authList.length-1] = (int) Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(schedule.getStopNums()-1))))/*YARD*/;
         }
         else {
 
@@ -107,28 +107,6 @@ public class Dispatch {
     public void setCurrStop(int i) {
         this.currStop = i;
         /**/
-    }
-
-    public int getArrivalHour() {
-        return this.aHr;
-    }
-
-    public int getArrivalMin() {
-        return this.aMin;
-    }
-
-    public void setArrivalTime(int h, int m) {
-        this.aHr = h;
-        this.aMin = m;
-    }
-
-    public String arrivalTimeString() {
-        if (this.aHr > 12) {
-            return (this.aHr % 12) + " : " + this.aMin + " PM";
-        }
-        else {
-            return (this.aHr) + " : " + this.aMin + " AM";
-        }
     }
 
     public int getDepartureHour() {
@@ -177,8 +155,7 @@ public class Dispatch {
 
     public String toString() {
         return /*"ID: " + this.train.getID() + "\nSuggested Speed: " + this.train.getSSpeed() + "\nAuthority: " + this.train.getAuthority() +
-                */"Schedule: \n" + "Departure Time: " + this.departureTimeString() + "\n" + this.schedule + "\nFinal Arrival Time: " +
-                this.arrivalTimeString() + "\nNext Stop: " + this.schedule.getStopName(currStop+1);
+                */"Schedule: \n" + "Departure Time: " + this.departureTimeString() + "\n" + this.schedule + "\nNext Stop: " + this.schedule.getStopName(currStop+1);
     }
 
     private int lineStringToInt(String line) {
@@ -186,6 +163,13 @@ public class Dispatch {
             return 1;
         else if (line.equals("GREEN"))
             return 2;
+        else
+            return 0;
+    }
+
+    public int lineToTc() {
+        if (this.line == 1)
+            return this.line;
         else
             return 0;
     }
