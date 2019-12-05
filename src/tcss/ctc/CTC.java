@@ -101,8 +101,7 @@ public class CTC {
 
     //This checks dispatch list to see if a new suggested speed and authority need to be sent
     public void checkDispatchList () {
-        for (int i = 0; i < dispatchList.size(); i++) {
-            Dispatch temp = dispatchList.get(i);
+        for (Dispatch temp : dispatchList) {
             //if train is not dispatched yet
             if (temp.getCurrStop() == -1 && temp.getSS() == 0) {
                 if (tcss.main.Main.getSimTime().getHour() >= temp.getDepartureHour()) {
@@ -113,9 +112,9 @@ public class CTC {
                         System.out.println("Train sent");
                         //Sends SS and Auth to new
                         if (temp.getLine() == 1)
-                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),1,9);
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), 1, 9);
                         else
-                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),0,63);
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), 0, 63);
                     }
                 }
                 /*
@@ -136,12 +135,12 @@ public class CTC {
                         tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), stationToBlockNumRed.get(redStations.get(temp.getCurrStop() + 1)));
                     }
                 } else {
-                        if (greenLine.get(stationToBlockNumGreen.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
-                            temp.setCurrStop(temp.getCurrStop() + 1);
-                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1), temp.lineToTc(), stationToBlockNumGreen.get(greenStations.get(temp.getCurrStop()+1)));
-                        }
+                    if (greenLine.get(stationToBlockNumGreen.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
+                        temp.setCurrStop(temp.getCurrStop() + 1);
+                        tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), stationToBlockNumGreen.get(greenStations.get(temp.getCurrStop() + 1)));
+                    }
                 }
-                    //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
+                //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
             }
         }
     }
@@ -171,8 +170,8 @@ public class CTC {
         if (Double.parseDouble(df.format(tcss.main.Main.getSimTime().getSec())) % 3 == 0) {
             redTicketTotal += tcss.main.Main.tm.updateThroughput(0);
             greenTicketTotal += tcss.main.Main.tm.updateThroughput(1);
-            System.out.println(redTicketTotal);
-            System.out.println(greenTicketTotal);
+            //System.out.println(redTicketTotal);
+            //System.out.println(greenTicketTotal);
         }
     }
 

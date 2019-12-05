@@ -1,6 +1,9 @@
 package tcss.main;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -8,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -17,8 +21,6 @@ import java.util.ResourceBundle;
 public class CTCController implements Initializable{
 
     // UI variables
-    @FXML private Button dispatch;
-    //@FXML private VBox dispatchList;
     @FXML private Label dispatch1;
     @FXML private AnchorPane pane;
     @FXML private Button newDispatch;
@@ -30,38 +32,23 @@ public class CTCController implements Initializable{
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-//        idLabel.setText("ID: ");
-//        sSpeedLabel.setText("Suggested Speed: 0 mph");
-//        authLabel.setText("Authority: 0 Blocks");
-//        speedLimitLabel.setText("Speed Limit: 0 mph");
-        dispatchList.getPanes().removeAll();
-        for (int i = 0; i < tcss.main.Main.ctc.numDispatches(); i++) {
-            System.out.println(tcss.main.Main.ctc.getDispatch(i).getName());
-            dispatchList.getPanes().add(new TitledPane(tcss.main.Main.ctc.getDispatch(i).getName(), new Label(tcss.main.Main.ctc.getDispatchString(i))));
-        }
 
         //populates line dropdown
         lineSelector.getItems().add("Red");
         lineSelector.getItems().add("Green");
         lineSelector.setValue("Red");
         lineSelector.setTooltip(new Tooltip("Select a line to view a block"));
+
+        // Create Timeline for periodic updating
+        Timeline loop = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                updateView();
+            }
+        }));
+        loop.setCycleCount(Timeline.INDEFINITE);
+        loop.play();
     }
-
-    public void sendDispatch(ActionEvent actionEvent) throws Exception {
-        //TrainModel temp = new TrainModel(Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), Main.ctc.trainList.size(), 40);
-        //Main.ctc.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), temp);
-        //Main.trains.add(temp);
-        dispatch.setText("DISPATCH");
-//        tcss.main.Main.tc.initTrain();
-    }
-
-    /*public void getDispatches() {
-        Dispatch currDispatch = Main.ctc.getFirstDispatch();
-        dispatch1 = new Label(currDispatch.toString());
-        dispatchList.getChildren().add(dispatch1);
-
-        //dispatchList = 0;
-    }*/
 
     public void openDispatchWindow(ActionEvent actionEvent) throws Exception {
         //newDispatch.setText("Created");
@@ -103,6 +90,14 @@ public class CTCController implements Initializable{
 
         System.out.println(temp);
         //tcss.main.Main.tc.getNextStop(-1,-1,temp)
+    }
+
+    //Updates dispatch list periodically
+    private void updateView() {
+
+        dispatchList.getPanes().clear();
+        for (int i = 0; i < tcss.main.Main.ctc.numDispatches(); i++)
+            dispatchList.getPanes().add(new TitledPane(tcss.main.Main.ctc.getDispatch(i).getName(), new Label(tcss.main.Main.ctc.getDispatchString(i))));
     }
 
     public void closeWindow(ActionEvent actionEvent) throws Exception {

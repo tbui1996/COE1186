@@ -5,17 +5,15 @@ public class Train {
     public String name;
     private double SS;
     private int auth;
-    private int ID;
+    private int block;
 
-    public Train(String name, int ID) {
+    public Train(String name) {
         this.name = name;
-        //this.ID = ID;
     }
 
-    /*
-    public int getID() {
-        return this.ID;
-    }*/
+    public void setName(String n) {
+        this.name = name;
+    }
 
 
 
