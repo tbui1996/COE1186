@@ -2,80 +2,158 @@ package tcss.trackmodel;
 
 import tcss.trainmodel.TrainModel;
 
-import java.util.LinkedList;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 public class Track {
 
-    private LinkedList<Block> trackList;
-    private ArrayList<TrainModel> trains;
-    private float suggestedSpeed;
-    private int authority;
+    Map<Integer, Block> blockHashMap;
+    Map<Integer, Branch> branchMap;
+
+    LinkedList<Block> blockList;
+
+    ArrayList<Block> rxrBlocks;
+    ArrayList<Block> switchBlocks;
+
+    Block startBlock;
 
     public Track(){
-        trackList = new LinkedList<Block>();
-        trains = new ArrayList<TrainModel>();
-        int[] iProperties = {0, 0, 1, 50};
-        float[] fProperties = {0.5f, 40.0f, 0.0f, 0.0f};
-
-        trackList.add(newBlock(iProperties, fProperties, 1));
-        trackList.add(newBlock(iProperties, fProperties, 2));
-        trackList.get(1).setStation(new Station("Dormont"));
-    }
-
-    private Block newBlock(int[] iProps, float[] fProps, int blockNum){
-        Block b = new Block();
-        b.setLine(iProps[0]);
-        b.setSection(iProps[1]);
-        b.setBlockNum(blockNum);
-        b.setLength(iProps[3]);
-
-        b.setGrade(fProps[0]);
-        b.setSpeedLimit(fProps[1]);
-        b.setElevation(fProps[2]);
-        b.setCumulativeElevation(fProps[3]);
-
-        return b;
+        blockHashMap = new HashMap<>();
+        branchMap = new HashMap<>();
+        startBlock = null;
+        blockList = new LinkedList<Block>();
     }
 
     public boolean initTrain(float ss, int auth, int id){
+        System.out.println("Init Train");
+        return startBlock.setSuggSpeedAndAuth(ss, auth);
+    }
 
-        Block startBlock = trackList.get(0);
-        TrainModel train = new TrainModel(ss, auth, id, startBlock);
-        startBlock.setTrain(train);
-        startBlock.setOccupied(true);
-        trains.add(train);
-        System.out.println(ss + auth);
-        setSuggestedSpeed(ss);
-        setAuthority(auth);
+    //distance between two blocks
+    public double distanceBetweenTwoBlocks(Block start, Block end){
+
+        double headDistance = distanceHelper(start, end, Direction.FROM_TAIL);
+        double tailDistance = distanceHelper(start, end, Direction.FROM_HEAD);
+
+        if(headDistance <= tailDistance){
+            return headDistance;
+        }else{
+            return tailDistance;
+        }
+    }
+
+    private double distanceHelper(Block start, Block end, Direction initialDir){
+
+        double currDistance = 0.0;
+        Branch currBranch = getBranch(start.getBlockNum());
+        Branch endBranch = getBranch(end.getBlockNum());
+
+        if(currBranch == endBranch){
+            return currBranch.getDistance(start.getBlockNum(), end.getBlockNum());
+        }
+
+        if(initialDir == Direction.FROM_TAIL){
+            currDistance = currBranch.getDistance(start.getBlockNum(), currBranch.getEnd());
+        }else{
+            currDistance = currBranch.getDistance(start.getBlockNum(), currBranch.getStart());
+        }
+
+        Direction dir = initialDir;
+        while(currBranch != endBranch){
+            ArrayList<Branch> next;
+            if(dir == Direction.FROM_TAIL) {
+                next = currBranch.getHead();
+            }else {
+                next = currBranch.getTail();
+            }
+
+            double nextDist = 0.0;
+            Branch nextBranch = null;
+            if(next.contains(endBranch)){
+                nextBranch = endBranch;
+                nextDist = 0.0;
+            }else if(next.size() == 1){
+                nextBranch = next.get(0);
+                nextDist = next.get(0).getTotalLength();
+            }else if(next.get(0).getTotalLength() < next.get(1).getTotalLength()){
+                nextBranch = next.get(0);
+                nextDist = next.get(0).getTotalLength();
+            }else{
+                nextBranch = next.get(1);
+                nextDist = next.get(1).getTotalLength();
+            }
+
+            if(nextBranch.getTail().contains(currBranch)){
+                dir = Direction.FROM_TAIL;
+                System.out.println("Branch " +currBranch.getStart()+" "+currBranch.getEnd() +
+                        " => Tail of Branch "+nextBranch.getStart()+" "+nextBranch.getEnd());
+            }else{
+                dir = Direction.FROM_HEAD;
+                System.out.println("Branch " +currBranch.getStart()+" "+currBranch.getEnd() +
+                        " => Head of Branch "+nextBranch.getStart()+" "+nextBranch.getEnd());
+            }
+
+            currBranch = nextBranch;
+            currDistance += nextDist;
+
+            if(currBranch == endBranch){
+                if(dir == Direction.FROM_TAIL){
+                    currDistance += currBranch.getDistance(currBranch.getStart(), end.getBlockNum());
+                }else {
+                    currDistance += currBranch.getDistance(currBranch.getEnd(), end.getBlockNum());
+                }
+                break;
+            }
+        }
+
+        return currDistance;
+    }
+
+    public double distanceToYard(Block start){
+
+        return distanceBetweenTwoBlocks(start, getStartBlock());
+    }
+
+    public boolean addToHashMap(Block b){
+
+        //check for collision, unsuccessful add
+        if(blockHashMap.containsKey(b.getBlockNum())){
+            System.out.println("Collision of block #!");
+            return false;
+        }else{
+            blockHashMap.put(b.getBlockNum(), b);
+        }
+
         return true;
     }
 
-    public Block getBlock(int blockNum){
-        return trackList.get(blockNum-1);
+    public Block getStartBlock(){
+        return startBlock;
     }
 
-    public float getSuggestedSpeed(){
-        return suggestedSpeed;
-    }
-
-    public int getAuthority(){
-        return authority;
-    }
-
-    public void setSuggestedSpeed(float ss){
-        suggestedSpeed = ss;
-    }
-
-    public void setAuthority(int a){
-        authority = a;
-    }
-
-    private Block getNextBlock(Block b){
-        return b;
+    public void setStartBlock(Block sb){
+        startBlock = sb;
     }
 
     public LinkedList<Block> getBlockList(){
-        return trackList;
+        return this.blockList;
+    }
+
+    public Block getBlock(int blockNum){
+        return blockHashMap.get(blockNum);
+    }
+
+    public Branch getBranch(int blockNum){
+        return branchMap.get(blockNum);
+    }
+
+    public Map<Integer, Block> getBlockHashMap(){
+        return blockHashMap;
+    }
+
+    public Map<Integer, Branch> getBranchMap(){
+        return branchMap;
     }
 }

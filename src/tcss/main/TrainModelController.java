@@ -8,10 +8,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import tcss.trainmodel.TrainModel;
 
@@ -38,6 +42,7 @@ public class TrainModelController implements Initializable {
     @FXML private Label lastBeaconLabel;
     @FXML private Label powerLabel;
     @FXML private Label forceLabel;
+    @FXML private Label tempLabel;
 
 
     // Radio buttons
@@ -121,6 +126,7 @@ public class TrainModelController implements Initializable {
         massLabel.setText("Mass: " + train.getMass());
         gradeLabel.setText("Grade: " + train.getGrade());
         forceLabel.setText("Force: " + train.getForce());
+        tempLabel.setText("Temp: " + train.getTemp());
 
         if(train.getSBrake()) {
             sBrakeLabel.setText("True");
@@ -150,7 +156,7 @@ public class TrainModelController implements Initializable {
         }
         distanceLabel.setText("Δx in Block: " + train.getX());
         blocksLabel.setText("Blocks Traveled: " + train.getBlocksTraveled());
-        curBeaconLabel.setText("Current Beacon: " + train.getCurBeaconSignal().toString());
+        curBeaconLabel.setText("Current Beacon: " + train.getCurBeaconSignal());
         lastBeaconLabel.setText("Last Beacon: " + train.getLastBeaconSignal());
 
         //Update door statuses
@@ -210,6 +216,12 @@ public class TrainModelController implements Initializable {
             d8Status.setFill(Color.RED);
         }
 
+        if(train.getEBrake()) {
+            eBrakeOn.setSelected(true);
+        }
+        else {
+            eBrakeOff.setSelected(true);
+        }
 
     }
 
@@ -224,10 +236,12 @@ public class TrainModelController implements Initializable {
         else {
             eBrakeOff.setSelected(true);
         }
+        titleLabel.setText("Train " + train.getID());
     }
 
     public void closeWindow() {
-        System.exit(7);
+        Stage s = (Stage) titleLabel.getScene().getWindow();
+        s.close();
     }
 
     public void goBack(ActionEvent actionEvent) throws Exception {

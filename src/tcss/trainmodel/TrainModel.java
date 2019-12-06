@@ -30,6 +30,7 @@ public class TrainModel {
     private boolean lights;
     private boolean[] doors = new boolean[8];
     private int passengers;
+    private float temp;
 
     // Variables for physics
     private float grade;            // Grade of the current block
@@ -61,10 +62,12 @@ public class TrainModel {
         this.underground = false;
 
         controller = new TrainController(this);
-        controller.setSpeedLimit(speedLimit);
+        //TODO Talk to Pat about speed limit
+//        controller.setSpeedLimit(speedLimit);
         mass = 409000;
         curA = 0f;
         curV = 0f;
+        temp = 68f;
     }
 
     /**
@@ -89,11 +92,13 @@ public class TrainModel {
         curV = 0;
 
         controller = new TrainController(this);
-        controller.setSpeedLimit(speedLimit);
+        //TODO Talk to Pat about speed limit
+//        controller.setSpeedLimit(speedLimit);
         controller.passCommands(authority, suggestedSpeed);
 
         // Add to ArrayList
         trains.add(this);
+        temp = 68f;
     }
 
     /**
@@ -103,7 +108,7 @@ public class TrainModel {
      * @param length The length of the dummy "block"
      */
     public TrainModel(int length) {
-        id = 1;
+//        id = 1;
         eBrake = false;
         sBrake = false;
         underground = false;
@@ -115,6 +120,10 @@ public class TrainModel {
         lastV = 0;
         curA = 0;
         lastA = 0;
+        trains.add(this);
+        id = trains.size();
+        controller = new TrainController(this);
+        temp = 68f;
     }
 
     public TrainModel() {
@@ -131,18 +140,35 @@ public class TrainModel {
     }
 
     public TrainModel(float suggestedSpeed, int authority, int id, Block block) {
-        this.block = block;
         this.suggestedSpeed = suggestedSpeed;
         this.authority = authority;
+        this.block = block;
         this.id = id;
-        this.speedLimit = block.getSpeedLimit();
         this.eBrake = false;
+
+        // Get initial block info
+        this.speedLimit = block.getSpeedLimit();
         this.underground = block.isUnderground();
+        this.length = block.getLength();
         this.grade = block.getGrade();
 
+        mass = 40900;
+        curA = 0;
+        curV = 0;
+
         controller = new TrainController(this);
-        controller.update();
         controller.setSpeedLimit(speedLimit);
+        controller.passCommands(authority, suggestedSpeed);
+
+        // Add to ArrayList
+        trains.add(this);
+        temp = 68f;
+
+        // TODO Delete this test
+        System.out.println("\nAll trains:\n");
+        for(TrainModel t: trains) {
+            System.out.println(t);
+        }
     }
 
     /**
@@ -172,7 +198,7 @@ public class TrainModel {
     public void update() {
 
         // If braking, set acceleration manually
-        // If service brake...
+        // If emergency brake...
         if(eBrake) {
             if(curV <= 0) {
                 lastA = curA;
@@ -184,7 +210,7 @@ public class TrainModel {
                 curA = -2.73f;
             }
         }
-        // If emergency brake...
+        // If service brake...
         else if(sBrake) {
             if(curV <= 0) {
                 lastA = curA;
@@ -214,10 +240,11 @@ public class TrainModel {
             // group submission
             if(block != null) {
                 //TODO Uncomment when Justin adds getNextBlock() to Block class
-//                block = block.getNextBlock();
+                block = block.trainGetNextBlock();
                 length = block.getLength();
                 grade = block.getGrade();
                 speedLimit = block.getSpeedLimit();
+                controller.setSpeedLimit(speedLimit);
             }
 
             blocksTraveled = blocksTraveled + 1;
@@ -233,6 +260,12 @@ public class TrainModel {
                     curBeaconSignal = new String(block.getBeacon().getData());
                 }
             }
+        }
+    }
+
+    public static void updateAll() {
+        for(TrainModel t: trains) {
+            t.update();
         }
     }
 
@@ -525,4 +558,18 @@ public class TrainModel {
     public void setGrade(float grade) {
         this.grade = grade;
     }
+
+    public void setPWRCMD(float PWRCMD){
+        this.power = PWRCMD;
+    }
+
+    public void setTemp(float temp) {
+        this.temp = temp;
+    }
+
+    public float getTemp() {
+        return temp;
+    }
+
+
 }

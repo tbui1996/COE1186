@@ -3,6 +3,7 @@ package tcss.Demo;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,6 +15,7 @@ import javafx.stage.Stage;
 import tcss.traincontroller.TrainController;
 import tcss.trainmodel.TrainModel;
 
+import javax.swing.*;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -35,7 +37,10 @@ public class TrainControllerController implements Initializable {
     @FXML private ToggleButton eBrakeToggle;
     @FXML private ToggleButton opModeToggle;
     @FXML private Label undergroundDisplay;
-
+    @FXML private Label powerCommandLabel, kilabel, kplabel;
+    @FXML private Label currentSpeedLabel;
+    //@FXML private Button settings;
+    //@FXML private CheckBox light1, light2, light3, light4, light5, light6, light7, light8, door1, door2, door3, door4, door5, door6, door7, door8;
 
     private TrainController tc;
 
@@ -73,15 +78,30 @@ public class TrainControllerController implements Initializable {
                     idLabel.setText("ID: ");
                     suggestedSpeedLabel.setText("Suggested Speed: ");
                     authLabel.setText("Authority: ");
-                    speedLimitLabel.setText("Speed Limit: ");
                     setPointInput.setPromptText("");
                     //undergroundDisplay.setText("N/A");
                     //undergroundDisplay.setTextFill(Color.YELLOW);
                     eBrakeToggle.setDisable(true);
                     eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
+                    powerCommandLabel.setText("Power: ");
+                    kilabel.setText("Ki: ");
+                    kplabel.setText("Kp: ");
+                    currentSpeedLabel.setText("Current Speed: ");
                 }
             }
         });
+    }
+
+    /**
+     * In this method we want to allow the user to see other information
+     * @param actionEvent
+     * @throws Exception
+     */
+    public void settingsView(ActionEvent actionEvent) throws Exception{
+        Scene engineView = new Scene(FXMLLoader.load(getClass().getResource("EngineSettings.fxml")));
+        Stage window = (Stage) pane.getScene().getWindow();
+        window.setScene(engineView);
+        window.setTitle("Engine");
     }
 
     public void update(){
@@ -89,7 +109,6 @@ public class TrainControllerController implements Initializable {
         System.out.println("tc is: " + tc.toString());
         suggestedSpeedLabel.setText("Suggested Speed: " + tc.getSSpeed());
         System.out.println("" + tc.getSSpeed() + " with model: ");
-        speedLimitLabel.setText("Speed Limit: " + tc.getSpeedLimit());
         if(opModeToggle.isSelected()){
             opModeToggle.setText("Exit Manual Mode");
         } else {
@@ -113,7 +132,10 @@ public class TrainControllerController implements Initializable {
             eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
         }
         opModeToggle.setSelected(tc.getOpMode()); //set toggle to true if it is in manual
-
+        powerCommandLabel.setText("Power: " + tc.getPWRCMD());
+        kilabel.setText("Ki: " + tc.getKi());
+        kplabel.setText("Kp: " + tc.getKp());
+        currentSpeedLabel.setText("Current Speed: " + tc.getCurrentSpeed());
     }
 
     public void goBack(ActionEvent actionEvent) throws Exception {
@@ -138,6 +160,7 @@ public class TrainControllerController implements Initializable {
        } catch (NullPointerException e){
            System.out.println("Train is not selected!");
        }
+       update();
     }
 
     public void toggleEBrake(ActionEvent actionEvent) throws Exception {
