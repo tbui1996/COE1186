@@ -1,20 +1,26 @@
 package tcss.main;
 
-
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import tcss.trackcontroller.PLC;
 import tcss.trackcontroller.TrackController;
 import tcss.trackcontroller.WaysideController;
@@ -51,16 +57,27 @@ public class TrackControllerController implements Initializable {
   @FXML
   private Label railroadcrossing;
 
+  @FXML
+  private ToggleButton manualMode;
+
+  @FXML
+  private Button importPLC;
+
   public WaysideController wc;
-  private TrackController curTC;
+  public TrackController curTC;
+  public Block blockToAdd;
+  private ArrayList<String> listofTCs;
   private Main main;
   private Track track;
   private PLC plc;
   private String plcFile;
   private ArrayList<Block> currBlocks;
   private int line;
+  private boolean switchState = true;
+  private boolean occupied = false;
+  private int blockId;
 
-  public void setTrainApp(Main main, String plcFile, Track track, WaysideController waysideController) throws IOException {
+    public void setTrainApp(Main main, String plcFile, Track track, WaysideController waysideController) throws IOException {
     this.track = track;
     this.main = main;
     this.wc = waysideController;
@@ -70,108 +87,206 @@ public class TrackControllerController implements Initializable {
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    trackChoice.getItems().add("Select Track Controller");
-    String st[] = {"Red Track Controller 1", "Red Track Controller 2", "Red Track Controller 3", "Red Track Controller 4", "Green Track Controller 1", "Green Track Controller 2", "Green Track Controller 3", "Green Track Controller 4"};
-    trackChoice = new ChoiceBox(FXCollections.observableArrayList(st));
-    trackChoice.setValue("Select Track Controller");
-    trackChoice.setTooltip(new Tooltip("Select a Track Controller"));
+      trackChoice.getItems().add("Select Track Controller");
+      trackChoice.getItems().add("Red Track Controller 1");
+      trackChoice.getItems().add("Red Track Controller 2");
+      trackChoice.getItems().add("Red Track Controller 3");
+      trackChoice.getItems().add("Red Track Controller 4");
+      trackChoice.getItems().add("Green Track Controller 1");
+      trackChoice.getItems().add("Green Track Controller 2");
+      trackChoice.getItems().add("Green Track Controller 3");
+      trackChoice.getItems().add("Green Track Controller 4");
 
-    blockChoice.getItems().add("Select a Block");
-    blockChoice.setValue("Select Block:");
-    blockChoice.setTooltip(new Tooltip("Select a Block"));
+      trackChoice.setValue("Select Track Controller");
+      trackChoice.setTooltip(new Tooltip("Select a Track Controller"));
+
+      trackChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+          @Override
+          public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+              if ((Integer) number2 > 0) {
+                  if ((Integer) number2 == 1)
+                      curTC = Main.tc.redTC.get(0);
+                  else if ((Integer) number2 == 2)
+                      curTC = Main.tc.redTC.get(1);
+                  else if ((Integer) number2 == 3)
+                      curTC = Main.tc.redTC.get(2);
+                  else if ((Integer) number2 == 4)
+                      curTC = Main.tc.redTC.get(3);
+                  else if ((Integer) number2 == 5)
+                      curTC = Main.tc.greenTC.get(0);
+                  else if ((Integer) number2 == 6)
+                      curTC = Main.tc.greenTC.get(1);
+                  else if ((Integer) number2 == 7)
+                      curTC = Main.tc.greenTC.get(2);
+                  else if ((Integer) number2 == 8)
+                      curTC = Main.tc.greenTC.get(3);
+
+                  blockChoice.getItems().clear();
+                  blockChoice.getItems().add("Select Block");
+                  ArrayList<Block> switching = new ArrayList<>(curTC.switchHashMap.values());
+                  ArrayList<Block> RXR = new ArrayList<>(curTC.RXR.values());
+                  ArrayList<Block> listblock = new ArrayList<>(curTC.block.values());
 
 
-    trackChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-      public void changed(ObservableValue ov, Number value, Number new_value) {
-        trackChoice.setValue(st[new_value.intValue()]);
-        int trackControllerId = trackChoice.getSelectionModel().getSelectedIndex();
-        if(trackControllerId<0)
-            return;
-        if((st[new_value.intValue()]==st[0] || (st[new_value.intValue()]==st[1]) || ((st[new_value.intValue()]==st[2])||(st[new_value.intValue()]==st[3])))){
-          for(TrackController tc: wc.redTC){
-            line = 1;
-            trackChoice.setValue(tc.getTCID());
+                  for (Block block : switching){
+                      blockChoice.getItems().add(block.getSection() + Integer.toString(block.getBlockNum()));
+                      System.out.println("Adding switch to blockChoice");
+                  }
+                  for (Block block : RXR) {
+                          blockChoice.getItems().add(block.getSection() + Integer.toString(block.getBlockNum()));
+                          System.out.println("Adding RXR block to blockChoice");
+
+                  }
+                      int i = 0;
+                  for (Block block : listblock) {
+
+                          blockChoice.getItems().add(block.getSection() + Integer.toString(block.getBlockNum()));
+                          i++;
+                          System.out.println("Adding block to " + i + " blockChoice");
+                  }
+                  blockChoice.setDisable(false);
+              }
+              else{
+                  blockChoice.setDisable(true);
+              }
           }
-        }else{
-          for(TrackController tc: wc.greenTC){
-            line = 0;
-            trackChoice.setValue(tc.getTCID());
+      });
+      blockChoice.setValue("Select Block");
+      blockChoice.setTooltip(new Tooltip("Select a block to view"));
+      blockChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+          @Override
+          public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+              if ((Integer) number2 > 0) {
+                  Block cur = curTC.getBlock((Integer) number2);
+                  blockId = cur.getBlockNum();
+                  sSpeedLabel.setText("Suggested Speed: " + cur.getSuggestedSpeed() + " mph");
+                  authLabel.setText("Authority: " + cur.getAuthority()+ " blocks");
+                  occupiedLabel.setText("Occupied: " + (cur.isOccupied() ? "Yes" : "No"));
+                  if (curTC.getSwitch((Integer) number2)==null){
+                      outputLights.setText("Lights: N/A");
+                      outputSwitch.setText("Switch: N/A");
+                  }
+                  if(curTC.getRXR((Integer) number2).getRXR() == null)
+                      railroadcrossing.setText("Railroad Crossing: N/A");
+
+              } else {
+                  sSpeedLabel.setText("Suggested Speed: ");
+                  authLabel.setText("Authority: ");
+                  occupiedLabel.setText("Occupied: ");
+                  outputSwitch.setText("Switch: ");
+                  outputLights.setText("Lights: ");
+              }
 
           }
-        }
-        trackChoice.getSelectionModel().isSelected(0);
-        blockChoice = updateBlockChoiceBox();
-      }
-    });
 
-    blockChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-      public void changed(ObservableValue ov, Number value, Number new_value) {
-        if(!blockChoice.getSelectionModel().isEmpty()){
-          Integer blockId = (Integer) blockChoice.getValue();
-          Block block = curTC.getBlock(blockId);
-          String occupied = (block.isOccupied()) ? "Occupied" : "Not Occupied";
-          occupiedLabel.setText("Occupancy: "+ occupied);
-          sSpeedLabel.setText("Suggested Speed: "+ block.getSuggestedSpeed());
-          authLabel.setText("Authority: "+block.getAuthority());
-          String switches = (curTC.switchRequest(line,blockId,blockId+1)) ? "Not switched" : "Switched";
-          outputSwitch.setText("Switch: "+ switches);
-          String rxrs = (curTC.railroadCrossingRequest(line,blockId) ? "Up": "Down");
-          railroadcrossing.setText("Railroad Crossing: "+ rxrs);
-        }
-        else{
-          occupiedLabel.setText("Occupancy: ");
-          sSpeedLabel.setText("Suggested Speed: ");
-          authLabel.setText("Authority: ");
-          outputSwitch.setText("Switch: ");
-          railroadcrossing.setText("Railroad Crossing: ");
-        }
-      }
-    });
+      });
 
+      importPLC.setText("Browse for PLC File");
+      importPLC.setOnAction(new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent actionEvent) {
+              FileChooser fileChooser = new FileChooser();
+              File file = fileChooser.showOpenDialog(null);
+              String plcFile = file.getPath();
+              try {
+                  curTC.loadPLC(plcFile);
+              } catch (IOException e){
+                  System.out.println(e.toString());
+              }
+          }
+      });
 
+      manualMode.setOnAction(new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent actionEvent) {
+              if(manualMode.isSelected()){
+
+              }
+          }
+      });
+
+      // Create Timeline for periodic updating
+      Timeline loop = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent event) {
+              update();
+//                System.out.println("GUI Updated!!");
+          }
+      }));
+      loop.setCycleCount(Timeline.INDEFINITE);
+      loop.play();
   }
-  private ChoiceBox updateBlockChoiceBox(){
-    Integer tcID = (Integer) trackChoice.getValue();
-    if(tcID<0)
-      return null;
-
-    if(0<=tcID && tcID<=3)
-      curTC = wc.redTC.get(tcID);
-    if(4<=tcID && tcID<=7)
-      curTC = wc.greenTC.get(tcID);
-
-    ArrayList<Block> blocks = new ArrayList<>(curTC.block.values());
-    ArrayList<Block> rxr = new ArrayList<>(curTC.RXR.values());
-    ArrayList<Block> switching = new ArrayList<>(curTC.switchHashMap.values());
-
-    currBlocks = blocks;
-    blockChoice= new ChoiceBox(FXCollections.observableArrayList(currBlocks));
-    return blockChoice;
-
+  public boolean calculateSignal(boolean occupancy){
+        return false;
   }
   public void goBack(ActionEvent actionEvent) throws Exception {
-//        Parent trainModelParent = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
-//        Scene trainModelView = new Scene(trainModelParent);
-//
-//        // Get stage info
-//        Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-//        window.setScene(trainModelView);
-//        window.show();
+      FXMLLoader trackLoader = new FXMLLoader(getClass().getResource("fxml/TrackSelect.fxml"));
+      Stage trackStage = new Stage();
+      Parent trackRoot = trackLoader.load();
+      trackStage.setTitle("Select Track Module");
+      trackStage.setScene(new Scene(trackRoot));
+      trackStage.setResizable(false);
+      trackStage.getIcons().add(new Image("file:resources/train.png"));
 
-    Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("ModuleSelection.fxml")));
-    Stage window = (Stage) pane.getScene().getWindow();
-    window.setScene(moduleSelect);
-    window.setTitle("Module Selection");
+      trackStage.show();
+
+      Stage s = (Stage) authLabel.getScene().getWindow();
+      s.close();
 
   }
+
   @FXML
-  void onPLCClick(ActionEvent event) throws IOException{
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Browse for plc file");
-    File file = fileChooser.showOpenDialog(null);
-    String plcFile = file.getPath();
-    curTC.loadPLC(plcFile);
+    void setManualMode(ActionEvent event){
+      if(manualMode.isSelected()){
+
+      }
 
   }
+  //CTC function
+  public void setSwitch(){
+    switchState = !switchState;
+      Task<Void> task = new Task<Void>() {
+          @Override
+          protected Void call() throws Exception{
+              Platform.runLater(new Runnable(){
+                  @Override
+                  public void run(){
+                      if(switchState){
+
+                      }
+                  }
+              });
+              return null;
+          }
+
+      };
+    task.setOnSucceeded(e->{
+
+    });
+      Thread thread = new Thread(task);
+      thread.setDaemon(true);
+      thread.start();
+  }
+
+  public void update(){
+        if (curTC == null)
+            return;
+        if(manualMode.isSelected())
+            manualMode.setText("Entering manual mode...");
+        else {
+            importPLC.setDisable(true);
+            manualMode.setText("Exiting manual mode...");
+        }
+        curTC.trasmitAuthority(curTC.getBlock(blockId).getSuggestedSpeed(),blockId,curTC.getBlock(blockId).getAuthority());
+        //TODO: need to rewrite getAuthority to get the actual authority from wayside controller
+        authLabel.setText("Authority: " + curTC.getBlock(blockId).getAuthority() + " blocks");
+        sSpeedLabel.setText("Suggesed Speed: "+ curTC.getBlock(blockId).getSuggestedSpeed() + " mph");
+        outputLights.setText("Lights: " + curTC.getBlock(blockId).getSwitch().getStraight());
+  }
+
+    public void closeWindow() {
+        Stage s = (Stage) trackChoice.getScene().getWindow();
+        s.close();
+    }
 
 }

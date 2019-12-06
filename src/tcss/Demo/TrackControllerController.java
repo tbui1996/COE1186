@@ -9,11 +9,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import tcss.trackcontroller.PLC;
 import tcss.trackcontroller.TrackController;
@@ -21,7 +18,7 @@ import tcss.trackcontroller.WaysideController;
 import tcss.trackmodel.Block;
 import tcss.trackmodel.Track;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -49,6 +46,12 @@ public class TrackControllerController implements Initializable {
 
   @FXML
   private Label railroadcrossing;
+
+  @FXML
+  private RadioButton manualMode;
+
+  @FXML
+  private Button importPLC;
 
   public WaysideController wc;
   private TrackController curTC;
@@ -128,6 +131,10 @@ public class TrackControllerController implements Initializable {
     });
 
 
+
+
+
+
   }
   private ChoiceBox updateBlockChoiceBox(){
     Integer tcID = (Integer) trackChoice.getValue();
@@ -149,13 +156,6 @@ public class TrackControllerController implements Initializable {
 
   }
   public void goBack(ActionEvent actionEvent) throws Exception {
-//        Parent trainModelParent = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
-//        Scene trainModelView = new Scene(trainModelParent);
-//
-//        // Get stage info
-//        Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-//        window.setScene(trainModelView);
-//        window.show();
 
     Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("ModuleSelection.fxml")));
     Stage window = (Stage) pane.getScene().getWindow();
@@ -163,14 +163,12 @@ public class TrackControllerController implements Initializable {
     window.setTitle("Module Selection");
 
   }
-  @FXML
-  void onPLCClick(ActionEvent event) throws IOException{
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Browse for plc file");
-    File file = fileChooser.showOpenDialog(null);
-    String plcFile = file.getPath();
-    curTC.loadPLC(plcFile);
 
+  @FXML
+  void setManualMode(ActionEvent event){
+    if(manualMode.isSelected()){
+
+    }
   }
 
 }

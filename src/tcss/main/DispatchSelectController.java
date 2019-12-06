@@ -83,7 +83,7 @@ public class DispatchSelectController implements Initializable {
             }
         }
 
-        //Set Arrival Time if one was entered
+        /*//Set Arrival Time if one was entered
         if (!aHour.getText().equals("")) {
             System.out.println("aHalf: " + aHalf.getText().equals("AM"));
             if (aHalf.getText().equals("AM")) {
@@ -92,7 +92,7 @@ public class DispatchSelectController implements Initializable {
             else {
                 curr.setArrivalTime(Integer.parseInt((aHour.getText())) + 12, Integer.parseInt(aMin.getText()));
             }
-        }
+        }*/
 
         curr.setRequests();
         if (!dispatchName.getText().equals(""))

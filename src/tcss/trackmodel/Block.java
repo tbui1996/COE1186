@@ -113,7 +113,7 @@ public class Block{
         setTrain(null);
     }
 
-    public Block trainGetNextBlock() throws Exception {
+    public Block trainGetNextBlock(){
 
         Block retBlock;
 
@@ -124,7 +124,8 @@ public class Block{
             }else if(getDirection() == Direction.FROM_HEAD){
                 retBlock = getTail();
             }else{
-                throw new Exception("trainGetNextBlock(): current block has no valid direction specified");
+               System.out.println("trainGetNextBlock(): current block has no valid direction specified");
+               return null;
             }
         }else{
             if(this == getBranch().getHead()){
@@ -144,7 +145,8 @@ public class Block{
                         retBlock = getHead();
                     }
                 }else{
-                    throw new Exception("trainGetNextBlock(): current block has no valid direction specified");
+                    System.out.println("trainGetNextBlock(): current block has no valid direction specified");
+                    return null;
                 }
 
             }else{
@@ -163,7 +165,8 @@ public class Block{
                         retBlock = getTail();
                     }
                 }else{
-                    throw new Exception("trainGetNextBlock(): current block has no direction specified");
+                    System.out.println("trainGetNextBlock(): current block has no direction specified");
+                    return null;
                 }
             }
         }
@@ -181,7 +184,8 @@ public class Block{
         }else if(retBlock.getBranch() != null){
             retBlock.setDirection(Direction.FROM_BRANCH);
         }else{
-            throw new Exception("trainGetNextBlock(): no references on returned block point to current block");
+            System.out.println("trainGetNextBlock(): no references on returned block point to current block");
+            return null;
         }
 
         return retBlock;
@@ -199,10 +203,7 @@ public class Block{
 
         System.out.println("SS: " + ss + ", Auth:" + a);
 
-        if(ss == -1.0 && a == -1){
-            System.out.println("Initializing train on block " + getBlockNum());
-            return initTrain(ss, a, 0);
-        }else if(ss == -2.0 && a == 0){
+        if(ss == -2.0 && a == 0){
 
             //close block for maintenance
             setClosed(true);
@@ -243,9 +244,9 @@ public class Block{
                 getSwitch().setStraight(true);
             }
         }else{
-            if(getTrain() == null){
-                //no train to pass values to
-                return false;
+            if(!isOccupied()){
+                System.out.println("Initializing train on block " + getBlockNum());
+                return initTrain(ss, a, 0);
             }else{
                 //pass values to train on block
                 getTrain().passCommands(ss, a);
@@ -314,7 +315,7 @@ public class Block{
     }
 
     public boolean isOccupied(){
-        return occupied;
+        return getTrain() != null;
     }
 
     public boolean isClosed(){

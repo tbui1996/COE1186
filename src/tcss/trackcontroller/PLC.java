@@ -31,7 +31,7 @@ public class PLC {
         JexlContext jexlcontent = new MapContext();
         return vitalSwitchCalculation(nextBlock, destinationBlock, expression, jexlcontent);
     }
-    public boolean vitalSwitchCalculation(Block nextBlock, Block destinationBlock, Expression expression, JexlContext jexlcontent){
+    private boolean vitalSwitchCalculation(Block nextBlock, Block destinationBlock, Expression expression, JexlContext jexlcontent){
         boolean result = true;
 
         for(int i = 0; i < 5; i++){
@@ -128,6 +128,7 @@ public class PLC {
 
         return result;
     }
+   
 }
 
 
