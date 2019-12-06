@@ -111,10 +111,14 @@ public class CTC {
                         temp.setAuth(temp.getAuth(temp.getCurrStop() + 1));
                         System.out.println("Train sent");
                         //Sends SS and Auth to new
-                        if (temp.getLine() == 1)
+                        if (temp.getLine() == 1) {
                             tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), 1, 9);
-                        else
+                            temp.setDispatched();
+                        }
+                        else {
                             tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), 0, 63);
+                            temp.setDispatched();
+                        }
                     }
                 }
                 /*
@@ -161,6 +165,54 @@ public class CTC {
             if (greenLine.get(j).getSwitch() != null) {
                 greenLine.get(j).getSwitch().setStraight(tcss.main.Main.tc.getSwitchStraight(0,j));
                 greenLine.get(j).getSwitch().setLights(tcss.main.Main.tc.getLightState(0,j));
+            }
+        }
+
+        //Updating block position of trains
+        for (Dispatch temp : dispatchList) {
+            //Red Line
+            if (temp.getLine() == 1) {
+                //If dispatched, need to update the location
+                if (temp.isDispatched()) {
+                    //If haven't left Yard yet, keep checking for starting block to be occupancy
+                    if (temp.getTrain().getBlock().equals("N/A") && redLine.get(9).isOccupied()) {
+                        temp.getTrain().setBlock(9);
+                    }
+                    //Has left yard, so check block next to it
+                    else {
+                        //If head block is occupied, move train to head block
+                        if (redLine.get(temp.getTrain().getBlockInt()).getHead().isOccupied())
+                            temp.getTrain().setBlock(redLine.get(temp.getTrain().getBlockInt()).getHead().getBlockNum());
+                        //If tail block is occupied, move train to tail block
+                        else if (redLine.get(temp.getTrain().getBlockInt()).getTail().isOccupied())
+                            temp.getTrain().setBlock(redLine.get(temp.getTrain().getBlockInt()).getTail().getBlockNum());
+                            //If branch block is occupied, move train to tail block
+                        else if (redLine.get(temp.getTrain().getBlockInt()).getBranch() != null && redLine.get(temp.getTrain().getBlockInt()).getBranch().isOccupied())
+                            temp.getTrain().setBlock(redLine.get(temp.getTrain().getBlockInt()).getBranch().getBlockNum());
+                    }
+                }
+            }
+            //Green Line
+            else {
+                //If dispatched, need to update the location
+                if (temp.isDispatched()) {
+                    //If haven't left Yard yet, keep checking for starting block to be occupancy
+                    if (temp.getTrain().getBlock().equals("N/A") && greenLine.get(63).isOccupied()) {
+                        temp.getTrain().setBlock(63);
+                    }
+                    //Has left yard, so check block next to it
+                    else {
+                        //If head block is occupied, move train to head block
+                        if (greenLine.get(temp.getTrain().getBlockInt()).getHead().isOccupied())
+                            temp.getTrain().setBlock(greenLine.get(temp.getTrain().getBlockInt()).getHead().getBlockNum());
+                            //If tail block is occupied, move train to tail block
+                        else if (greenLine.get(temp.getTrain().getBlockInt()).getTail().isOccupied())
+                            temp.getTrain().setBlock(greenLine.get(temp.getTrain().getBlockInt()).getTail().getBlockNum());
+                            //If branch block is occupied, move train to tail block
+                        else if (greenLine.get(temp.getTrain().getBlockInt()).getBranch() != null && greenLine.get(temp.getTrain().getBlockInt()).getBranch().isOccupied())
+                            temp.getTrain().setBlock(greenLine.get(temp.getTrain().getBlockInt()).getBranch().getBlockNum());
+                    }
+                }
             }
         }
     }

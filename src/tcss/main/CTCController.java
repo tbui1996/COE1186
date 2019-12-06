@@ -9,9 +9,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import tcss.ctc.Train;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,11 +26,13 @@ public class CTCController implements Initializable{
     @FXML private Label dispatch1;
     @FXML private AnchorPane pane;
     @FXML private Button newDispatch;
-    @FXML private Accordion dispatchList;
     @FXML private ChoiceBox<String> lineSelector;
     @FXML private ChoiceBox<Integer> blockSelector;
     @FXML private Button confirmLine;
     @FXML private Button confirmBlock;
+    @FXML private TableColumn<String, Train> nameList;             //Table column for train names
+    @FXML private TableColumn<String, Train> locList;              //Table column for train locations
+    @FXML private TableView dispatchList;           //Table holder for dispatch list
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -38,6 +42,10 @@ public class CTCController implements Initializable{
         lineSelector.getItems().add("Green");
         lineSelector.setValue("Red");
         lineSelector.setTooltip(new Tooltip("Select a line to view a block"));
+
+        //Sets up Table to display dispatches
+        nameList.setCellValueFactory(new PropertyValueFactory<>("name"));
+        locList.setCellValueFactory(new PropertyValueFactory<>("block"));
 
         // Create Timeline for periodic updating
         Timeline loop = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
@@ -95,9 +103,9 @@ public class CTCController implements Initializable{
     //Updates dispatch list periodically
     private void updateView() {
 
-        dispatchList.getPanes().clear();
+        dispatchList.getItems().clear();
         for (int i = 0; i < tcss.main.Main.ctc.numDispatches(); i++)
-            dispatchList.getPanes().add(new TitledPane(tcss.main.Main.ctc.getDispatch(i).getName(), new Label(tcss.main.Main.ctc.getDispatchString(i))));
+            dispatchList.getItems().add(tcss.main.Main.ctc.getDispatch(i).getTrain());
     }
 
     public void closeWindow(ActionEvent actionEvent) throws Exception {

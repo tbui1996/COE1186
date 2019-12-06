@@ -55,7 +55,7 @@ public class DispatchSelectController implements Initializable {
     }
 
     public void confirmLine(ActionEvent e) throws Exception {
-        curr = new Dispatch(lineSelector.getSelectionModel().getSelectedItem().toUpperCase(),("Dispatch " + tcss.main.Main.ctc.numDispatches() + 1));
+        curr = new Dispatch(lineSelector.getSelectionModel().getSelectedItem().toUpperCase(),("Train " + tcss.main.Main.ctc.numDispatches() + 1));
         //System.out.println(curr.getLine());
         curr.createSchedule(curr.getLine());
 

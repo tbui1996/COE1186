@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 
 public class Dispatch {
-    private String name;
     private float SS = 0;
     private int auth = 0;
     private int line; //Red == 1, Green == 2
@@ -19,11 +18,13 @@ public class Dispatch {
     private int dHr;
     private int dMin;
     private Train train;
+    private boolean dispatched;
     //private ArrayList<String> stations;
 
     public Dispatch(String l, String n) {
         this.line = this.lineStringToInt(l);
-        this.name = n;
+        this.train = new Train(n);
+        this.dispatched = false;
         //this.SS = 0;
         //this.auth = 0;
     }
@@ -31,6 +32,7 @@ public class Dispatch {
     public Dispatch(float SS, int auth, TrainModel train) {
         this.SS = SS;
         this.auth = auth;
+        this.dispatched = false;
         //this.train = train;
     }
 
@@ -136,12 +138,13 @@ public class Dispatch {
     }
 
     public String getName() {
-        return this.name;
+        return this.train.getName();
     }
 
 
     public String toString() {
-        return "Schedule: \n" + "Departure Time: " + this.departureTimeString() + "\n" + this.schedule + "\nNext Stop: " + this.schedule.getStopName(currStop+1);
+        return "Train: " + this.train.getName() + "\nDeparture Time: " + this.departureTimeString() +
+                "\n" + this.schedule + "\nNext Stop: " + this.schedule.getStopName(currStop+1);
     }
 
     private int lineStringToInt(String line) {
@@ -151,6 +154,18 @@ public class Dispatch {
             return 2;
         else
             return 0;
+    }
+
+    public Train getTrain() {
+        return train;
+    }
+
+    public void setDispatched() {
+        this.dispatched = true;
+    }
+
+    public boolean isDispatched() {
+        return this.dispatched;
     }
 
     public int lineToTc() {
