@@ -10,6 +10,8 @@ import static java.lang.Math.*;
 
 public class TrainModel {
 
+    private final int MAX_PASSENGERS = 222;
+
     // Static ArrayList of all trains
     private static ArrayList<TrainModel> trains = new ArrayList<TrainModel>();
 
@@ -469,10 +471,11 @@ public class TrainModel {
         mass = 409000 + 80*passengers;
     }
 
-    public void removePassengers() {
+    public int removePassengers() {
         Random r = new Random();
         passengers -= r.nextInt(passengers+1);
         mass = 409000 + 80*passengers;
+        return MAX_PASSENGERS - passengers;
     }
 
     public void setLength(float l) {
