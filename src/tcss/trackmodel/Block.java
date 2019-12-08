@@ -27,6 +27,7 @@ public class Block{
     private boolean underground;
     private boolean occupied;
     private boolean closed;
+    private boolean startBlock;
 
     private Failure failure;
     private Direction direction;
@@ -56,6 +57,7 @@ public class Block{
 
         setUnderground(false);
         setOccupied(false);
+        setStartBlock(false);
 
         setFailure(Failure.NONE);
         setDirection(Direction.FROM_TAIL);
@@ -63,7 +65,7 @@ public class Block{
         setHead(null);
         setTail(null);
         setBranch(null);
-        
+
         setSwitch(null);
         setStation(null);
         setRXR(null);
@@ -124,8 +126,8 @@ public class Block{
             }else if(getDirection() == Direction.FROM_HEAD){
                 retBlock = getTail();
             }else{
-               System.out.println("trainGetNextBlock(): current block has no valid direction specified");
-               return null;
+                System.out.println("trainGetNextBlock(): current block has no valid direction specified");
+                return null;
             }
         }else{
             if(this == getBranch().getHead()){
@@ -244,7 +246,7 @@ public class Block{
                 getSwitch().setStraight(true);
             }
         }else{
-            if(!isOccupied()){
+            if(getTrain() == null && isStartBlock()){
                 System.out.println("Initializing train on block " + getBlockNum());
                 return initTrain(ss, a, 0);
             }else{
@@ -315,11 +317,15 @@ public class Block{
     }
 
     public boolean isOccupied(){
-        return getTrain() != null;
+        return occupied;
     }
 
     public boolean isClosed(){
         return closed;
+    }
+
+    public boolean isStartBlock(){
+        return startBlock;
     }
 
     public Failure getFailure(){
@@ -414,6 +420,10 @@ public class Block{
 
     public void setClosed(boolean closed){
         this.closed = closed;
+    }
+
+    public void setStartBlock(boolean startBlock){
+        this.startBlock = startBlock;
     }
 
     public void setFailure(Failure failure){

@@ -163,9 +163,8 @@ public class TrackModel {
                 //set head of previous block to be current block
                 currBlock.getPreviousBlock().setHead(currBlock);
             }
-
-            track.addToHashMap(currBlock);
             track.getBlockList().add(currBlock);
+            track.addToHashMap(currBlock);
             if(r == trackSheet.getLastRowNum()){
                 break;
             }
@@ -448,15 +447,18 @@ public class TrackModel {
         if(track == getRedLine()){
             Block b1 = track.getBlock(1);
             Block b2 = track.getBlock(66);
-            System.out.println("Distance between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2));
-            System.out.println("Distance between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1));
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 0));
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 0));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 1));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 1));
 
         }else{
             Block b1 = track.getBlock(1);
             Block b2 = track.getBlock(150);
-            System.out.println("Distance between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2));
-            System.out.println("Distance between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1));
-
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 0));
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 0));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 1));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 1));
         }
 
         return true;
