@@ -80,6 +80,7 @@ public class Main extends Application {
     public static void update() {
         // Place update calls here
         TrainModel.updateAll();
+        tm.updatePassengers();
         ctc.updateTrackState();
         ctc.checkDispatchList();
         ctc.updateThroughput();

@@ -28,6 +28,7 @@ public class Block{
     private boolean occupied;
     private boolean closed;
     private boolean startBlock;
+    private boolean passengerUpdateDone;
 
     private Failure failure;
     private Direction direction;
@@ -47,9 +48,9 @@ public class Block{
         setSection('\u0000');
         setBlockNum(-1);
         setLength(-1);
-        setAuthority(Integer.MIN_VALUE);
+        setAuthority(0);
 
-        setSuggestedSpeed(Float.MIN_VALUE);
+        setSuggestedSpeed(0);
         setGrade(-1);
         setSpeedLimit(-1);
         setElevation(-1);
@@ -58,6 +59,7 @@ public class Block{
         setUnderground(false);
         setOccupied(false);
         setStartBlock(false);
+        setPassengerUpdateDone(false);
 
         setFailure(Failure.NONE);
         setDirection(Direction.FROM_TAIL);
@@ -177,6 +179,7 @@ public class Block{
         retBlock.setTrain(getTrain());
         setTrain(null);
         setDirection(Direction.NONE);
+        setPassengerUpdateDone(false);
 
         //set direction of next block
         if(this == retBlock.getHead()){
@@ -328,6 +331,10 @@ public class Block{
         return startBlock;
     }
 
+    public boolean isPassengerUpdateDone(){
+        return passengerUpdateDone;
+    }
+
     public Failure getFailure(){
         return failure;
     }
@@ -424,6 +431,10 @@ public class Block{
 
     public void setStartBlock(boolean startBlock){
         this.startBlock = startBlock;
+    }
+
+    public void setPassengerUpdateDone(boolean passengerUpdateDone) {
+        this.passengerUpdateDone = passengerUpdateDone;
     }
 
     public void setFailure(Failure failure){
