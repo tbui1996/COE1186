@@ -46,12 +46,14 @@ public class CTC {
         greenLine = new HashMap<>();
 
         //Temporary Red and Green Line setup for creating a Dispatch
-        redLine = tcss.main.Main.tm.getRedLine().getBlockHashMap();     //Red Line Hash Map
-        greenLine = tcss.main.Main.tm.getGreenLine().getBlockHashMap();                   //Green Line Hash Map
+        //redLine = tcss.main.Main.tm.getRedLine().getBlockHashMap();     //Red Line Hash Map
+        //greenLine = tcss.main.Main.tm.getGreenLine().getBlockHashMap();                   //Green Line Hash Map
         System.out.println(redLine);
 
         //Private Track Model
         privateTrack = new TrackModel();
+        redLine = privateTrack.getRedLine().getBlockHashMap();
+        greenLine = privateTrack.getGreenLine().getBlockHashMap();
         greenLayout = privateTrack.getGreenLine();
         redLayout = privateTrack.getRedLine();
 
