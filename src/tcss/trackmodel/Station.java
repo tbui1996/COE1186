@@ -18,13 +18,14 @@ public class Station{
         generatePassengers();
     }
 
-    public void generatePassengers(){
+    public int generatePassengers(){
         Random rng = new Random();
         int num = (int) (rng.nextGaussian() * 35) + 50;
         if(num < 0){
             num = 0;
         }
         setPassengers(num);
+        return num;
     }
 
     public String getName(){

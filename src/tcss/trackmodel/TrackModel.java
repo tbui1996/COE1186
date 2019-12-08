@@ -135,7 +135,7 @@ public class TrackModel {
                         }
                         break;
                     case "Infrastructure":
-                        if(!infrastructureParse(currBlock, cell, builtSwitches, branchEnds)){
+                        if(!infrastructureParse(currBlock, cell, builtSwitches, branchEnds, track.getStations())){
                             return false;
                         }
                         break;
@@ -163,9 +163,8 @@ public class TrackModel {
                 //set head of previous block to be current block
                 currBlock.getPreviousBlock().setHead(currBlock);
             }
-
-            track.addToHashMap(currBlock);
             track.getBlockList().add(currBlock);
+            track.addToHashMap(currBlock);
             if(r == trackSheet.getLastRowNum()){
                 break;
             }
@@ -182,7 +181,6 @@ public class TrackModel {
         }
 
         myExcelBook.close();
-
 
         System.out.println("Finished Building Track!");
         return true;
@@ -273,7 +271,7 @@ public class TrackModel {
     }
 
     //parse infrastructure features into block, if applicable
-    private boolean infrastructureParse(Block b, Cell cell, ArrayList<Switch> builtSwitches, ArrayList<Integer> branchEnds){
+    private boolean infrastructureParse(Block b, Cell cell, ArrayList<Switch> builtSwitches, ArrayList<Integer> branchEnds, ArrayList<Station> stations){
 
         if(cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK){
             //System.out.println("Null/Blank Infrastructure Cell");
@@ -291,7 +289,9 @@ public class TrackModel {
                     //stations
                     String stationName = infraSects[i+1];
                     stationName = stationName.trim();
-                    b.setStation(new Station(stationName));
+                    Station newStation = new Station(stationName);
+                    b.setStation(newStation);
+                    stations.add(newStation);
                 }else if(infraSects[i].startsWith("SWITCH") && infraSects.length > 1){
                     //switches
                     String switchString = infraSects[i] + infraSects[i+1];
@@ -447,15 +447,18 @@ public class TrackModel {
         if(track == getRedLine()){
             Block b1 = track.getBlock(1);
             Block b2 = track.getBlock(66);
-            System.out.println("Distance between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2));
-            System.out.println("Distance between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1));
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 0));
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 0));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 1));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 1));
 
         }else{
             Block b1 = track.getBlock(1);
             Block b2 = track.getBlock(150);
-            System.out.println("Distance between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2));
-            System.out.println("Distance between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1));
-
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 0));
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 0));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 1));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 1));
         }
 
         return true;
@@ -571,4 +574,28 @@ public class TrackModel {
         r5.getHead().add(r1);
         r5.getTail().add(r3);
     }
+
+    public int updateThroughput(int line){
+
+        Track currTrack = null;
+
+        //set line based on passed int
+        if(line == 0){
+            currTrack = getRedLine();
+        }else{
+            currTrack = getGreenLine();
+        }
+
+        //init running total
+        int totalPassengers = 0;
+
+        //for each station on line, su
+        for(Station s: currTrack.getStations()){
+           totalPassengers += s.generatePassengers();
+        }
+
+        //return total
+        return totalPassengers;
+    }
+
 }

@@ -12,25 +12,27 @@
    <children>
       <VBox alignment="CENTER" layoutX="235.0" layoutY="119.0" prefHeight="400.0" prefWidth="600.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
+            <HBox alignment="CENTER" prefHeight="32.0" prefWidth="600.0" spacing="2.0">
+               <children>
+                  <Label text="Train: " textFill="WHITE" />
+                  <TextField fx:id="trainName" promptText="Name" />
+                  <Label text="Schedule: " textFill="WHITE" />
+                  <TextField fx:id="scheduleName" promptText="Name" />
+               </children>
+            </HBox>
             <HBox alignment="TOP_CENTER" prefHeight="35.0" prefWidth="471.0" spacing="10.0">
                <children>
                   <ChoiceBox fx:id="lineSelector" prefWidth="150.0" />
                   <Button fx:id="lineConfirm" mnemonicParsing="false" onAction="#confirmLine" text="Select Line" />
                </children>
             </HBox>
-            <HBox alignment="CENTER" prefHeight="32.0" prefWidth="600.0">
-               <children>
-                  <Label text="Name: " textFill="WHITE" />
-                  <TextField fx:id="dispatchName" promptText="Dispatch Name" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="49.0" prefWidth="600.0" spacing="5.0">
+            <HBox fx:id="dTimeLine" alignment="CENTER" prefHeight="49.0" prefWidth="600.0" spacing="5.0">
                <children>
                   <Label text="Departure Time: " textFill="WHITE" />
                   <TextField fx:id="dHour" prefHeight="25.0" prefWidth="32.0" promptText="Hr" />
                   <Label text=":" textFill="WHITE" />
                   <TextField fx:id="dMin" prefHeight="25.0" prefWidth="36.0" promptText="Min" />
-                  <TextField fx:id="dHalf" prefHeight="25.0" prefWidth="34.0" promptText="AM" />
+                  <ChoiceBox fx:id="dHalf" prefHeight="31.0" prefWidth="47.0" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="64.0" prefWidth="600.0" spacing="10.0">
