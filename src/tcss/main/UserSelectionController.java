@@ -148,7 +148,19 @@ public class UserSelectionController implements Initializable {
         settings.showAndWait();
     }
 
+    public void passengerView() throws Exception {
+        System.out.println("OPEN PASSENGER VIEW");
 
+        FXMLLoader passLoader = new FXMLLoader(getClass().getResource("fxml/Passenger.fxml"));
+        Stage passenger = new Stage();
+        Parent passRoot = passLoader.load();
+        passenger.setTitle("Passenger View");
+        passenger.setScene(new Scene(passRoot));
+        passenger.setResizable(false);
+        passenger.getIcons().add(new Image("file:resources/train.png"));
+
+        passenger.show();
+    }
 
 
     public void closeWindow() throws Exception{

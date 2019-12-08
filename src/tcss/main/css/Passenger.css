@@ -1,0 +1,84 @@
+* {
+/*    -fx-text-fill: #DFDFDF;
+    -fx-font-family: 'Calibri';
+    -fx-font-size: 30px;
+    */
+}
+
+.label {
+    -fx-padding: 5 0;
+    -fx-text-fill: #DFDFDF;
+    -fx-font-family: 'Calibri';
+    -fx-font-size: 20px;
+}
+
+#title {
+    -fx-font-size: 30px;
+}
+
+.button {
+    -fx-text-fill: #120A22;
+}
+
+.button:hover {
+    -fx-cursor: hand;
+}
+
+.body {
+
+    -fx-background-color: rgb(43, 39, 49);
+
+}
+
+.backButton {
+    -fx-background-color: #dfdfdf;
+    -fx-min-height: 30;
+    -fx-min-width: 35;
+    -fx-max-height: 30;
+    -fx-max-width: 35;
+    -fx-shape:"M95.5,50.5c0,3.6-2.9,6.4-6.4,6.4H26.6l19.6,19.6c2.4,2.4,2.4,6.3,0,8.7c-2.4,2.4-6.3,2.4-8.7,0L7.2,54.8c-2.4-2.4-2.4-6.3,0-8.7l30.4-30.4c2.4-2.4,6.3-2.4,8.7,0s2.4,6.3,0,8.7L26.6,44.1h62.5C92.7,44.1,95.5,46.9,95.5,50.5z";
+}
+
+.choice-box {
+    -fx-background-color: #dfdfdf;
+    -fx-mark-color: rgb(43, 39, 49);
+}
+
+.choice-box > .label {
+    -fx-text-fill: rgb(43, 39, 49);
+    -fx-padding: 0 10;
+    -fx-font-size: 15px;
+}
+
+.choice-box .menu-item > .label {
+    -fx-font-size: 15px;
+    -fx-text-fill: rgb(43, 39, 49);
+}
+
+.choice-box .menu-item:focused {
+    -fx-background-color: rgb(43, 39, 49);
+}
+
+.choice-box .menu-item:focused > .label {
+    -fx-text-fill: #dfdfdf;
+}
+
+.choice-box .menu-item > .label {
+
+}
+
+.tooltip {
+    -fx-text-fill: #dfdfdf;
+}
+
+.exit-button  {
+    -icon-paint: #dfdfdf;
+    -fx-background-color: -icon-paint;
+    -size: 24;
+    -fx-min-height: -size;
+    -fx-min-width: -size;
+    -fx-max-height: -size;
+    -fx-max-width: -size;
+
+    -fx-shape: "M336.559,68.611L231.016,174.165l105.543,105.549c15.699,15.705,15.699,41.145,0,56.85    c-7.844,7.844-18.128,11.769-28.407,11.769c-10.296,0-20.581-3.919-28.419-11.769L174.167,231.003L68.609,336.563    c-7.843,7.844-18.128,11.769-28.416,11.769c-10.285,0-20.563-3.919-28.413-11.769c-15.699-15.698-15.699-41.139,0-56.85    l105.54-105.549L11.774,68.611c-15.699-15.699-15.699-41.145,0-56.844c15.696-15.687,41.127-15.687,56.829,0l105.563,105.554    L279.721,11.767c15.705-15.687,41.139-15.687,56.832,0C352.258,27.466,352.258,52.912,336.559,68.611z";
+}
