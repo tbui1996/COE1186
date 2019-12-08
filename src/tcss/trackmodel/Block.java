@@ -249,6 +249,7 @@ public class Block{
                 getSwitch().setStraight(true);
             }
         }else{
+            System.out.println(getTrain() + " " + isStartBlock() + " " + getBlockNum());
             if(getTrain() == null && isStartBlock()){
                 System.out.println("Initializing train on block " + getBlockNum());
                 return initTrain(ss, a, 0);
@@ -262,7 +263,7 @@ public class Block{
     }
 
     public boolean initTrain(float suggSpeed, int auth, int id){
-        if(isOccupied()){
+        if(getTrain() != null){
             System.out.println("Failed to init, block is occupied");
             return false;
         }
