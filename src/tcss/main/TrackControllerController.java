@@ -1,7 +1,5 @@
 package tcss.main;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,13 +12,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import tcss.trackcontroller.PLC;
 import tcss.trackcontroller.TrackController;
 import tcss.trackcontroller.WaysideController;
@@ -77,16 +72,16 @@ public class TrackControllerController implements Initializable {
   private boolean occupied = false;
   private int blockId;
 
-    public void setTrainApp(Main main, String plcFile, Track track, WaysideController waysideController) throws IOException {
-    this.track = track;
-    this.main = main;
-    this.wc = waysideController;
-    this.plcFile = plcFile;
-    //curTC.loadPLC(plcFile);
-  }
+    private Track currTrack;
 
-  @Override
+
+
+    @Override
   public void initialize(URL url, ResourceBundle rb) {
+
+      Track redLine = tcss.main.Main.redLine;
+      Track greenLine = tcss.main.Main.greenLine;
+
       trackChoice.getItems().add("Select Track Controller");
       trackChoice.getItems().add("Red Track Controller 1");
       trackChoice.getItems().add("Red Track Controller 2");
@@ -104,22 +99,38 @@ public class TrackControllerController implements Initializable {
           @Override
           public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
               if ((Integer) number2 > 0) {
-                  if ((Integer) number2 == 1)
+                  if ((Integer) number2 == 1) {
                       curTC = Main.tc.redTC.get(0);
-                  else if ((Integer) number2 == 2)
+                      currTrack = redLine;
+                  }
+                  else if ((Integer) number2 == 2) {
                       curTC = Main.tc.redTC.get(1);
-                  else if ((Integer) number2 == 3)
+                      currTrack = redLine;
+                  }
+                  else if ((Integer) number2 == 3) {
                       curTC = Main.tc.redTC.get(2);
-                  else if ((Integer) number2 == 4)
+                      currTrack = redLine;
+                  }
+                  else if ((Integer) number2 == 4) {
                       curTC = Main.tc.redTC.get(3);
-                  else if ((Integer) number2 == 5)
+                      currTrack = redLine;
+                  }
+                  else if ((Integer) number2 == 5) {
                       curTC = Main.tc.greenTC.get(0);
-                  else if ((Integer) number2 == 6)
+                      currTrack = greenLine;
+                  }
+                  else if ((Integer) number2 == 6) {
                       curTC = Main.tc.greenTC.get(1);
-                  else if ((Integer) number2 == 7)
+                      currTrack = greenLine;
+                  }
+                  else if ((Integer) number2 == 7) {
                       curTC = Main.tc.greenTC.get(2);
-                  else if ((Integer) number2 == 8)
+                      currTrack = greenLine;
+                  }
+                  else if ((Integer) number2 == 8) {
                       curTC = Main.tc.greenTC.get(3);
+                      currTrack = greenLine;
+                  }
 
                   blockChoice.getItems().clear();
                   blockChoice.getItems().add("Select Block");
@@ -143,7 +154,10 @@ public class TrackControllerController implements Initializable {
                           blockChoice.getItems().add(block.getSection() + Integer.toString(block.getBlockNum()));
                           i++;
                           System.out.println("Adding block to " + i + " blockChoice");
+                          //System.out.println(blockChoice.getItems().add(block.getSection() + Integer.toString(block.getBlockNum())));
                   }
+
+
                   blockChoice.setDisable(false);
               }
               else{
@@ -157,7 +171,7 @@ public class TrackControllerController implements Initializable {
           @Override
           public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
               if ((Integer) number2 > 0) {
-                  Block cur = curTC.getBlock((Integer) number2);
+                  Block cur = currTrack.getBlock((Integer) number2-1);
                   blockId = cur.getBlockNum();
                   sSpeedLabel.setText("Suggested Speed: " + cur.getSuggestedSpeed() + " mph");
                   authLabel.setText("Authority: " + cur.getAuthority()+ " blocks");
@@ -205,7 +219,7 @@ public class TrackControllerController implements Initializable {
           }
       });
 
-      // Create Timeline for periodic updating
+      /*// Create Timeline for periodic updating
       Timeline loop = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
           @Override
           public void handle(ActionEvent event) {
@@ -214,7 +228,7 @@ public class TrackControllerController implements Initializable {
           }
       }));
       loop.setCycleCount(Timeline.INDEFINITE);
-      loop.play();
+      loop.play();*/
   }
   public boolean calculateSignal(boolean occupancy){
         return false;
@@ -268,7 +282,7 @@ public class TrackControllerController implements Initializable {
       thread.start();
   }
 
-  public void update(){
+  /*public void update(){
         if (curTC == null)
             return;
         if(manualMode.isSelected())
@@ -283,7 +297,7 @@ public class TrackControllerController implements Initializable {
         sSpeedLabel.setText("Suggesed Speed: "+ curTC.getBlock(blockId).getSuggestedSpeed() + " mph");
         outputLights.setText("Lights: " + curTC.getBlock(blockId).getSwitch().getStraight());
   }
-
+*/
     public void closeWindow() {
         Stage s = (Stage) trackChoice.getScene().getWindow();
         s.close();

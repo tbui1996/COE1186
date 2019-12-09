@@ -211,13 +211,13 @@ public class CTC {
                     //Has left yard, so check block next to it
                     else {
                         //If head block is occupied, move train to head block
-                        if (redLine.get(temp.getTrain().getBlockInt()).getHead().isOccupied())
+                        if (redLine.get(redLine.get(temp.getTrain().getBlockInt()).getHead().getBlockNum()).isOccupied())
                             temp.getTrain().setBlock(redLine.get(temp.getTrain().getBlockInt()).getHead().getBlockNum());
                         //If tail block is occupied, move train to tail block
-                        else if (redLine.get(temp.getTrain().getBlockInt()).getTail().isOccupied())
+                        else if (redLine.get(redLine.get(temp.getTrain().getBlockInt()).getTail().getBlockNum()).isOccupied())
                             temp.getTrain().setBlock(redLine.get(temp.getTrain().getBlockInt()).getTail().getBlockNum());
-                        //If branch block is occupied, move train to tail block
-                        else if (redLine.get(temp.getTrain().getBlockInt()).getBranch() != null && redLine.get(temp.getTrain().getBlockInt()).getBranch().isOccupied())
+                            //If branch block is occupied, move train to tail block
+                        else if (redLine.get(temp.getTrain().getBlockInt()).getBranch() != null && redLine.get(redLine.get(temp.getTrain().getBlockInt()).getBranch().getBlockNum()).isOccupied())
                             temp.getTrain().setBlock(redLine.get(temp.getTrain().getBlockInt()).getBranch().getBlockNum());
                     }
                 }

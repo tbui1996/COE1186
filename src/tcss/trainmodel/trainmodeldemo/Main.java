@@ -7,8 +7,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.scene.image.Image;
 import tcss.trainmodel.TrainModel;
 
+import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -34,6 +36,7 @@ public class Main extends Application {
         controller.passTrain(train);
         controller.titleLabel.setText("Train " + controller.train.getID());
         primaryStage.setResizable(true);
+        primaryStage.getIcons().add(new Image("file:resources/train.png"));
         primaryStage.show();
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
