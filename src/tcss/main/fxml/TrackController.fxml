@@ -26,7 +26,11 @@
                 <Button fx:id="importPLC" alignment="CENTER" layoutX="432.0" layoutY="90.0" mnemonicParsing="false" prefHeight="56.0" prefWidth="112.0" text="Import PLC" textAlignment="CENTER" />
             <Label fx:id="outputLights" layoutX="-1.0" layoutY="-11.0" text="Lights:" />
             <Label fx:id="railroadcrossing" layoutX="-1.0" layoutY="26.0" text="Railroad Crossing:" />
-                <ToggleButton fx:id="manualMode" layoutX="435.0" layoutY="50.0" mnemonicParsing="false" onAction="#setManualMode" text="Manual Mode" textFill="WHITE" />
+                <ToggleButton fx:id="manualMode" layoutX="435.0" layoutY="50.0" mnemonicParsing="false" onAction="#setManualMode" text="Manual Mode"/>
+                <Button fx:id="manualraiseCrossing" layoutX="6.0" layoutY="68.0" mnemonicParsing="false" onAction="#raiseCrossing" prefHeight="30.0" prefWidth="75.0" text="Raise" visible="false"/>
+                <Button fx:id="manuallightLabel" layoutX="6.0" layoutY="102.0" mnemonicParsing="false" onAction="#setGreen" prefHeight="30.0" prefWidth="75.0" text="Green" visible="false"/>
+                <Button fx:id="manuallowerCrossing" layoutX="136.0" layoutY="68.0" mnemonicParsing="false" onAction="#lowerCrossing" prefHeight="30.0" prefWidth="75.0" text="Lower" visible="false"/>
+                <Button fx:id="manualRedLabel" layoutX="136.0" layoutY="102.0" mnemonicParsing="false" onAction="#setRed" prefHeight="30.0" prefWidth="75.0" text="Green" visible="false"/>
 
             </children>
             <padding>
@@ -36,11 +40,13 @@
 
         <Button fx:id="backButton" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#goBack" prefHeight="55.0" prefWidth="70.0" styleClass="backButton" />
           <Label fx:id="sSpeedLabel" layoutX="11.0" layoutY="237.0" text="Suggested Speed:" />
-          <Label fx:id="occupiedLabel" layoutX="14.0" layoutY="102.0" text="Occupancy:" />
+          <Label fx:id="occupiedLabel" layoutX="14.0" layoutY="102.0" text="Occupied:" />
           <Label fx:id="authLabel" layoutX="14.0" layoutY="139.0" text="Authority:" />
           <Label fx:id="outputSwitch" layoutX="14.0" layoutY="174.0" text="Switch:" />
       <Label layoutX="12.0" layoutY="203.0" text="Crossing:" />
       <ChoiceBox fx:id="trackChoice" layoutX="397.0" layoutY="91.0" prefWidth="150.0" value="Select a Track Controller"/>
       <ChoiceBox fx:id="blockChoice" layoutX="398.0" layoutY="136.0" prefWidth="150.0" value="Select a block"/>
+        <Button fx:id="manualswitchLabel" layoutX="21.0" layoutY="425.0" mnemonicParsing="false" onAction="#switchClick" prefHeight="30.0" prefWidth="75.0" text="Switch" visible="false"/>
+        <Button fx:id="manualBranchLabel" layoutX="151.0" layoutY="425.0" mnemonicParsing="false" onAction="#branchClick" prefHeight="30.0" prefWidth="75.0" text="Branch" visible="false"/>
     </children>
 </AnchorPane>

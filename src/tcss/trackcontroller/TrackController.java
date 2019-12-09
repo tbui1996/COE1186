@@ -157,7 +157,6 @@ public class TrackController {
         Block currentBlock = track.getBlock(blockId);
         Block nextBlock = track.getBlock(currentBlock.getNextBlock().getBlockNum());
         Block destinationBlock = track.getBlock(nextBlock.getNextBlock().getBlockNum());
-        currentBlock.setSuggSpeedAndAuth(0, 0);
 
         boolean reverse = currentBlock.getPreviousBlock().getBlockNum() == nexBlock;
         int prev = reverse ? currentBlock.getNextBlock().getBlockNum() : currentBlock.getBlockNum();
