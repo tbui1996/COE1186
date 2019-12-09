@@ -11,11 +11,6 @@
     <children>
         <VBox alignment="CENTER_LEFT" layoutY="62.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="398.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="62.0">
             <children>
-            <ChoiceBox fx:id="lineChoice" minHeight="2.0" minWidth="2.0" prefHeight="35.0" prefWidth="154.0">
-               <VBox.margin>
-                  <Insets bottom="13.0" />
-               </VBox.margin>
-            </ChoiceBox>
                 <ChoiceBox fx:id="blockChoice" minHeight="2.0" minWidth="2.0" prefHeight="35.0" prefWidth="154.0">
                     <VBox.margin>
                         <Insets bottom="10.0" />

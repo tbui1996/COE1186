@@ -5,7 +5,7 @@ public class RXR {
     private boolean down;
 
     public RXR(){
-        setDown(true);
+        setDown(false);
     }
 
     public boolean isDown(){

@@ -1,7 +1,5 @@
 package tcss.trackmodel;
 
-import java.util.Random;
-
 public class Station{
 
     private String name;
@@ -15,17 +13,6 @@ public class Station{
     public Station(String n){
         setName(n);
         setPassengers(0);
-        generatePassengers();
-    }
-
-    public int generatePassengers(){
-        Random rng = new Random();
-        int num = (int) (rng.nextGaussian() * 35) + 50;
-        if(num < 0){
-            num = 0;
-        }
-        setPassengers(num);
-        return num;
     }
 
     public String getName(){
