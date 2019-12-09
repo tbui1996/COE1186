@@ -111,6 +111,10 @@ public class Dispatch {
         this.dMin = m;
     }
 
+    public String getStopName(int i) {
+        return this.schedule.getStopName(i);
+    }
+
     public String departureTimeString() {
         if (this.dHr > 12) {
             return (this.dHr % 12) + " : " + this.dMin + " PM";
@@ -143,8 +147,14 @@ public class Dispatch {
 
 
     public String toString() {
-        return "Train: " + this.train.getName() + "\nDeparture Time: " + this.departureTimeString() +
-                "\n" + this.schedule + "\nNext Stop: " + this.schedule.getStopName(currStop+1);
+        if (currStop < this.schedule.getStopNums()-1) {
+            return "Train: " + this.train.getName() + "\nDeparture Time: " + this.departureTimeString() +
+                    "\n" + this.schedule + "\nNext Stop: " + this.schedule.getStopName(currStop + 1);
+        }
+        else {
+            return "Train: " + this.train.getName() + "\nDeparture Time: " + this.departureTimeString() +
+                    "\n" + this.schedule + "\nNext Stop: Yard";
+        }
     }
 
     private int lineStringToInt(String line) {
