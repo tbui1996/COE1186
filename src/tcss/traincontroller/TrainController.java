@@ -31,12 +31,14 @@ public class TrainController {
     private float kp;
     private boolean underground;
     private boolean eBrake;
+    private boolean sBrake;
     private float[] lastVerrs; //TODO: These should be pushed to a singular vErr and muk with multiple power calculators
     private float[] lastmuk;
     final private float MAX_PWR_CMD = 120000; //120 KW == 120,000 W
     final private float T = 1; //sampling rate of trains - PWRCMD calculation rate
     private float PWRCMD;
     private boolean[] doors = {true, true, true, true, true, true, true, true};
+    private float SLOW_OPERATING_SPEED = 2.235f;
 
 
     /**
@@ -120,13 +122,22 @@ public class TrainController {
         if(model.getEBrake()) this.eBrake = true;
         suggestedSpeed = model.getSSpeed();
         authority = model.getAuthority();
-        float[] votes = prepareVoters();
-        PWRCMD = majorityVote(votes);
+
+        float[] pwrVotes = new float[3];
+        int [] brakeVotes = new int[3];
+
+        prepareVoters(pwrVotes, brakeVotes);
+
+        Float PWRCMD = 0f;
+        Integer BRAKECMD = 0;
+        System.out.println("Entering majorityVote: PWRCMD = " + PWRCMD);
+        majorityVote(pwrVotes, PWRCMD);
+        System.out.println("Exiting majorityVote: PWRCMD = " + PWRCMD);
         if(PWRCMD > 0){
             model.setPWRCMD(PWRCMD);
         } else if (PWRCMD == -1){
-            votes = prepareVoters();
-            PWRCMD = majorityVote(votes);
+            prepareVoters(pwrVotes, brakeVotes);
+            majorityVote(pwrVotes, PWRCMD);
             if(PWRCMD > 0){
                 model.setPWRCMD(PWRCMD);
             } else {
@@ -147,38 +158,47 @@ public class TrainController {
         setpointSpeed = suggestedSpeed;
     }
 
-    public float[] prepareVoters(){
-        float[] votes = {0,0,0};
+    public void prepareVoters(float[] pwrcmds, int[] brakecmds){
         commandedSpeed = setpointSpeed < suggestedSpeed ? setpointSpeed : suggestedSpeed;
         commandedSpeed = suggestedSpeed < speedLimit ? suggestedSpeed : speedLimit;
-        for(int id = 0; id < 3; id++){
-            votes[id] = getPWRCMD(commandedSpeed, id);
+        for(int id = 0; id < 3; id++) {
+            getPWRCMD(commandedSpeed, pwrcmds, id);
         }
-        return votes;
     }
 
 
     /**
      * This method will compare three responses and determine the proper output through Two Majority Report.
      * If no two of the responses agree, the voter returns -1
-     * @param vote An array of floats of size 3 containing the votes to choose between.
+     * Agreement is determined to be a ~1% of the maximumPower (120). the agreed values will be averaged.
+     *  e.g. if votes are: 100, 32, and 302.84, voters A and B will be considered in agreement, and the output energy command will be 66
+     * @param pwrVotes An array of floats of size 3 containing the votes to choose between.
+     * @param RESOLVED_PWR_CMD a Float type which references the power command that will be sent to the engine
      * @return
      */
-    private float majorityVote(float[] vote){
-        if(vote[0] == vote[1] || vote[0] == vote[2]){ //a matches with at least one
-            return vote[0];
-        } else if (vote[1] == vote[2]){ //b matches with c
-            return vote[1];
-        } else
-            return -1; //error output
+    private void majorityVote(float[] pwrVotes, Float RESOLVED_PWR_CMD){
+        if(pwrVotes[1] - MAX_PWR_CMD <= pwrVotes[0] && pwrVotes[0] <= pwrVotes[1] + MAX_PWR_CMD){ //At least A and B agree
+            if(pwrVotes[2] - MAX_PWR_CMD <= pwrVotes[0] && pwrVotes[0] <= pwrVotes[2] + MAX_PWR_CMD){ //A also agrees with C
+                RESOLVED_PWR_CMD = (pwrVotes[0] + pwrVotes[1] + pwrVotes[2])/3;
+            } else { //A only agrees with B and not with C
+                RESOLVED_PWR_CMD = (pwrVotes[0] + pwrVotes[1])/2;
+            }
+        } else if(pwrVotes[2]-MAX_PWR_CMD <= pwrVotes[0] && pwrVotes[0] <= pwrVotes[2]+MAX_PWR_CMD ) { //A does not agree with b but does agree with c
+            RESOLVED_PWR_CMD = (pwrVotes[0] + pwrVotes[2])/2;
+        } else if(pwrVotes[1] - MAX_PWR_CMD <= pwrVotes[2] && pwrVotes[2] <= pwrVotes[1] + MAX_PWR_CMD){ //b agrees with c
+            RESOLVED_PWR_CMD = (pwrVotes[1] + pwrVotes[2])/2;
+        }
     }
 
-    private float getPWRCMD(float cmdSpeed, int id){
+    private void getPWRCMD(float cmdSpeed, float[] pwrcmds, int id){
         if(eBrake){
-            return -2; //-2 is coded as e-brake
+            pwrcmds[id] = -1000; //-1000 will be considered eBrake
         }
-        if(authority < 2){
-            return -1; // -1 is coded as s-brake
+        if(authority < 3 && authority > 0 && currentSpeed >= SLOW_OPERATING_SPEED){ //manage speed down to safe slow speed
+            pwrcmds[id] = -240; //sBrake
+        }
+        if(authority == 0){
+            pwrcmds[id] = -240; // -1 is coded as s-brake
         }
         float vErr = cmdSpeed - currentSpeed;
         float CMD = kp*vErr + ki*(lastmuk[id] + T/2*(vErr + lastVerrs[id]));
@@ -188,7 +208,14 @@ public class TrainController {
         } else {
             lastmuk[id] = lastmuk[id] + T/2*(vErr + lastVerrs[id]);
         }
-        return CMD;
+        //TODO: Find out what negative value is absurd to be sent and determine values where break is desired instead.
+        if(CMD < 0){
+            pwrcmds[id] = 0;
+        } else if(CMD > 120000){
+            pwrcmds[id] = 120000;
+        } else {
+            pwrcmds[id] = CMD;
+        }
     }
 
     public void adjustDoors(boolean [] doors){
@@ -294,6 +321,14 @@ public class TrainController {
 
     public float getSpeedLimit(){
         return speedLimit;
+    }
+
+    public boolean issBrake() {
+        return sBrake;
+    }
+
+    public void setsBrake(boolean sBrake) {
+        this.sBrake = sBrake;
     }
 
     /**
