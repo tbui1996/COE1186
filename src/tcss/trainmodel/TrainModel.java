@@ -12,6 +12,14 @@ public class TrainModel {
 
     private final int MAX_PASSENGERS = 222;
 
+    // Error State Booleans
+    private boolean ENGINE_FAIL = false;
+    private boolean SBRAKE_FAIL = false;
+    private boolean EBRAKE_FAIL = false;
+    private boolean LIGHTS_FAIL = false;
+    private boolean ANTENNA_FAIL = false;
+
+
     // Static ArrayList of all trains
     private static ArrayList<TrainModel> trains = new ArrayList<TrainModel>();
 
@@ -201,7 +209,7 @@ public class TrainModel {
 
         // If braking, set acceleration manually
         // If emergency brake...
-        if(eBrake) {
+        if(eBrake && !EBRAKE_FAIL) {
             if(curV <= 0) {
                 lastA = curA;
                 curA = 0;
@@ -213,7 +221,7 @@ public class TrainModel {
             }
         }
         // If service brake...
-        else if(sBrake) {
+        else if(sBrake && !SBRAKE_FAIL) {
             if(curV <= 0) {
                 lastA = curA;
                 curA = 0;
@@ -262,6 +270,9 @@ public class TrainModel {
                     curBeaconSignal = new String(block.getBeacon().getData());
                 }
             }
+        }
+        if(LIGHTS_FAIL) {
+            lights = false;
         }
     }
 
@@ -323,6 +334,10 @@ public class TrainModel {
         else {
             thrust = power / curV;
         }
+        // If engine has failed, thrust is zero
+        if(ENGINE_FAIL) {
+            thrust = 0;
+        }
         // Add forces in x dimension
         //NOTE: ONLY CALCULATE FRICTION WHEN THERE IS NO POWER AND NO BRAKE
         if(power == 0) {
@@ -350,6 +365,9 @@ public class TrainModel {
     }
 
     public void passCommands(float sSpeed, int auth) {
+        if(ANTENNA_FAIL) {
+            return;
+        }
         suggestedSpeed = sSpeed;
         authority = auth;
         controller.passCommands(auth, sSpeed);
@@ -360,6 +378,10 @@ public class TrainModel {
     }
 
     public void setEBrake(boolean brake) {
+        if(EBRAKE_FAIL) {
+            eBrake = false;
+            return;
+        }
         eBrake = brake;
         if(controller != null) {
             this.controller.setEBrake(brake);
@@ -491,6 +513,10 @@ public class TrainModel {
     }
 
     public void setSBrake(boolean b) {
+        if(SBRAKE_FAIL) {
+            sBrake = false;
+            return;
+        }
         sBrake = b;
     }
 
@@ -574,5 +600,32 @@ public class TrainModel {
         return temp;
     }
 
+    public boolean[] getFailures() {
+        return new boolean[]{EBRAKE_FAIL, SBRAKE_FAIL, ENGINE_FAIL, LIGHTS_FAIL, ANTENNA_FAIL};
+    }
+
+    public void setSBrakeFail(boolean f) {
+        SBRAKE_FAIL = f;
+        if(f)
+            sBrake = false;
+    }
+
+    public void setEBrakeFail(boolean f) {
+        EBRAKE_FAIL = f;
+        if(f)
+            eBrake = false;
+    }
+
+    public void setEngineFail(boolean f) {
+        ENGINE_FAIL = f;
+    }
+
+    public void setAntennaFail(boolean f) {
+        ANTENNA_FAIL = f;
+    }
+
+    public void setLightsFail(boolean f) {
+        LIGHTS_FAIL = f;
+    }
 
 }
