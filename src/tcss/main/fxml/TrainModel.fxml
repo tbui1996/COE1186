@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="609.0" prefWidth="784.0" styleClass="body" stylesheets="@../css/TrainModel.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.TrainModelController">
+   <children>
+      <VBox>
+         <children>
+            <HBox>
+               <children>
+                  <HBox alignment="CENTER" prefHeight="91.0" prefWidth="64.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#closeWindow" styleClass="exit-button">
+                           <HBox.margin>
+                              <Insets left="9.0" top="-18.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <Label id="title" fx:id="titleLabel" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" prefHeight="91.0" prefWidth="646.0" text="Train Label" />
+                  <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="91.0" prefWidth="64.0" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox alignment="CENTER" layoutY="91.0" prefHeight="486.0" prefWidth="784.0">
+         <children>
+            <HBox prefHeight="368.0" prefWidth="784.0">
+               <children>
+                  <VBox prefHeight="368.0" prefWidth="388.0">
+                     <children>
+                        <Label fx:id="curSpeedLabel" text="Current Speed:" />
+                        <Label fx:id="accelLabel" text="Current Acceleration:" />
+                        <Label fx:id="powerLabel" text="Power:" />
+                        <Label fx:id="massLabel" text="Mass:" />
+                        <Label fx:id="gradeLabel" text="Grade:" />
+                        <Label fx:id="forceLabel" text="Force:" />
+                        <Label layoutX="10.0" layoutY="241.0" text="Doors (Green = Open):" />
+                        <HBox prefHeight="140.0" prefWidth="340.0">
+                           <children>
+                              <VBox alignment="CENTER" prefHeight="115.0" prefWidth="80.0">
+                                 <children>
+                                    <HBox alignment="CENTER" prefHeight="25.0" prefWidth="100.0">
+                                       <children>
+                                          <Label id="front-label" alignment="CENTER" contentDisplay="CENTER" prefHeight="25.0" prefWidth="100.0" text="Front" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER" prefHeight="115.0" prefWidth="200.0">
+                                       <children>
+                                          <VBox alignment="CENTER" prefHeight="115.0" prefWidth="30.0">
+                                             <children>
+                                                <Circle fx:id="d1Status" fill="RED" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" />
+                                                   </VBox.margin>
+                                                </Circle>
+                                                <Circle fx:id="d3Status" fill="RED" layoutX="30.0" layoutY="65.0" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" />
+                                                   </VBox.margin>
+                                                </Circle>
+                                                <Circle fx:id="d5Status" fill="RED" layoutX="30.0" layoutY="79.0" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" />
+                                                   </VBox.margin>
+                                                </Circle>
+                                                <Circle fx:id="d7Status" fill="RED" layoutX="30.0" layoutY="88.0" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" />
+                                                   </VBox.margin>
+                                                </Circle>
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="115.0" prefWidth="30.0">
+                                             <children>
+                                                <Circle fx:id="d2Status" fill="RED" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" />
+                                                   </VBox.margin>
+                                                </Circle>
+                                                <Circle fx:id="d4Status" fill="RED" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" />
+                                                   </VBox.margin>
+                                                </Circle>
+                                                <Circle fx:id="d6Status" fill="RED" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" />
+                                                   </VBox.margin>
+                                                </Circle>
+                                                <Circle fx:id="d8Status" fill="RED" radius="8.5" stroke="BLACK" strokeType="INSIDE">
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" />
+                                                   </VBox.margin>
+                                                </Circle>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets left="20.0" />
+                                 </HBox.margin>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets left="55.0" />
+                     </padding>
+                  </VBox>
+                  <VBox prefWidth="340.0">
+                     <padding>
+                        <Insets left="45.0" />
+                     </padding>
+                     <children>
+                        <HBox>
+                           <children>
+                              <Label text="Service Brake:" />
+                              <Label fx:id="sBrakeLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox>
+                           <children>
+                              <Label text="Emergency Brake:" />
+                              <Label fx:id="eBrakeLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <Label fx:id="passengersLabel" layoutX="55.0" layoutY="142.0" text="Passengers:" />
+                        <HBox>
+                           <children>
+                              <Label text="Lights:" />
+                              <Label fx:id="lightsLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <Label fx:id="tempLabel" text="Temp:" />
+                        <Label fx:id="distanceLabel" layoutX="55.0" layoutY="208.0" text="Δx in Block:" />
+                        <Label fx:id="blocksLabel" layoutX="55.0" layoutY="241.0" text="Blocks Traveled:" />
+                        <Label fx:id="curBeaconLabel" layoutX="55.0" layoutY="274.0" text="Current Beacon:" VBox.vgrow="ALWAYS" />
+                        <Label fx:id="lastBeaconLabel" layoutX="55.0" layoutY="307.0" text="Last Beacon:" VBox.vgrow="ALWAYS" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER">
+               <children>
+                  <Label text="Emergency Brake:" />
+                  <RadioButton fx:id="eBrakeOff" ellipsisString="" mnemonicParsing="false" text="Off">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </RadioButton>
+                  <RadioButton fx:id="eBrakeOn" mnemonicParsing="false" text="On">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </RadioButton>
+               </children>
+               <VBox.margin>
+                  <Insets top="30.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="35.0" />
+   </padding>
+</AnchorPane>

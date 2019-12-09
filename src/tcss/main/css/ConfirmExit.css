@@ -1,0 +1,56 @@
+.label {
+    -fx-padding: 15 0 0 0;
+    -fx-text-fill: #DFDFDF;
+    -fx-font-family: 'Calibri';
+    -fx-font-size: 28px;
+    -fx-alignment: center;
+}
+
+.button:hover {
+    -fx-cursor: hand;
+}
+
+.body {
+    -fx-background-color: rgb(43, 39, 49);
+}
+
+#quit {
+    -fx-background-color: #FF0000;
+}
+
+#cancel {
+    -fx-background-color: #008000;
+}
+
+.button {
+    -fx-text-fill: #120a22;
+    -fx-font-family: 'Calibri';
+    -fx-font-size: 25px;
+    -fx-margins: 10px;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 80px;
+}
+
+.anchor-pane, .v-box {
+    -fx-pref-width: 527px;
+    -fx-pref-height: 343px;
+}
+
+.v-box {
+    -fx-alignment: top_center;
+}
+
+.h-box {
+    -fx-pref-width: 527px;
+    -fx-pref-height: 242px;
+    -fx-alignment:center;
+}
+
+.quitButton {
+    -fx-background-color: #FF0000;
+}
+
+.cancelButton {
+    -fx-background-color: #008000;
+}
+

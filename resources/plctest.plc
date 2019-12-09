@@ -1,0 +1,5 @@
+switch: ((!currentBlockOccupied) && (!nextBlockOccupied))
+proceed: ((!nextBlockOccupied) && (!nextnextBlockOccupied))
+maintenance: ((!previousBlockOccupied) || (!currentBlockOccupied) || (!nextBlockOccupied))
+railroadcrossing: ((previousBlockOccupied) || (currentBlockOccupied)|| (nextBlockOccupied))
+lights: ((!normalBlockOccupied) && (!alternativeBlockOccupied))
