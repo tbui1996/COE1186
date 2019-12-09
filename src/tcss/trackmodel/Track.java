@@ -176,6 +176,7 @@ public class Track {
 
     public void setStartBlock(Block sb){
         startBlock = sb;
+        System.out.println("Block " + startBlock.getBlockNum() + " is a start block");
         startBlock.setStartBlock(true);
     }
 

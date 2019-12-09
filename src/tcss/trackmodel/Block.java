@@ -177,7 +177,9 @@ public class Block{
 
         //set train of next block to that of current block
         retBlock.setTrain(getTrain());
+        retBlock.setOccupied(true);
         setTrain(null);
+        setOccupied(false);
         setDirection(Direction.NONE);
         setPassengerUpdateDone(false);
 
@@ -250,7 +252,7 @@ public class Block{
             }
         }else{
             System.out.println(getTrain() + " " + isStartBlock() + " " + getBlockNum());
-            if(getTrain() == null && isStartBlock()){
+            if(!isOccupied() && isStartBlock()){
                 System.out.println("Initializing train on block " + getBlockNum());
                 return initTrain(ss, a, 0);
             }else{
@@ -263,10 +265,11 @@ public class Block{
     }
 
     public boolean initTrain(float suggSpeed, int auth, int id){
-        if(getTrain() != null){
+        if(isOccupied()){
             System.out.println("Failed to init, block is occupied");
             return false;
         }
+        System.out.println("Hello");
         TrainModel train = new TrainModel(suggSpeed, auth, id, this);
         setTrain(train);
         setOccupied(true);
