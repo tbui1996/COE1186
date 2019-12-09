@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.shape.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -25,8 +23,8 @@
                         <Insets />
                      </VBox.margin>
                   </Label>
-                  <Label id="sSpeedLabel" fx:id="suggestedSpeedLabel" text="Suggested Speed:" />
-                  <Label id="sSpeedLabel" fx:id="currentSpeedLabel" text="Current Speed: " />
+                  <Label fx:id="speedLimitLabel" text="Speed Limit: " />
+                  <Label id="sSpeedLabel" fx:id="sSpeedLabel" text="Suggested Speed:" />
                   <HBox prefHeight="47.0" prefWidth="376.0">
                      <children>
                         <Label text="Setpoint Speed: " />
@@ -54,26 +52,11 @@
                   <Insets left="25.0" />
                </padding>
             </VBox>
-            <VBox prefHeight="460.0" prefWidth="210.0">
-               <children>
-                  <ToggleButton fx:id="eBrakeToggle" mnemonicParsing="false" onAction="#toggleEBrake" prefHeight="27.0" prefWidth="156.0" text="Emergency Break">
-                     <VBox.margin>
-                        <Insets bottom="25.0" top="100.0" />
-                     </VBox.margin>
-                  </ToggleButton>
-                  <ToggleButton fx:id="opModeToggle" mnemonicParsing="false" onAction="#toggleOpMode" prefHeight="27.0" prefWidth="156.0" text="Manual Mode" />
-                  <Label fx:id="powerCommandLabel" text="Power: ">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font size="12.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="kilabel" text="Label" />
-                  <Label fx:id="kplabel" text="Label" />
-               </children>
-            </VBox>
+            <ToggleButton fx:id="eBrakeToggle" mnemonicParsing="false" onAction="#toggleEBrake" text="Emergency Break">
+               <HBox.margin>
+                  <Insets left="25.0" top="75.0" />
+               </HBox.margin>
+            </ToggleButton>
          </children>
       </HBox>
       <Button fx:id="backButton" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#goBack" prefHeight="55.0" prefWidth="70.0" styleClass="backButton" />
