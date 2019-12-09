@@ -1,5 +1,6 @@
 package tcss.ctc;
 
+import tcss.main.Main;
 import tcss.trackcontroller.TrackController;
 import tcss.trackmodel.Block;
 import tcss.trackmodel.Station;
@@ -14,6 +15,7 @@ import java.util.*;
 public class CTC {
     private ArrayList<Dispatch> dispatchList = new ArrayList<Dispatch>(); /*Number of Trains*/
     public ArrayList<TrainModel> trainList = new ArrayList<TrainModel>(); /*Number of Trains*/
+    private ArrayList<Maintenance> maintenanceList = new ArrayList<>();
 
     //Temporary Red and Green Line setup for creating a Dispatch
     protected Map<Integer,Block> redLine;
@@ -101,6 +103,10 @@ public class CTC {
         this.dispatchList.add(d);
     }
 
+    public void addMaintenance(int hr, int min, int line, int block) {
+        maintenanceList.add(new Maintenance(hr, min, line, block));
+    }
+
     //This checks dispatch list to see if a new suggested speed and authority need to be sent
     public void checkDispatchList () {
         for (Dispatch temp : dispatchList) {
@@ -151,6 +157,28 @@ public class CTC {
         }
     }
 
+    public void checkMaintenanceList() {
+        for (Maintenance temp : maintenanceList) {
+            //Check if request is done, if active already
+            if (temp.isActive()) {
+
+            }
+            //Check if need to send out request
+            else {
+                if (Main.getSimTime().getHour() >= temp.getHour()) {
+                    //If the time is now or has passed
+                    if (Main.getSimTime().getHour() > temp.getHour() || Main.getSimTime().getMin() >= temp.getMin()) {
+                        //Send request if block is not occupied
+                        if (!getBlock(temp.getLine(), temp.getBlock()).isOccupied()) {
+
+                            temp.setActive(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void updateTrackState() {
         for (int j = 1; j < (redLine.size()); j++) {
             //updating red line
@@ -188,7 +216,7 @@ public class CTC {
                         //If tail block is occupied, move train to tail block
                         else if (redLine.get(temp.getTrain().getBlockInt()).getTail().isOccupied())
                             temp.getTrain().setBlock(redLine.get(temp.getTrain().getBlockInt()).getTail().getBlockNum());
-                            //If branch block is occupied, move train to tail block
+                        //If branch block is occupied, move train to tail block
                         else if (redLine.get(temp.getTrain().getBlockInt()).getBranch() != null && redLine.get(temp.getTrain().getBlockInt()).getBranch().isOccupied())
                             temp.getTrain().setBlock(redLine.get(temp.getTrain().getBlockInt()).getBranch().getBlockNum());
                     }
