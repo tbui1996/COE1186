@@ -135,7 +135,7 @@ public class TrackModel {
                         }
                         break;
                     case "Infrastructure":
-                        if(!infrastructureParse(currBlock, cell, builtSwitches, branchEnds, track.getStations())){
+                        if(!infrastructureParse(currBlock, cell, builtSwitches, branchEnds)){
                             return false;
                         }
                         break;
@@ -163,8 +163,13 @@ public class TrackModel {
                 //set head of previous block to be current block
                 currBlock.getPreviousBlock().setHead(currBlock);
             }
+
+            //populate lists that are referenced later
             track.getBlockList().add(currBlock);
             track.addToHashMap(currBlock);
+            if(currBlock.getStation() != null){
+                track.getStationBlocks().add(currBlock);
+            }
             if(r == trackSheet.getLastRowNum()){
                 break;
             }
@@ -271,7 +276,7 @@ public class TrackModel {
     }
 
     //parse infrastructure features into block, if applicable
-    private boolean infrastructureParse(Block b, Cell cell, ArrayList<Switch> builtSwitches, ArrayList<Integer> branchEnds, ArrayList<Station> stations){
+    private boolean infrastructureParse(Block b, Cell cell, ArrayList<Switch> builtSwitches, ArrayList<Integer> branchEnds){
 
         if(cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK){
             //System.out.println("Null/Blank Infrastructure Cell");
@@ -291,7 +296,6 @@ public class TrackModel {
                     stationName = stationName.trim();
                     Station newStation = new Station(stationName);
                     b.setStation(newStation);
-                    stations.add(newStation);
                 }else if(infraSects[i].startsWith("SWITCH") && infraSects.length > 1){
                     //switches
                     String switchString = infraSects[i] + infraSects[i+1];
@@ -590,12 +594,35 @@ public class TrackModel {
         int totalPassengers = 0;
 
         //for each station on line, su
-        for(Station s: currTrack.getStations()){
-           totalPassengers += s.generatePassengers();
+        for(Block b: currTrack.getStationBlocks()){
+           totalPassengers += b.getStation().generatePassengers();
         }
 
         //return total
         return totalPassengers;
     }
 
+    public void updatePassengers(){
+        updatePassengersHelper(getRedLine());
+        updatePassengersHelper(getGreenLine());
+    }
+
+    public void updatePassengersHelper(Track currTrack){
+
+        ArrayList<Block> stationBlockList= currTrack.getStationBlocks();
+
+        for(Block b: stationBlockList){
+            if(b.getTrain() != null && b.getTrain().getCurV() == 0.0 && !b.isPassengerUpdateDone()){
+
+                int availableSpace = b.getTrain().removePassengers();
+                int addedPassengers = b.getStation().getPassengers();
+
+                if(addedPassengers >= availableSpace){
+                    addedPassengers = availableSpace;
+                }
+                b.getTrain().addPassengers(addedPassengers);
+                b.setPassengerUpdateDone(true);
+            }
+        }
+    }
 }

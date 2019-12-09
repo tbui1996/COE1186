@@ -99,7 +99,7 @@ public class TrackModelController implements Initializable {
                     blockNumLabel.setText("Block #: " + cur.getBlockNum());
                     sectionLabel.setText("Section #: " + cur.getSection());
                     sSpeedLabel.setText("Suggested Speed: " + cur.getSuggestedSpeed() + " mph");
-                    authLabel.setText("Authority: " + cur.getAuthority());
+                    authLabel.setText("Authority: " + cur.getAuthority() + " blocks");
                     lengthLabel.setText("Length: " + cur.getLength() + " m");
                     gradeLabel.setText("Grade: " + cur.getGrade() + "%");
                     speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit() + " mph");
@@ -140,7 +140,7 @@ public class TrackModelController implements Initializable {
     }
 
     public String updateOccupied(Block cur){
-        if(cur.isOccupied()){
+        if(cur.getTrain() != null){
             return "Yes";
         }else{
             return "No";

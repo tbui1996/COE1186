@@ -28,6 +28,7 @@ public class Block{
     private boolean occupied;
     private boolean closed;
     private boolean startBlock;
+    private boolean passengerUpdateDone;
 
     private Failure failure;
     private Direction direction;
@@ -47,9 +48,9 @@ public class Block{
         setSection('\u0000');
         setBlockNum(-1);
         setLength(-1);
-        setAuthority(Integer.MIN_VALUE);
+        setAuthority(0);
 
-        setSuggestedSpeed(Float.MIN_VALUE);
+        setSuggestedSpeed(0);
         setGrade(-1);
         setSpeedLimit(-1);
         setElevation(-1);
@@ -58,6 +59,7 @@ public class Block{
         setUnderground(false);
         setOccupied(false);
         setStartBlock(false);
+        setPassengerUpdateDone(false);
 
         setFailure(Failure.NONE);
         setDirection(Direction.FROM_TAIL);
@@ -175,8 +177,11 @@ public class Block{
 
         //set train of next block to that of current block
         retBlock.setTrain(getTrain());
+        retBlock.setOccupied(true);
         setTrain(null);
+        setOccupied(false);
         setDirection(Direction.NONE);
+        setPassengerUpdateDone(false);
 
         //set direction of next block
         if(this == retBlock.getHead()){
@@ -246,7 +251,8 @@ public class Block{
                 getSwitch().setStraight(true);
             }
         }else{
-            if(getTrain() == null && isStartBlock()){
+            System.out.println(getTrain() + " " + isStartBlock() + " " + getBlockNum());
+            if(!isOccupied() && isStartBlock()){
                 System.out.println("Initializing train on block " + getBlockNum());
                 return initTrain(ss, a, 0);
             }else{
@@ -263,6 +269,7 @@ public class Block{
             System.out.println("Failed to init, block is occupied");
             return false;
         }
+        System.out.println("Hello");
         TrainModel train = new TrainModel(suggSpeed, auth, id, this);
         setTrain(train);
         setOccupied(true);
@@ -326,6 +333,10 @@ public class Block{
 
     public boolean isStartBlock(){
         return startBlock;
+    }
+
+    public boolean isPassengerUpdateDone(){
+        return passengerUpdateDone;
     }
 
     public Failure getFailure(){
@@ -424,6 +435,10 @@ public class Block{
 
     public void setStartBlock(boolean startBlock){
         this.startBlock = startBlock;
+    }
+
+    public void setPassengerUpdateDone(boolean passengerUpdateDone) {
+        this.passengerUpdateDone = passengerUpdateDone;
     }
 
     public void setFailure(Failure failure){
