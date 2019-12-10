@@ -6,9 +6,11 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
@@ -61,6 +63,16 @@
                                                 <Label fx:id="locLabel" textFill="WHITE" />
                                                 <Label fx:id="occLabel" textFill="WHITE" GridPane.rowIndex="1" />
                                                 <Label fx:id="stationLabel" textFill="WHITE" GridPane.columnIndex="1" />
+                                                <Button fx:id="closeBlock" disable="true" mnemonicParsing="false" text="Close Block" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="2.0" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <Label text="Start: " textFill="WHITE" />
+                                                      <TextField fx:id="mHr" prefHeight="25.0" prefWidth="29.0" promptText="Hr" />
+                                                      <Label text=":" textFill="WHITE" />
+                                                      <TextField fx:id="mMin" prefHeight="25.0" prefWidth="39.0" promptText="Min" />
+                                                      <ChoiceBox fx:id="mHalf" prefHeight="31.0" prefWidth="42.0" />
+                                                   </children>
+                                                </HBox>
                                              </children>
                                           </GridPane>
                                        </children>
@@ -77,8 +89,8 @@
                <children>
                   <TableView fx:id="dispatchList" layoutX="-25.0" layoutY="49.0" prefHeight="562.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
-                      <TableColumn fx:id="nameList" prefWidth="89.0" text="Name" />
-                      <TableColumn fx:id="locList" prefWidth="110.0" text="Location" />
+                      <TableColumn fx:id="nameList" prefWidth="131.4000244140625" text="Name" />
+                      <TableColumn fx:id="locList" prefWidth="97.5999755859375" text="Location" />
                     </columns>
                   </TableView>
                </children>

@@ -39,6 +39,10 @@ public class CTCController implements Initializable{
     @FXML private Label locLabel;
     @FXML private Label occLabel;
     @FXML private Label stationLabel;
+    @FXML private Button closeBlock;
+    @FXML private TextField mHour;
+    @FXML private TextField mMin;
+    @FXML private ChoiceBox<String> mHalf;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -98,34 +102,27 @@ public class CTCController implements Initializable{
             Block temp = Main.ctc.getBlock(Main.ctc.lineStringToInt(lineSelector.getSelectionModel().getSelectedItem().toUpperCase()), block);
 
             //Fills labels with proper values
-            locLabel.setText(lineSelector.getSelectionModel().getSelectedItem() + " " + block);
+            locLabel.setText(lineSelector.getSelectionModel().getSelectedItem().toUpperCase() + " " + block);
             occLabel.setText("Occupied: " + temp.isOccupied());
             if (temp.getStation() != null)
                 stationLabel.setText("Station: " + temp.getStation().getName());
             else
                 stationLabel.setText("Station: N/A");
+
+            closeBlock.setDisable(false);
     }
 
-    /*//Closes a Block for Maintenance
+    //Closes a Block for Maintenance
     public void closeBlock(ActionEvent e) throws Exception {
-        System.out.println("Close block ");
+        //System.out.println("Close block ");
+        String [] loc = locLabel.getText().split(" ",2);
 
         //Finds what line is selected
-        int temp = tcss.main.Main.ctc.lineStringToInt(lineSelector.getSelectionModel().getSelectedItem().toUpperCase());
+        Block block = Main.ctc.getBlock(Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]));
 
-        //Assigns temp to blockId
-        //Red Line
-        if (temp == 1) {
-            temp = blockSelector.getSelectionModel().getSelectedItem();
-        }
-        //Green Line
-        else {
-            temp = blockSelector.getSelectionModel().getSelectedItem() + tcss.main.Main.ctc.lineLength(1);
-        }
-
-        System.out.println(temp);
-        //tcss.main.Main.tc.getNextStop(-1,-1,temp)
-    }*/
+        //Adds maintenance request to list in CTC
+        Main.ctc.addMaintenance(Integer.parseInt(mHour.getText()), Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]));
+    }
 
     //Updates dispatch list periodically
     private void updateView() {

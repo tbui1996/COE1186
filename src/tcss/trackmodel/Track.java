@@ -12,7 +12,7 @@ public class Track {
 
     private LinkedList<Block> blockList;
 
-    ArrayList<Station> stations;
+    ArrayList<Block> stationBlocks;
     ArrayList<Block> rxrBlocks;
     ArrayList<Block> switchBlocks;
 
@@ -23,7 +23,7 @@ public class Track {
         branchMap = new HashMap<>();
         startBlock = null;
         blockList = new LinkedList<Block>();
-        stations = new ArrayList<Station>();
+        stationBlocks = new ArrayList<Block>();
     }
 
     public double distanceBetweenTwoBlocks(Block start, Block end, int unit){
@@ -176,6 +176,7 @@ public class Track {
 
     public void setStartBlock(Block sb){
         startBlock = sb;
+        System.out.println("Block " + startBlock.getBlockNum() + " is a start block");
         startBlock.setStartBlock(true);
     }
 
@@ -199,7 +200,7 @@ public class Track {
         return branchMap;
     }
 
-    public ArrayList<Station> getStations(){
-        return stations;
+    public ArrayList<Block> getStationBlocks(){
+        return stationBlocks;
     }
 }
