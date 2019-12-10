@@ -102,8 +102,7 @@ public class TrainModelController implements Initializable {
 					String s = rb.getText();
 					if(s.equals("Off")) {
 						train.setEBrake(false);
-					}
-					else if(s.equals("On")) {
+					} else if(s.equals("On")) {
 						train.setEBrake(true);
 					}
 				}
@@ -125,7 +124,7 @@ public class TrainModelController implements Initializable {
 
 	public void update() {
 		curSpeedLabel.setText("Current Speed: " + Math.round(train.getCurV()*MPS_T0_MPH * 100f)/100f + " MPH");
-		accelLabel.setText("Current Acceleration: " + Math.round(train.getCurA()*MSS_TO_FSS*100f)/100f + " FT/(S²)");
+		accelLabel.setText("Current Acceleration: " + Math.round(train.getCurA()*MSS_TO_FSS*100f)/100f + " ft/s²");
 		powerLabel.setText("Power Command: " + Math.round(train.getPower()*100f)/100f + " W");
 		massLabel.setText("Mass: " + Math.round(train.getMass()*100f)/100f + " kg");
 		gradeLabel.setText("Grade: " + Math.round(train.getGrade()*100f)/100f + "%");
@@ -135,8 +134,7 @@ public class TrainModelController implements Initializable {
 		if(train.getSBrake()) {
 			sBrakeLabel.setText("True");
 			sBrakeLabel.setTextFill(Color.GREEN);
-		}
-		else {
+		} else {
 			sBrakeLabel.setText("False");
 			sBrakeLabel.setTextFill(Color.RED);
 		}
@@ -144,8 +142,7 @@ public class TrainModelController implements Initializable {
 		{
 			eBrakeLabel.setText("True");
 			eBrakeLabel.setTextFill(Color.GREEN);
-		}
-		else {
+		} else {
 			eBrakeLabel.setText("False");
 			eBrakeLabel.setTextFill(Color.RED);
 		}
@@ -153,8 +150,7 @@ public class TrainModelController implements Initializable {
 		if(train.getLights()) {
 			lightsLabel.setText("True");
 			lightsLabel.setTextFill(Color.GREEN);
-		}
-		else {
+		} else {
 			lightsLabel.setText("False");
 			lightsLabel.setTextFill(Color.RED);
 		}
@@ -166,64 +162,55 @@ public class TrainModelController implements Initializable {
 		//Update door statuses
 		if(train.getDoor(0)) {
 			d1Status.setFill(Color.GREEN);
-		}
-		else {
+		} else {
 			d1Status.setFill(Color.RED);
 		}
 
 		if(train.getDoor(1)) {
 			d2Status.setFill(Color.GREEN);
-		}
-		else {
+		} else {
 			d2Status.setFill(Color.RED);
 		}
 
 		if(train.getDoor(2)) {
 			d3Status.setFill(Color.GREEN);
-		}
-		else {
+		} else {
 			d3Status.setFill(Color.RED);
 		}
 
 		if(train.getDoor(3)) {
 			d4Status.setFill(Color.GREEN);
-		}
-		else {
+		} else {
 			d4Status.setFill(Color.RED);
 		}
 
 		if(train.getDoor(4)) {
 			d5Status.setFill(Color.GREEN);
-		}
-		else {
+		} else {
 			d5Status.setFill(Color.RED);
 		}
 
 		if(train.getDoor(5)) {
 			d6Status.setFill(Color.GREEN);
-		}
-		else {
+		} else {
 			d6Status.setFill(Color.RED);
 		}
 
 		if(train.getDoor(6)) {
 			d7Status.setFill(Color.GREEN);
-		}
-		else {
+		} else {
 			d7Status.setFill(Color.RED);
 		}
 
 		if(train.getDoor(7)) {
 			d8Status.setFill(Color.GREEN);
-		}
-		else {
+		} else {
 			d8Status.setFill(Color.RED);
 		}
 
 		if(train.getEBrake()) {
 			eBrakeOn.setSelected(true);
-		}
-		else {
+		} else {
 			eBrakeOff.setSelected(true);
 		}
 
@@ -236,8 +223,7 @@ public class TrainModelController implements Initializable {
 		// EBrake
 		if(train.getEBrake()) {
 			eBrakeOn.setSelected(true);
-		}
-		else {
+		} else {
 			eBrakeOff.setSelected(true);
 		}
 		titleLabel.setText("Train " + train.getID());
