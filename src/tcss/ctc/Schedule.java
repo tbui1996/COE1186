@@ -3,6 +3,8 @@ package tcss.ctc;
 import java.util.*;
 
 public class Schedule {
+
+    private String name = "";
     private int line;   //Red == 1, Green == 2
     private ArrayList<String> stopList;
     private ArrayList<Float> dwellList;
@@ -49,5 +51,13 @@ public class Schedule {
             temp.append("\nStop Name: " + this.stopList.get(i) + "\nDwell: " + this.dwellList.get(i));
 
         return temp.toString();
+    }
+
+    public void setName(String n) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
     }
 }

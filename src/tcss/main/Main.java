@@ -13,6 +13,7 @@ import tcss.trackcontroller.TrackController;
 import tcss.trackcontroller.WaysideController;
 import tcss.trackmodel.Track;
 import tcss.trackmodel.TrackModel;
+import tcss.traincontroller.TrainController;
 import tcss.trainmodel.TrainModel;
 
 public class Main extends Application {
@@ -63,23 +64,14 @@ public class Main extends Application {
         // TESTING TIMER PAUSE
         T = new SimTime();
 
-        // TODO DELETE THIS
-        // TESTING TRAIN CONTROLLER GUI
-
-        TrainModel train = new TrainModel(100);
-        TrainModel train2 = new TrainModel(100);
-        train.passCommands(50, 10);
-        train2.passCommands(50, 10);
-
-
-
-
     }
 
     // Method called in SimTime to update modules
     public static void update() {
         // Place update calls here
         TrainModel.updateAll();
+        TrainController.updateAll();
+        tm.updatePassengers();
         ctc.updateTrackState();
         ctc.checkDispatchList();
         ctc.updateThroughput();

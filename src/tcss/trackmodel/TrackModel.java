@@ -164,8 +164,12 @@ public class TrackModel {
                 currBlock.getPreviousBlock().setHead(currBlock);
             }
 
-            track.addToHashMap(currBlock);
+            //populate lists that are referenced later
             track.getBlockList().add(currBlock);
+            track.addToHashMap(currBlock);
+            if(currBlock.getStation() != null){
+                track.getStationBlocks().add(currBlock);
+            }
             if(r == trackSheet.getLastRowNum()){
                 break;
             }
@@ -182,7 +186,6 @@ public class TrackModel {
         }
 
         myExcelBook.close();
-
 
         System.out.println("Finished Building Track!");
         return true;
@@ -291,7 +294,8 @@ public class TrackModel {
                     //stations
                     String stationName = infraSects[i+1];
                     stationName = stationName.trim();
-                    b.setStation(new Station(stationName));
+                    Station newStation = new Station(stationName);
+                    b.setStation(newStation);
                 }else if(infraSects[i].startsWith("SWITCH") && infraSects.length > 1){
                     //switches
                     String switchString = infraSects[i] + infraSects[i+1];
@@ -447,15 +451,18 @@ public class TrackModel {
         if(track == getRedLine()){
             Block b1 = track.getBlock(1);
             Block b2 = track.getBlock(66);
-            System.out.println("Distance between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2));
-            System.out.println("Distance between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1));
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 0));
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 0));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 1));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 1));
 
         }else{
             Block b1 = track.getBlock(1);
             Block b2 = track.getBlock(150);
-            System.out.println("Distance between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2));
-            System.out.println("Distance between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1));
-
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 0));
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 0));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 1));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 1));
         }
 
         return true;
@@ -570,5 +577,52 @@ public class TrackModel {
 
         r5.getHead().add(r1);
         r5.getTail().add(r3);
+    }
+
+    public int updateThroughput(int line){
+
+        Track currTrack = null;
+
+        //set line based on passed int
+        if(line == 0){
+            currTrack = getRedLine();
+        }else{
+            currTrack = getGreenLine();
+        }
+
+        //init running total
+        int totalPassengers = 0;
+
+        //for each station on line, su
+        for(Block b: currTrack.getStationBlocks()){
+           totalPassengers += b.getStation().generatePassengers();
+        }
+
+        //return total
+        return totalPassengers;
+    }
+
+    public void updatePassengers(){
+        updatePassengersHelper(getRedLine());
+        updatePassengersHelper(getGreenLine());
+    }
+
+    public void updatePassengersHelper(Track currTrack){
+
+        ArrayList<Block> stationBlockList= currTrack.getStationBlocks();
+
+        for(Block b: stationBlockList){
+            if(b.getTrain() != null && b.getTrain().getCurV() == 0.0 && !b.isPassengerUpdateDone()){
+
+                int availableSpace = b.getTrain().removePassengers();
+                int addedPassengers = b.getStation().getPassengers();
+
+                if(addedPassengers >= availableSpace){
+                    addedPassengers = availableSpace;
+                }
+                b.getTrain().addPassengers(addedPassengers);
+                b.setPassengerUpdateDone(true);
+            }
+        }
     }
 }

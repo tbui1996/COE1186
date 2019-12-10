@@ -1,13 +1,21 @@
 package tcss.main;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import tcss.ctc.Train;
+import tcss.trackmodel.Block;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -17,51 +25,48 @@ import java.util.ResourceBundle;
 public class CTCController implements Initializable{
 
     // UI variables
-    @FXML private Button dispatch;
-    //@FXML private VBox dispatchList;
     @FXML private Label dispatch1;
     @FXML private AnchorPane pane;
     @FXML private Button newDispatch;
-    @FXML private Accordion dispatchList;
     @FXML private ChoiceBox<String> lineSelector;
-    @FXML private ChoiceBox<Integer> blockSelector;
+    @FXML private ChoiceBox<String> blockSelector;
     @FXML private Button confirmLine;
     @FXML private Button confirmBlock;
+    @FXML private TableColumn<String, Train> nameList;             //Table column for train names
+    @FXML private TableColumn<String, Train> locList;              //Table column for train locations
+    @FXML private TableView dispatchList;           //Table holder for dispatch list
+    @FXML private GridPane infoView;                                //GridPane holder
+    @FXML private Label locLabel;
+    @FXML private Label occLabel;
+    @FXML private Label stationLabel;
+    @FXML private Button closeBlock;
+    @FXML private TextField mHour;
+    @FXML private TextField mMin;
+    @FXML private ChoiceBox<String> mHalf;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-//        idLabel.setText("ID: ");
-//        sSpeedLabel.setText("Suggested Speed: 0 mph");
-//        authLabel.setText("Authority: 0 Blocks");
-//        speedLimitLabel.setText("Speed Limit: 0 mph");
-        dispatchList.getPanes().removeAll();
-        for (int i = 0; i < tcss.main.Main.ctc.numDispatches(); i++) {
-            System.out.println(tcss.main.Main.ctc.getDispatch(i).getName());
-            dispatchList.getPanes().add(new TitledPane(tcss.main.Main.ctc.getDispatch(i).getName(), new Label(tcss.main.Main.ctc.getDispatchString(i))));
-        }
 
         //populates line dropdown
         lineSelector.getItems().add("Red");
         lineSelector.getItems().add("Green");
         lineSelector.setValue("Red");
         lineSelector.setTooltip(new Tooltip("Select a line to view a block"));
+
+        //Sets up Table to display dispatches
+        nameList.setCellValueFactory(new PropertyValueFactory<>("name"));
+        locList.setCellValueFactory(new PropertyValueFactory<>("block"));
+
+        // Create Timeline for periodic updating
+        Timeline loop = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                updateView();
+            }
+        }));
+        loop.setCycleCount(Timeline.INDEFINITE);
+        loop.play();
     }
-
-    public void sendDispatch(ActionEvent actionEvent) throws Exception {
-        //TrainModel temp = new TrainModel(Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), Main.ctc.trainList.size(), 40);
-        //Main.ctc.createDispatch("train 1", Float.parseFloat(SS.getText()), Integer.parseInt(auth.getText()), temp);
-        //Main.trains.add(temp);
-        dispatch.setText("DISPATCH");
-//        tcss.main.Main.tc.initTrain();
-    }
-
-    /*public void getDispatches() {
-        Dispatch currDispatch = Main.ctc.getFirstDispatch();
-        dispatch1 = new Label(currDispatch.toString());
-        dispatchList.getChildren().add(dispatch1);
-
-        //dispatchList = 0;
-    }*/
 
     public void openDispatchWindow(ActionEvent actionEvent) throws Exception {
         //newDispatch.setText("Created");
@@ -75,34 +80,56 @@ public class CTCController implements Initializable{
 
     //Populates Block list once a line is selected
     public void populateBlocks(ActionEvent e) throws Exception {
-        int temp = tcss.main.Main.ctc.lineStringToInt(lineSelector.getSelectionModel().getSelectedItem().toUpperCase());
+        int temp = Main.ctc.lineStringToInt(lineSelector.getSelectionModel().getSelectedItem().toUpperCase());
 
         blockSelector.getItems().clear();
         for (int i = 0; i < Main.ctc.lineLength(temp); i++) {
-            blockSelector.getItems().add(i+1);
+            String name = Integer.toString(i+1);
+            if (Main.ctc.getBlock(temp,i+1).getStation() != null) {
+                name = name + ": " + Main.ctc.getBlock(temp,i+1).getStation().getName();
+            }
+
+            blockSelector.getItems().add(name);
         }
 
     }
 
+    //View a block, where you can close a block
+    public void viewBlock(ActionEvent e) {
+            String [] split = blockSelector.getSelectionModel().getSelectedItem().split(": ",2);
+
+            int block = Integer.parseInt(split[0]);
+            Block temp = Main.ctc.getBlock(Main.ctc.lineStringToInt(lineSelector.getSelectionModel().getSelectedItem().toUpperCase()), block);
+
+            //Fills labels with proper values
+            locLabel.setText(lineSelector.getSelectionModel().getSelectedItem().toUpperCase() + " " + block);
+            occLabel.setText("Occupied: " + temp.isOccupied());
+            if (temp.getStation() != null)
+                stationLabel.setText("Station: " + temp.getStation().getName());
+            else
+                stationLabel.setText("Station: N/A");
+
+            closeBlock.setDisable(false);
+    }
+
     //Closes a Block for Maintenance
     public void closeBlock(ActionEvent e) throws Exception {
-        System.out.println("Close block ");
+        //System.out.println("Close block ");
+        String [] loc = locLabel.getText().split(" ",2);
 
         //Finds what line is selected
-        int temp = tcss.main.Main.ctc.lineStringToInt(lineSelector.getSelectionModel().getSelectedItem().toUpperCase());
+        Block block = Main.ctc.getBlock(Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]));
 
-        //Assigns temp to blockId
-        //Red Line
-        if (temp == 1) {
-            temp = blockSelector.getSelectionModel().getSelectedItem();
-        }
-        //Green Line
-        else {
-            temp = blockSelector.getSelectionModel().getSelectedItem() + tcss.main.Main.ctc.lineLength(1);
-        }
+        //Adds maintenance request to list in CTC
+        Main.ctc.addMaintenance(Integer.parseInt(mHour.getText()), Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]));
+    }
 
-        System.out.println(temp);
-        //tcss.main.Main.tc.getNextStop(-1,-1,temp)
+    //Updates dispatch list periodically
+    private void updateView() {
+
+        dispatchList.getItems().clear();
+        for (int i = 0; i < tcss.main.Main.ctc.numDispatches(); i++)
+            dispatchList.getItems().add(tcss.main.Main.ctc.getDispatch(i).getTrain());
     }
 
     public void closeWindow(ActionEvent actionEvent) throws Exception {

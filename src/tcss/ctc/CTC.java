@@ -1,5 +1,6 @@
 package tcss.ctc;
 
+import tcss.main.Main;
 import tcss.trackcontroller.TrackController;
 import tcss.trackmodel.Block;
 import tcss.trackmodel.Station;
@@ -7,12 +8,14 @@ import tcss.trackmodel.Track;
 import tcss.trackmodel.TrackModel;
 import tcss.trainmodel.TrainModel;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 
 public class CTC {
     private ArrayList<Dispatch> dispatchList = new ArrayList<Dispatch>(); /*Number of Trains*/
     public ArrayList<TrainModel> trainList = new ArrayList<TrainModel>(); /*Number of Trains*/
+    private ArrayList<Maintenance> maintenanceList = new ArrayList<>();
 
     //Temporary Red and Green Line setup for creating a Dispatch
     protected Map<Integer,Block> redLine;
@@ -45,12 +48,14 @@ public class CTC {
         greenLine = new HashMap<>();
 
         //Temporary Red and Green Line setup for creating a Dispatch
-        redLine = tcss.main.Main.tm.getRedLine().getBlockHashMap();     //Red Line Hash Map
-        greenLine = tcss.main.Main.tm.getGreenLine().getBlockHashMap();                   //Green Line Hash Map
+        //redLine = tcss.main.Main.tm.getRedLine().getBlockHashMap();     //Red Line Hash Map
+        //greenLine = tcss.main.Main.tm.getGreenLine().getBlockHashMap();                   //Green Line Hash Map
         System.out.println(redLine);
 
         //Private Track Model
         privateTrack = new TrackModel();
+        redLine = privateTrack.getRedLine().getBlockHashMap();
+        greenLine = privateTrack.getGreenLine().getBlockHashMap();
         greenLayout = privateTrack.getGreenLine();
         redLayout = privateTrack.getRedLine();
 
@@ -98,10 +103,13 @@ public class CTC {
         this.dispatchList.add(d);
     }
 
+    public void addMaintenance(int hr, int min, int line, int block) {
+        maintenanceList.add(new Maintenance(hr, min, line, block));
+    }
+
     //This checks dispatch list to see if a new suggested speed and authority need to be sent
     public void checkDispatchList () {
-        for (int i = 0; i < dispatchList.size(); i++) {
-            Dispatch temp = dispatchList.get(i);
+        for (Dispatch temp : dispatchList) {
             //if train is not dispatched yet
             if (temp.getCurrStop() == -1 && temp.getSS() == 0) {
                 if (tcss.main.Main.getSimTime().getHour() >= temp.getDepartureHour()) {
@@ -111,10 +119,14 @@ public class CTC {
                         temp.setAuth(temp.getAuth(temp.getCurrStop() + 1));
                         System.out.println("Train sent");
                         //Sends SS and Auth to new
-                        if (temp.getLine() == 1)
-                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),1,9);
-                        else
-                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),0,63);
+                        if (temp.getLine() == 1) {
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), 1, 9);
+                            temp.setDispatched();
+                        }
+                        else {
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), 0, 63);
+                            temp.setDispatched();
+                        }
                     }
                 }
                 /*
@@ -130,17 +142,39 @@ public class CTC {
             else {
                 //Check block occupancy list to see if next stop block is currently occupied.  If so, a new request must be sent to keep train moving
                 if (temp.getLine() == 1) {
-                    if (redLine.get(stationToBlockNumRed.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
+                    if (temp.getCurrStop() < temp.schedule.getStopNums()-1 && redLine.get(stationToBlockNumRed.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
                         temp.setCurrStop(temp.getCurrStop() + 1);
-                        tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), stationToBlockNumRed.get(redStations.get(temp.getCurrStop() + 1)));
+                        tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), stationToBlockNumRed.get(temp.getStopName(temp.getCurrStop())));
                     }
                 } else {
-                        if (greenLine.get(stationToBlockNumGreen.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
-                            temp.setCurrStop(temp.getCurrStop() + 1);
-                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1), temp.lineToTc(), stationToBlockNumGreen.get(greenStations.get(temp.getCurrStop()+1)));
-                        }
+                    if (temp.getCurrStop() < temp.schedule.getStopNums()-1 && greenLine.get(stationToBlockNumGreen.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
+                        temp.setCurrStop(temp.getCurrStop() + 1);
+                        tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), stationToBlockNumGreen.get(temp.getStopName(temp.getCurrStop())));
+                    }
                 }
-                    //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
+                //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
+            }
+        }
+    }
+
+    public void checkMaintenanceList() {
+        for (Maintenance temp : maintenanceList) {
+            //Check if request is done, if active already
+            if (temp.isActive()) {
+
+            }
+            //Check if need to send out request
+            else {
+                if (Main.getSimTime().getHour() >= temp.getHour()) {
+                    //If the time is now or has passed
+                    if (Main.getSimTime().getHour() > temp.getHour() || Main.getSimTime().getMin() >= temp.getMin()) {
+                        //Send request if block is not occupied
+                        if (!getBlock(temp.getLine(), temp.getBlock()).isOccupied()) {
+
+                            temp.setActive(true);
+                        }
+                    }
+                }
             }
         }
     }
@@ -163,12 +197,63 @@ public class CTC {
                 greenLine.get(j).getSwitch().setLights(tcss.main.Main.tc.getLightState(0,j));
             }
         }
+
+        //Updating block position of trains
+        for (Dispatch temp : dispatchList) {
+            //Red Line
+            if (temp.getLine() == 1) {
+                //If dispatched, need to update the location
+                if (temp.isDispatched()) {
+                    //If haven't left Yard yet, keep checking for starting block to be occupancy
+                    if (temp.getTrain().getBlock().equals("N/A") && redLine.get(9).isOccupied()) {
+                        temp.getTrain().setBlock(9);
+                    }
+                    //Has left yard, so check block next to it
+                    else {
+                        //If head block is occupied, move train to head block
+                        if (redLine.get(redLine.get(temp.getTrain().getBlockInt()).getHead().getBlockNum()).isOccupied())
+                            temp.getTrain().setBlock(redLine.get(temp.getTrain().getBlockInt()).getHead().getBlockNum());
+                        //If tail block is occupied, move train to tail block
+                        else if (redLine.get(redLine.get(temp.getTrain().getBlockInt()).getTail().getBlockNum()).isOccupied())
+                            temp.getTrain().setBlock(redLine.get(temp.getTrain().getBlockInt()).getTail().getBlockNum());
+                            //If branch block is occupied, move train to tail block
+                        else if (redLine.get(temp.getTrain().getBlockInt()).getBranch() != null && redLine.get(redLine.get(temp.getTrain().getBlockInt()).getBranch().getBlockNum()).isOccupied())
+                            temp.getTrain().setBlock(redLine.get(temp.getTrain().getBlockInt()).getBranch().getBlockNum());
+                    }
+                }
+            }
+            //Green Line
+            else {
+                //If dispatched, need to update the location
+                if (temp.isDispatched()) {
+                    //If haven't left Yard yet, keep checking for starting block to be occupancy
+                    if (temp.getTrain().getBlock().equals("N/A") && greenLine.get(63).isOccupied()) {
+                        temp.getTrain().setBlock(63);
+                    }
+                    //Has left yard, so check block next to it
+                    else {
+                        //If head block is occupied, move train to head block
+                        if (greenLine.get(temp.getTrain().getBlockInt()).getHead().isOccupied())
+                            temp.getTrain().setBlock(greenLine.get(temp.getTrain().getBlockInt()).getHead().getBlockNum());
+                            //If tail block is occupied, move train to tail block
+                        else if (greenLine.get(temp.getTrain().getBlockInt()).getTail().isOccupied())
+                            temp.getTrain().setBlock(greenLine.get(temp.getTrain().getBlockInt()).getTail().getBlockNum());
+                            //If branch block is occupied, move train to tail block
+                        else if (greenLine.get(temp.getTrain().getBlockInt()).getBranch() != null && greenLine.get(temp.getTrain().getBlockInt()).getBranch().isOccupied())
+                            temp.getTrain().setBlock(greenLine.get(temp.getTrain().getBlockInt()).getBranch().getBlockNum());
+                    }
+                }
+            }
+        }
     }
 
     public void updateThroughput() {
-        if (tcss.main.Main.getSimTime().getSec() % 3 == 0) {
-            //redTicketTotal += tcss.main.Main.tm.updateThroughput(0);
-            //greenTicketTotal += tcss.main.Main.tm.updateThroughput(1);
+        DecimalFormat df = new DecimalFormat("#.#");
+        if (Double.parseDouble(df.format(tcss.main.Main.getSimTime().getSec())) % 3 == 0) {
+            redTicketTotal += tcss.main.Main.tm.updateThroughput(0);
+            greenTicketTotal += tcss.main.Main.tm.updateThroughput(1);
+            //System.out.println(redTicketTotal);
+            //System.out.println(greenTicketTotal);
         }
     }
 
