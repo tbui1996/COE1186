@@ -77,6 +77,7 @@ class TrainModelTest {
 
 	@Test
 	void setDoor() {
+
 		t.setDoor(1, true);
 		assertTrue(t.getDoor(1));
 	}
