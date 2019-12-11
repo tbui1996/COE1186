@@ -105,10 +105,11 @@ public class CTCController implements Initializable{
             //Fills labels with proper values
             locLabel.setText(lineSelector.getSelectionModel().getSelectedItem().toUpperCase() + " " + block);
             occLabel.setText("Occupied: " + temp.isOccupied());
-            if (temp.getStation() != null)
+            if (temp.getStation() != null) {
                 stationLabel.setText("Station: " + temp.getStation().getName());
-            else
+            } else {
                 stationLabel.setText("Station: N/A");
+            }
 
             mHour.setDisable(false);
             mMin.setDisable(false);
@@ -133,8 +134,9 @@ public class CTCController implements Initializable{
     private void updateView() {
 
         dispatchList.getItems().clear();
-        for (int i = 0; i < tcss.main.Main.ctc.numDispatches(); i++)
+        for (int i = 0; i < tcss.main.Main.ctc.numDispatches(); i++) {
             dispatchList.getItems().add(tcss.main.Main.ctc.getDispatch(i).getTrain());
+        }
     }
 
     public void closeWindow(ActionEvent actionEvent) throws Exception {
