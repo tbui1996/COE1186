@@ -76,8 +76,8 @@ public class Dispatch {
 
         }
 
-        speedList[speedList.length-1] = 10/*Min Speed*/;
-        authList[authList.length-1] = 0/*YARD*/;
+        //speedList[speedList.length-1] = 10/*Min Speed*/;
+        //authList[authList.length-1] = 0/*YARD*/;
     }
 
     public void setSS(float SS) {
