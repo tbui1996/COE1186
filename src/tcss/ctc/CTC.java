@@ -38,6 +38,7 @@ public class CTC {
     private int redTicketTotal = 0;
     private int greenTicketTotal = 0;
 
+    private int totalDwell = 5 * 35; //This is the total amount of times the system updates in 35 simulation seconds
 
 
 
@@ -103,8 +104,8 @@ public class CTC {
         this.dispatchList.add(d);
     }
 
-    public void addMaintenance(int hr, int min, int line, int block) {
-        maintenanceList.add(new Maintenance(hr, min, line, block));
+    public void addMaintenance(int hr, int min, int line, int block, int length) {
+        maintenanceList.add(new Maintenance(hr, min, line, block, length));
     }
 
     //This checks dispatch list to see if a new suggested speed and authority need to be sent
@@ -143,13 +144,25 @@ public class CTC {
                 //Check block occupancy list to see if next stop block is currently occupied.  If so, a new request must be sent to keep train moving
                 if (temp.getLine() == 1) {
                     if (temp.getCurrStop() < temp.schedule.getStopNums()-1 && redLine.get(stationToBlockNumRed.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
-                        temp.setCurrStop(temp.getCurrStop() + 1);
-                        tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), stationToBlockNumRed.get(temp.getStopName(temp.getCurrStop())));
+                        if (temp.getDwell() == totalDwell) {
+                            temp.setDwell(0);
+                            temp.setCurrStop(temp.getCurrStop() + 1);
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), stationToBlockNumRed.get(temp.getStopName(temp.getCurrStop())));
+                        }
+                        else {
+                            temp.setDwell(temp.getDwell() + 1);
+                        }
                     }
                 } else {
                     if (temp.getCurrStop() < temp.schedule.getStopNums()-1 && greenLine.get(stationToBlockNumGreen.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
-                        temp.setCurrStop(temp.getCurrStop() + 1);
-                        tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), stationToBlockNumGreen.get(temp.getStopName(temp.getCurrStop())));
+                        if (temp.getDwell() == totalDwell) {
+                            temp.setDwell(0);
+                            temp.setCurrStop(temp.getCurrStop() + 1);
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), stationToBlockNumGreen.get(temp.getStopName(temp.getCurrStop())));
+                        }
+                        else {
+                           temp.setDwell(temp.getDwell() + 1);
+                        }
                     }
                 }
                 //stationToBlock.get(temp.schedule.stopList.get(temp.getCurrStop()+1)
@@ -161,7 +174,15 @@ public class CTC {
         for (Maintenance temp : maintenanceList) {
             //Check if request is done, if active already
             if (temp.isActive()) {
+                //If it's been closed long enough
+                if (temp.getTimePassed() == temp.getLength() * 5 * 60) {
+                    //Send request to reopen block
 
+                }
+                //Update wait time
+                else {
+                    temp.setTimePassed(temp.getTimePassed() + 1);
+                }
             }
             //Check if need to send out request
             else {

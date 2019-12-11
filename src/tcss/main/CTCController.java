@@ -43,6 +43,7 @@ public class CTCController implements Initializable{
     @FXML private TextField mHour;
     @FXML private TextField mMin;
     @FXML private ChoiceBox<String> mHalf;
+    @FXML private TextField closeTime;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -109,6 +110,10 @@ public class CTCController implements Initializable{
             else
                 stationLabel.setText("Station: N/A");
 
+            mHour.setDisable(false);
+            mMin.setDisable(false);
+            mHalf.setDisable(false);
+            closeTime.setDisable(false);
             closeBlock.setDisable(false);
     }
 
@@ -121,7 +126,7 @@ public class CTCController implements Initializable{
         Block block = Main.ctc.getBlock(Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]));
 
         //Adds maintenance request to list in CTC
-        Main.ctc.addMaintenance(Integer.parseInt(mHour.getText()), Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]));
+        Main.ctc.addMaintenance(Integer.parseInt(mHour.getText()), Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]), Integer.parseInt(closeTime.getText()));
     }
 
     //Updates dispatch list periodically
