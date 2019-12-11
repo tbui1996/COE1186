@@ -94,7 +94,6 @@ public class UserSelectionController implements Initializable {
         Parent dispatchRoot = dispatchLoader.load();
         dispatch.setTitle("CTC");
         dispatch.setScene(new Scene(dispatchRoot));
-        dispatch.setResizable(false);
         dispatch.getIcons().add(new Image("file:resources/train.png"));
 
         dispatch.show();

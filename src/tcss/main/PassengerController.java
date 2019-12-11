@@ -26,92 +26,94 @@ import java.util.ResourceBundle;
 
 public class PassengerController implements Initializable {
 
-    // UI variables
-    @FXML private Label idLabel;
-    @FXML private Label speedLabel;
-    @FXML private ToggleButton eBrakeButton;
-    @FXML private AnchorPane pane;
-    @FXML private ChoiceBox trainChoice;
+	private final float MPS_T0_MPH = 2.236936f;		// Convert from meters/second to miles/hour
 
-    TrainModel cur;
+	// UI variables
+	@FXML private Label idLabel;
+	@FXML private Label speedLabel;
+	@FXML private ToggleButton eBrakeButton;
+	@FXML private AnchorPane pane;
+	@FXML private ChoiceBox trainChoice;
 
-    // Testing input filter
+	TrainModel cur;
+
+	// Testing input filter
 //    @FXML private TextField tField;
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
+	@Override
+	public void initialize(URL url, ResourceBundle rb) {
 
-        trainChoice.getItems().add("Select Train");
+		trainChoice.getItems().add("Select Train");
 
-        // Testing
-        for(TrainModel t: TrainModel.getAllTrains()) {
-            trainChoice.getItems().add("Train " + t.getID());
-        }
+		// Testing
+		for(TrainModel t: TrainModel.getAllTrains()) {
+			trainChoice.getItems().add("Train " + t.getID());
+		}
 
-        eBrakeButton.setDisable(true);
+		eBrakeButton.setDisable(true);
 
-        trainChoice.setValue("Select Train");
-        trainChoice.setTooltip(new Tooltip("Select a train to view"));
-        trainChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-                if((Integer) number2 > 0) {
+		trainChoice.setValue("Select Train");
+		trainChoice.setTooltip(new Tooltip("Select a train to view"));
+		trainChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+				if((Integer) number2 > 0) {
 //                    System.out.println(trainChoice.getItems().get((Integer) number2));
 //                    System.out.println("ID: " + Main.trains.get((Integer)number2 - 1).getID());
 
-                    cur = TrainModel.getAllTrains().get((Integer)number2-1);
+					cur = TrainModel.getAllTrains().get((Integer)number2-1);
 
-                    idLabel.setText("ID: " + cur.getID());
-                    eBrakeButton.setDisable(false);
-                    if(cur.getEBrake()) {
-                        eBrakeButton.setStyle("-fx-background-color: red; -fx-text-fill: #dfdfdf");
-                    } else {
-                        eBrakeButton.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill:rgb(43,39,49)");
-                    }
+					idLabel.setText("ID: " + cur.getID());
+					eBrakeButton.setDisable(false);
+					if(cur.getEBrake()) {
+						eBrakeButton.setStyle("-fx-background-color: red; -fx-text-fill: #dfdfdf");
+					} else {
+						eBrakeButton.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill:rgb(43,39,49)");
+					}
 
-                } else {
-                    idLabel.setText("ID: ");
-                    speedLabel.setText("Current Speed: ");
-                    eBrakeButton.setDisable(true);
-                }
-            }
-        });
+				} else {
+					idLabel.setText("ID: ");
+					speedLabel.setText("Current Speed: ");
+					eBrakeButton.setDisable(true);
+				}
+			}
+		});
 
-        // Create Timeline for periodic updating
-        Timeline loop = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                update();
+		// Create Timeline for periodic updating
+		Timeline loop = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				update();
 //                System.out.println("GUI Updated!!");
-            }
-        }));
-        loop.setCycleCount(Timeline.INDEFINITE);
-        loop.play();
+			}
+		}));
+		loop.setCycleCount(Timeline.INDEFINITE);
+		loop.play();
 
-    }
+	}
 
-    public void toggleEBrake(ActionEvent actionEvent) throws Exception {
-        boolean brakeStatus = eBrakeButton.isSelected();
-        cur.setEBrake(brakeStatus);
-    }
+	public void toggleEBrake(ActionEvent actionEvent) throws Exception {
+		boolean brakeStatus = eBrakeButton.isSelected();
+		cur.setEBrake(brakeStatus);
+	}
 
-    public void update(){
-        if(cur == null)
-            return;
-        speedLabel.setText("Current Speed: " + cur.getCurV());
-        if(cur.getEBrake()) {
-            eBrakeButton.setStyle("-fx-background-color: red; -fx-text-fill: #dfdfdf");
-        } else {
-            eBrakeButton.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill:rgb(43,39,49)");
-        }
-    }
+	public void update(){
+		if(cur == null)
+			return;
+		speedLabel.setText("Current Speed: " + Math.round(cur.getCurV()*MPS_T0_MPH * 100f)/100f + " MPH");
+		if(cur.getEBrake()) {
+			eBrakeButton.setStyle("-fx-background-color: red; -fx-text-fill: #dfdfdf");
+		} else {
+			eBrakeButton.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill:rgb(43,39,49)");
+		}
+	}
 
-    public void closeWindow() {
-        Stage s = (Stage) trainChoice.getScene().getWindow();
-        s.close();
-    }
+	public void closeWindow() {
+		Stage s = (Stage) trainChoice.getScene().getWindow();
+		s.close();
+	}
 
-    public void goBack(ActionEvent actionEvent) throws Exception {
+	public void goBack(ActionEvent actionEvent) throws Exception {
 //        Parent trainModelParent = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
 //        Scene trainModelView = new Scene(trainModelParent);
 //
@@ -120,11 +122,11 @@ public class PassengerController implements Initializable {
 //        window.setScene(trainModelView);
 //        window.show();
 
-        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("ModuleSelection.fxml")));
-        Stage window = (Stage) pane.getScene().getWindow();
-        window.setScene(moduleSelect);
-        window.setTitle("Module Selection");
+		Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("ModuleSelection.fxml")));
+		Stage window = (Stage) pane.getScene().getWindow();
+		window.setScene(moduleSelect);
+		window.setTitle("Module Selection");
 
 
-    }
+	}
 }
