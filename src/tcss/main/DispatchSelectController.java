@@ -17,6 +17,7 @@ import tcss.ctc.Dispatch;
 import tcss.traincontroller.TrainController;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -94,7 +95,7 @@ public class DispatchSelectController implements Initializable {
         });
     }
 
-    public void importSchedule() {
+    public void importSchedule() throws IOException {
         FileChooser fileChooser = new FileChooser();
         // Configure FileChooser
         fileChooser.setTitle("Select your schedule file");
@@ -104,10 +105,15 @@ public class DispatchSelectController implements Initializable {
         );
 
         File temp = fileChooser.showOpenDialog(new Stage());
-//        if(temp != null) {
-//            file = temp;
-//        }
+        if(temp != null) {
+            Main.ctc.automaticDispatch(temp);
+        }
 
+        //Goes back to CTC window
+        Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("fxml/CTC.fxml")));
+        Stage window = (Stage) pane.getScene().getWindow();
+        window.setScene(moduleSelect);
+        window.setTitle("CTC");
     }
 
     public void confirmLine(ActionEvent e) throws Exception {
@@ -118,13 +124,14 @@ public class DispatchSelectController implements Initializable {
         //Populates stop drop down once line is selected
         stopSelector.getItems().clear();
         String [] temp = tcss.main.Main.ctc.getAllStops(curr.getLine());
-        for (int i = 0; i < temp.length; i++)
+        for (int i = 0; i < temp.length; i++) {
             stopSelector.getItems().add(temp[i]);
+        }
     }
 
     //Approves each stop added to the Schedule
     public void confirmStop(ActionEvent e) throws Exception {
-        curr.schedule.addStop(stopSelector.getSelectionModel().getSelectedItem(), Float.parseFloat(timeToStop.getText()) * 60);
+        //curr.schedule.addStop(stopSelector.getSelectionModel().getSelectedItem(), Float.parseFloat(timeToStop.getText()) * 60);
     }
 
     //Approves overall dispatch and adds it to the CTC list
@@ -139,25 +146,27 @@ public class DispatchSelectController implements Initializable {
             if (1 <= Integer.parseInt(dHour.getText()) && Integer.parseInt(dHour.getText()) <= 12 && Integer.parseInt(dMin.getText()) >= 1 && Integer.parseInt(dMin.getText()) <= 59) {
                 //if AM
                 if (dHalf.getSelectionModel().getSelectedItem().equals("AM")) {
-                    if (dHour.getText().equals("12"))
+                    if (dHour.getText().equals("12")) {
                         curr.setDepartureTime(0, Integer.parseInt(dMin.getText()));
-                    else
+                    } else {
                         curr.setDepartureTime(Integer.parseInt(dHour.getText()), Integer.parseInt(dMin.getText()));
-                }
+                    }
                 //if PM
-                else {
-                    if (dHour.getText().equals("12"))
+                } else {
+                    if (dHour.getText().equals("12")) {
                         curr.setDepartureTime(12, Integer.parseInt(dMin.getText()));
-                    else
+                    } else {
                         curr.setDepartureTime(Integer.parseInt(dHour.getText()) + 12, Integer.parseInt(dMin.getText()));
+                    }
                 }
 
-                if (!trainName.getText().equals(""))
+                if (!trainName.getText().equals("")) {
                     curr.setName(trainName.getText());
+                }
 
             }
             //Time not valid, display to user
-            else{
+            else {
 
             }
         }
