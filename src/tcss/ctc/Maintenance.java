@@ -6,6 +6,8 @@ public class Maintenance {
     int min;
     int line;
     int block;
+    int length;
+    int timePassed;
     boolean active;
 
 
@@ -14,15 +16,23 @@ public class Maintenance {
         this.min = 0;
         this.line = 0;
         this.block = 0;
+        this.timePassed = 0;
+        this.length = 0;
         this.active = false;
     }
 
-    public Maintenance(int h, int m, int l, int b) {
+    public Maintenance(int h, int m, int l, int b, int t) {
         this.hour = h;
         this.min = m;
         this.line = l;
         this.block = b;
+        this.length = t;
+        this.timePassed = 0;
         this.active = false;
+    }
+
+    public void setTimePassed(int i) {
+        this.timePassed = i;
     }
 
     public int getHour() {
@@ -40,6 +50,10 @@ public class Maintenance {
     public int getBlock() {
         return this.block;
     }
+
+    public int getLength() { return this.length; }
+
+    public int getTimePassed() { return this.getTimePassed(); }
 
     public boolean isActive() {
         return this.active;
