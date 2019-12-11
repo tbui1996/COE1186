@@ -444,17 +444,18 @@ public class TrackModel {
             travelCount++;
         }
 
+        /*
         Block testBlock = track.getBlock((int) (Math.random() * track.getBlockHashMap().size()) + 1);
         currBlock.setDirection(Direction.FROM_TAIL);
         System.out.println("From Tail: " + testBlock.getBlockNum());
-        testBlock.initTrain(0, 0, 0);
+        //testBlock.initTrain(0, 0, 0);
         for(int i=0;i<30;i++){
             testBlock = testBlock.trainGetNextBlock();
             System.out.println("=> " + testBlock.getBlockNum());
-        }
+        }*/
 
         //clear test train
-        testBlock.setTrain(null);
+        //testBlock.setTrain(null);
 
         if(track == getRedLine()){
             Block b1 = track.getBlock(1);

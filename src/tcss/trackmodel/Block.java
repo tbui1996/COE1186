@@ -193,6 +193,7 @@ public class Block{
             retBlock.setDirection(Direction.FROM_HEAD);
         }else if(this == retBlock.getTail()){
             retBlock.setDirection(Direction.FROM_TAIL);
+            retBlock.getTrain().setGrade(retBlock.getGrade() * -1);
         }else if(retBlock.getBranch() != null){
             retBlock.setDirection(Direction.FROM_BRANCH);
         }else{
