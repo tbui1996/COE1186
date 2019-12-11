@@ -39,7 +39,7 @@ public class CTCController implements Initializable{
     @FXML private Label locLabel;
     @FXML private Label occLabel;
     @FXML private Label stationLabel;
-    @FXML private Button closeBlock;
+    @FXML private Button closeBlockButton;
     @FXML private TextField mHour;
     @FXML private TextField mMin;
     @FXML private ChoiceBox<String> mHalf;
@@ -114,7 +114,7 @@ public class CTCController implements Initializable{
             mMin.setDisable(false);
             mHalf.setDisable(false);
             closeTime.setDisable(false);
-            closeBlock.setDisable(false);
+            closeBlockButton.setDisable(false);
     }
 
     //Closes a Block for Maintenance
@@ -123,7 +123,7 @@ public class CTCController implements Initializable{
         String [] loc = locLabel.getText().split(" ",2);
 
         //Finds what line is selected
-        Block block = Main.ctc.getBlock(Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]));
+        //Block block = Main.ctc.getBlock(Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]));
 
         //Adds maintenance request to list in CTC
         Main.ctc.addMaintenance(Integer.parseInt(mHour.getText()), Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]), Integer.parseInt(closeTime.getText()));

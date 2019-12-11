@@ -74,9 +74,9 @@
                                                 </HBox>
                                                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                    <children>
-                                                      <TextField fx:id="closeTime" prefHeight="25.0" prefWidth="59.0" promptText="Length" />
+                                                      <TextField fx:id="closeTime" disable="true" prefHeight="25.0" prefWidth="59.0" promptText="Length" />
                                                       <Label text="min" textFill="WHITE" />
-                                                      <Button fx:id="closeBlock" disable="true" mnemonicParsing="false" text="Close Block" />
+                                                      <Button fx:id="closeBlock" disable="true" mnemonicParsing="false" onAction="#closeBlock" text="Close Block" />
                                                    </children>
                                                 </HBox>
                                              </children>
