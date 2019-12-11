@@ -32,8 +32,16 @@ public class TrainController {
     private boolean underground;
     private boolean eBrake;
     private boolean sBrake;
-    private float[] lastVerrs; //TODO: These should be pushed to a singular vErr and muk with multiple power calculators
+    private float[] lastVerrs;
     private float[] lastmuk;
+
+    private float[] powerVotes = {0,0,0};
+    private boolean[] sBrakeVotes = {true, true, true};
+    private boolean[] eBrakeVotes = {true, true, true};
+    private float RESOLVED_PWR_CMD;
+    private boolean RESOLVED_S_BRAKE;
+    private boolean RESOLVED_E_BRAKE;
+
     final private float MAX_PWR_CMD = 120000; //120 KW == 120,000 W
     final private float T = 1; //sampling rate of trains - PWRCMD calculation rate
     private float PWRCMD;
@@ -119,30 +127,44 @@ public class TrainController {
     public void update(){
         // TODO Remove calls to update model; that's handled by SimTime
         currentSpeed = model.getCurV();
-        if(model.getEBrake()) this.eBrake = true;
-        suggestedSpeed = model.getSSpeed();
-        authority = model.getAuthority();
+        if(model.getEBrake()){
+            eBrake = true;
+        }
+        if(eBrake) {
+            this.PWRCMD = 0;
+        }
 
-        float[] pwrVotes = new float[3];
-        int [] brakeVotes = new int[3];
+        System.out.println("THE CURRENT SUGGESTED SPEED: " + suggestedSpeed + " AND AUTHORITY " + authority);
+        System.out.println("THE CURRENT SBRAKE: " + sBrake + " AND EBRAKE " + eBrake);
 
-        prepareVoters(pwrVotes, brakeVotes);
+        prepareVoters();
+        majorityVote();
+        PWRCMD = RESOLVED_PWR_CMD;
+        sBrake = RESOLVED_S_BRAKE;
+        eBrake = RESOLVED_E_BRAKE;
 
-        Float PWRCMD = 0f;
-        Integer BRAKECMD = 0;
-        System.out.println("Entering majorityVote: PWRCMD = " + PWRCMD);
-        majorityVote(pwrVotes, PWRCMD);
-        System.out.println("Exiting majorityVote: PWRCMD = " + PWRCMD);
-        if(PWRCMD > 0){
+        System.out.println("THE CALCED PWRCMD: " + PWRCMD);
+        System.out.println("THE CALCED SBRAKE: " + sBrake);
+        System.out.println("THE CALCED EBRAKE: " + eBrake);
+
+        if(PWRCMD >= 0){
             model.setPWRCMD(PWRCMD);
-        } else if (PWRCMD == -1){
-            prepareVoters(pwrVotes, brakeVotes);
-            majorityVote(pwrVotes, PWRCMD);
+            model.setEBrake(eBrake);
+            model.setSBrake(sBrake);
+        } else {
+            prepareVoters();
+            majorityVote();
+            PWRCMD = RESOLVED_PWR_CMD;
+            sBrake = RESOLVED_S_BRAKE;
+            eBrake = RESOLVED_E_BRAKE;
             if(PWRCMD > 0){
                 model.setPWRCMD(PWRCMD);
+                model.setEBrake(eBrake);
+                model.setSBrake(sBrake);
             } else {
-                eBrake = true;
+                model.setPWRCMD(0);
                 model.setEBrake(true);
+                model.setSBrake(false);
             }
         }
     }
@@ -158,12 +180,13 @@ public class TrainController {
         setpointSpeed = suggestedSpeed;
     }
 
-    public void prepareVoters(float[] pwrcmds, int[] brakecmds){
+    public void prepareVoters(){
         commandedSpeed = setpointSpeed < suggestedSpeed ? setpointSpeed : suggestedSpeed;
         commandedSpeed = suggestedSpeed < speedLimit ? suggestedSpeed : speedLimit;
         for(int id = 0; id < 3; id++) {
-            getPWRCMD(commandedSpeed, pwrcmds, id);
+            getPWRCMD(commandedSpeed, id);
         }
+
     }
 
 
@@ -172,36 +195,41 @@ public class TrainController {
      * If no two of the responses agree, the voter returns -1
      * Agreement is determined to be a ~1% of the maximumPower (120). the agreed values will be averaged.
      *  e.g. if votes are: 100, 32, and 302.84, voters A and B will be considered in agreement, and the output energy command will be 66
-     * @param pwrVotes An array of floats of size 3 containing the votes to choose between.
-     * @param RESOLVED_PWR_CMD a Float type which references the power command that will be sent to the engine
      * @return
      */
-    private void majorityVote(float[] pwrVotes, Float RESOLVED_PWR_CMD){
-        if(pwrVotes[1] - MAX_PWR_CMD <= pwrVotes[0] && pwrVotes[0] <= pwrVotes[1] + MAX_PWR_CMD){ //At least A and B agree
-            if(pwrVotes[2] - MAX_PWR_CMD <= pwrVotes[0] && pwrVotes[0] <= pwrVotes[2] + MAX_PWR_CMD){ //A also agrees with C
-                RESOLVED_PWR_CMD = (pwrVotes[0] + pwrVotes[1] + pwrVotes[2])/3;
+    private void majorityVote(){
+        RESOLVED_S_BRAKE = (sBrakeVotes[0] && sBrakeVotes[1]) || (sBrakeVotes[0] && sBrakeVotes[2]) || (sBrakeVotes[1] && sBrakeVotes[2]);
+        RESOLVED_E_BRAKE = (eBrakeVotes[0] && eBrakeVotes[1]) || (eBrakeVotes[0] && eBrakeVotes[2]) || (eBrakeVotes[1] && eBrakeVotes[2]);
+
+        if(powerVotes[1] - MAX_PWR_CMD <= powerVotes[0] && powerVotes[0] <= powerVotes[1] + MAX_PWR_CMD){ //At least A and B agree
+            if(powerVotes[2] - MAX_PWR_CMD <= powerVotes[0] && powerVotes[0] <= powerVotes[2] + MAX_PWR_CMD){ //A also agrees with C
+                RESOLVED_PWR_CMD = (powerVotes[0] + powerVotes[1] + powerVotes[2])/3;
             } else { //A only agrees with B and not with C
-                RESOLVED_PWR_CMD = (pwrVotes[0] + pwrVotes[1])/2;
+                RESOLVED_PWR_CMD = (powerVotes[0] + powerVotes[1])/2;
             }
-        } else if(pwrVotes[2]-MAX_PWR_CMD <= pwrVotes[0] && pwrVotes[0] <= pwrVotes[2]+MAX_PWR_CMD ) { //A does not agree with b but does agree with c
-            RESOLVED_PWR_CMD = (pwrVotes[0] + pwrVotes[2])/2;
-        } else if(pwrVotes[1] - MAX_PWR_CMD <= pwrVotes[2] && pwrVotes[2] <= pwrVotes[1] + MAX_PWR_CMD){ //b agrees with c
-            RESOLVED_PWR_CMD = (pwrVotes[1] + pwrVotes[2])/2;
+        } else if(powerVotes[2]-MAX_PWR_CMD <= powerVotes[0] && powerVotes[0] <= powerVotes[2]+MAX_PWR_CMD ) { //A does not agree with b but does agree with c
+            RESOLVED_PWR_CMD = (powerVotes[0] + powerVotes[2])/2;
+        } else if(powerVotes[1] - MAX_PWR_CMD <= powerVotes[2] && powerVotes[2] <= powerVotes[1] + MAX_PWR_CMD){ //b agrees with c
+            RESOLVED_PWR_CMD = (powerVotes[1] + powerVotes[2])/2;
         }
     }
 
-    private void getPWRCMD(float cmdSpeed, float[] pwrcmds, int id){
+
+    //TODO: Rearrange this so that you dont do math if you dont need to
+    private void getPWRCMD(float cmdSpeed, int id){
+        float CMD_PRE = 0;
+        float CMD = 0;
         if(eBrake){
-            pwrcmds[id] = -1000; //-1000 will be considered eBrake
+            CMD_PRE = -1000; //-1000 will be considered eBrake
         }
-        if(authority < 3 && authority > 0 && currentSpeed >= SLOW_OPERATING_SPEED){ //manage speed down to safe slow speed
-            pwrcmds[id] = -240; //sBrake
+        if(authority == 1 && currentSpeed > SLOW_OPERATING_SPEED){ //manage speed down to safe slow speed
+           CMD_PRE = -240; //sBrake
         }
         if(authority == 0){
-            pwrcmds[id] = -240; // -1 is coded as s-brake
+            CMD_PRE = -240; // -1 is coded as s-brake
         }
         float vErr = cmdSpeed - currentSpeed;
-        float CMD = kp*vErr + ki*(lastmuk[id] + T/2*(vErr + lastVerrs[id]));
+        CMD = kp*vErr + ki*(lastmuk[id] + T/2*(vErr + lastVerrs[id]));
         lastVerrs[id] = vErr;
         if(CMD > MAX_PWR_CMD){
             CMD = kp*vErr + ki*lastmuk[id];
@@ -209,12 +237,26 @@ public class TrainController {
             lastmuk[id] = lastmuk[id] + T/2*(vErr + lastVerrs[id]);
         }
         //TODO: Find out what negative value is absurd to be sent and determine values where break is desired instead.
-        if(CMD < 0){
-            pwrcmds[id] = 0;
+        if(CMD_PRE < 0){
+            if(CMD_PRE > -500){ //should return an sBrake
+                powerVotes[id] = 0;
+                sBrakeVotes[id] = true;
+                eBrakeVotes[id] = false;
+            } else if(CMD_PRE < -500) { //CMD is less than zero, and less than -500
+                powerVotes[id] = 0;
+                sBrakeVotes[id] = false;
+                eBrakeVotes[id] = true;
+            } else {
+                System.out.println("*****************You should handle this Patrick");
+            }
         } else if(CMD > 120000){
-            pwrcmds[id] = 120000;
+            powerVotes[id] = 120000;
+            sBrakeVotes[id] = false;
+            eBrakeVotes[id] = false;
         } else {
-            pwrcmds[id] = CMD;
+            powerVotes[id] = CMD;
+            sBrakeVotes[id] = false;
+            eBrakeVotes[id] = false;
         }
     }
 
@@ -222,6 +264,11 @@ public class TrainController {
         if(currentSpeed == 0){
             this.doors = doors;
         }
+    }
+
+    public void enterNewBlock(){
+        authority-=1;
+        System.out.println("YOU HAVE ENTERED A NEW BLOCK YOU SHOULD TAKE NOTE OF THIS AND MAKE SURE THAT IT IS HANDLED CORRECTLY");
     }
 
     public boolean[] getDoorStatus(){
@@ -239,39 +286,39 @@ public class TrainController {
     }
 
     public void passCommands(int a, float ss){
-        this.authority = a;
-        this.suggestedSpeed = ss;
+        authority = a;
+        suggestedSpeed = ss;
     }
 
     public int getID(){
-        return this.id;
+        return id;
     }
 
     public float getSSpeed(){
-        return this.suggestedSpeed;
+        return suggestedSpeed;
     }
 
     public float getsetpointSpeed(){
-        return this.setpointSpeed;
+        return setpointSpeed;
     }
 
     public int getAuthority() {
         return authority;
     }
     public boolean getUnderground(){
-        return this.underground;
+        return underground;
     }
 
     public boolean getEBrake(){
-        return this.eBrake;
+        return eBrake;
     }
 
-    public void setEBrake(boolean b){
-        this.eBrake = b;
+    public void setEBrake(boolean eBrake){
+        this.eBrake = eBrake;
     }
 
-    public void setSetpointSpeed(float sps){
-        this.setpointSpeed = sps;
+    public void setSetpointSpeed(float setpointSpeed){
+        this.setpointSpeed = setpointSpeed;
     }
 
     public boolean getOpMode() {

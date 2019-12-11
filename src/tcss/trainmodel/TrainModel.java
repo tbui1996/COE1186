@@ -244,6 +244,7 @@ public class TrainModel {
 			}
 
 			blocksTraveled = blocksTraveled + 1;
+			controller.enterNewBlock();
 			if(curBeaconSignal != null) {
 				lastBeaconSignal = curBeaconSignal;
 				curBeaconSignal = null;
