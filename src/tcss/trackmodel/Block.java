@@ -183,6 +183,11 @@ public class Block{
         setDirection(Direction.NONE);
         setPassengerUpdateDone(false);
 
+        //if next block has beacon, set train beacon data
+        if(retBlock.getBeacon() != null){
+            retBlock.getTrain().setBeacon(retBlock.getBeacon().getData().toCharArray());
+        }
+
         //set direction of next block
         if(this == retBlock.getHead()){
             retBlock.setDirection(Direction.FROM_HEAD);
@@ -273,7 +278,7 @@ public class Block{
         TrainModel train = new TrainModel(suggSpeed, auth, id, this);
         setTrain(train);
         setOccupied(true);
-        setDirection(Direction.FROM_TAIL);
+        setDirection(Direction.FROM_HEAD);
         return true;
     }
 
