@@ -19,12 +19,14 @@ public class Dispatch {
     private int dMin;
     private Train train;
     private boolean dispatched;
+    private int dwell;
     //private ArrayList<String> stations;
 
     public Dispatch(String l, String n) {
         this.line = this.lineStringToInt(l);
         this.train = new Train(n);
         this.dispatched = false;
+        this.dwell = 0;
         //this.SS = 0;
         //this.auth = 0;
     }
@@ -33,6 +35,7 @@ public class Dispatch {
         this.SS = SS;
         this.auth = auth;
         this.dispatched = false;
+        this.dwell = 0;
         //this.train = train;
     }
 
@@ -40,6 +43,10 @@ public class Dispatch {
         this.schedule = new Schedule(l);
         this.dHr = 14;
         this.dMin = 0;
+    }
+
+    public void setScheduleFile(String file) {
+
     }
 
     public void setRequests() {
@@ -111,6 +118,10 @@ public class Dispatch {
         this.dMin = m;
     }
 
+    public String getStopName(int i) {
+        return this.schedule.getStopName(i);
+    }
+
     public String departureTimeString() {
         if (this.dHr > 12) {
             return (this.dHr % 12) + " : " + this.dMin + " PM";
@@ -143,8 +154,14 @@ public class Dispatch {
 
 
     public String toString() {
-        return "Train: " + this.train.getName() + "\nDeparture Time: " + this.departureTimeString() +
-                "\n" + this.schedule + "\nNext Stop: " + this.schedule.getStopName(currStop+1);
+        if (currStop < this.schedule.getStopNums()-1) {
+            return "Train: " + this.train.getName() + "\nDeparture Time: " + this.departureTimeString() +
+                    "\n" + this.schedule + "\nNext Stop: " + this.schedule.getStopName(currStop + 1);
+        }
+        else {
+            return "Train: " + this.train.getName() + "\nDeparture Time: " + this.departureTimeString() +
+                    "\n" + this.schedule + "\nNext Stop: Yard";
+        }
     }
 
     private int lineStringToInt(String line) {
@@ -166,6 +183,14 @@ public class Dispatch {
 
     public boolean isDispatched() {
         return this.dispatched;
+    }
+
+    public int getDwell() {
+        return this.dwell;
+    }
+
+    public void setDwell(int i) {
+        this.dwell = i;
     }
 
     public int lineToTc() {

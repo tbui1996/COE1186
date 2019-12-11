@@ -133,6 +133,17 @@ public class UserSelectionController implements Initializable {
 
     public void murphyView() throws Exception{
         System.out.println("OPEN MURPHY VIEW");
+
+        FXMLLoader murphyLoader = new FXMLLoader(getClass().getResource("fxml/ModuleSelection.fxml"));
+        Stage murphy = new Stage();
+        Parent murphyRoot = murphyLoader.load();
+        murphy.setTitle("Module Failure States");
+        murphy.setScene(new Scene(murphyRoot));
+        murphy.setResizable(false);
+        murphy.getIcons().add(new Image("file:resources/train.png"));
+
+        murphy.show();
+
     }
 
     public void openSettings() throws Exception {
