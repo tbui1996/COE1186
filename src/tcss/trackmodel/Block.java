@@ -29,6 +29,7 @@ public class Block{
     private boolean occupied;
     private boolean closed;
     private boolean startBlock;
+    private boolean yardBlock;
     private boolean passengerUpdateDone;
 
     private Failure failure;
@@ -62,6 +63,7 @@ public class Block{
         setUnderground(false);
         setOccupied(false);
         setStartBlock(false);
+        setYardBlock(false);
         setPassengerUpdateDone(false);
 
         setFailure(Failure.NONE);
@@ -415,6 +417,13 @@ public class Block{
         }else if(nextBlock.isOccupied()){
             System.out.println("Trains crashed on block" + getBlockNum());
             return false;
+        }else if(nextBlock.isYardBlock()){
+            getTrain().toYard();
+            setTrain(null);
+            setOccupied(false);
+            setDirection(Direction.NONE);
+            setPassengerUpdateDone(false);
+            return true;
         }
 
         //set train of next block to that of current block
@@ -509,11 +518,12 @@ public class Block{
             System.out.println("Failed to init, block is occupied");
             return false;
         }
-        System.out.println("Hello");
         TrainModel train = new TrainModel(suggSpeed, auth, id, this);
         setTrain(train);
         setOccupied(true);
         setDirection(Direction.FROM_HEAD);
+        setSuggestedSpeed(suggSpeed);
+        setAuthority(auth);
         return true;
     }
 
@@ -573,6 +583,10 @@ public class Block{
 
     public boolean isStartBlock(){
         return startBlock;
+    }
+
+    public boolean isYardBlock(){
+        return yardBlock;
     }
 
     public boolean isPassengerUpdateDone(){
@@ -675,6 +689,10 @@ public class Block{
 
     public void setStartBlock(boolean startBlock){
         this.startBlock = startBlock;
+    }
+
+    public void setYardBlock(boolean yardBlock){
+        this.yardBlock = yardBlock;
     }
 
     public void setPassengerUpdateDone(boolean passengerUpdateDone) {

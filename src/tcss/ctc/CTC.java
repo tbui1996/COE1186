@@ -312,7 +312,7 @@ public class CTC {
                         else if (redLine.get(redLine.get(temp.getTrain().getBlockInt()).getTail().getBlockNum()).isOccupied())
                             temp.getTrain().setBlock(redLine.get(temp.getTrain().getBlockInt()).getTail().getBlockNum());
                             //If branch block is occupied, move train to tail block
-                        else if (redLine.get(temp.getTrain().getBlockInt()).getBranch() != null && redLine.get(redLine.get(temp.getTrain().getBlockInt()).getBranch().getBlockNum()).isOccupied())
+                        else if (redLine.get(temp.getTrain().getBlockInt()).getBranch() != null && !redLine.get(temp.getTrain().getBlockInt()).getBranch().isYardBlock() && redLine.get(redLine.get(temp.getTrain().getBlockInt()).getBranch().getBlockNum()).isOccupied())
                             temp.getTrain().setBlock(redLine.get(temp.getTrain().getBlockInt()).getBranch().getBlockNum());
                     }
                 }
