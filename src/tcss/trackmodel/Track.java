@@ -32,7 +32,7 @@ public class Track {
         double tailDistance = distanceHelper(start, end, Direction.FROM_HEAD, unit);
 
         if(start.isOccupied()){
-            if(start.getDirection() == Direction.FROM_HEAD){
+            if(start.getDirection() == Direction.FROM_TAIL){
                 return headDistance;
             }else{
                 return tailDistance;
