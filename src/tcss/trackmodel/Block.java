@@ -3,15 +3,15 @@ package tcss.trackmodel;
 import javafx.util.Pair;
 import tcss.trainmodel.TrainModel;
 
-enum Failure{
-    BROKEN_RAIL, CIRCUIT_FAILURE, POWER_FAILURE, NONE;
-}
-
-enum Direction{
-    FROM_HEAD, FROM_TAIL, FROM_BRANCH, NONE;
-}
-
 public class Block{
+
+    public enum Failure{
+        BROKEN_RAIL, CIRCUIT_FAILURE, POWER_FAILURE, NONE;
+    }
+
+    public enum Direction{
+        FROM_HEAD, FROM_TAIL, FROM_BRANCH, NONE;
+    }
 
     private int line;
     private char section;
