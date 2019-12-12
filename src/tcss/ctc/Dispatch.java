@@ -245,14 +245,7 @@ public class Dispatch {
 
 
     public String toString() {
-        if (currStop < this.schedule.getStopNums()-1) {
-            return "Train: " + this.train.getName() + "\nDeparture Time: " + this.departureTimeString() +
-                    "\n" + this.schedule + "\nNext Stop: " + this.schedule.getStopName(currStop + 1);
-        }
-        else {
-            return "Train: " + this.train.getName() + "\nDeparture Time: " + this.departureTimeString() +
-                    "\n" + this.schedule + "\nNext Stop: Yard";
-        }
+        return this.schedule.toString();
     }
 
     private int lineStringToInt(String line) {

@@ -73,6 +73,10 @@ public class Train {
         }
     }
 
+    public void setStopList() {
+
+    }
+
     public String getBlock() {
         if (block == -1)
             return "N/A";
