@@ -45,6 +45,7 @@ public class TrainControllerController implements Initializable {
     @FXML private Label powerCommandLabel, kilabel, kplabel;
     @FXML private Label currentSpeedLabel;
     @FXML private Label commandedSpeedLabel;
+    @FXML private Label sBrakeStatusLabel;
     @FXML private TextField setTempInput;
     @FXML private Circle d1Status, d2Status, d3Status, d4Status, d5Status, d6Status, d7Status, d8Status;
 
@@ -96,6 +97,11 @@ public class TrainControllerController implements Initializable {
                     initializeDoors();
                     idLabel.setText("ID: " + tc.getID());
                     suggestedSpeedLabel.setText("Suggested Speed: " + String.format("%.2f", tc.getSuggestedSpeedInMPH()) + " MPH");
+                    if(tc.issBrake()){
+                        sBrakeStatusLabel.setText("Service Brake: Active");
+                    } else {
+                        sBrakeStatusLabel.setText("Service Brake: Inactive");
+                    }
                     setPointInput.setPromptText("" + String.format("%.2f", tc.getsetpointSpeedInCustomary()) + " MPH");
                     setTempInput.setPromptText("" + String.format("%.2f", tc.getTemp()) + " ºF");
                     trainButton.setDisable(false);
@@ -262,10 +268,10 @@ public class TrainControllerController implements Initializable {
     public void confirmSetpoint(ActionEvent actionEvent) throws Exception{
        try {
            try {
-               float newSPSpeed = Float.parseFloat(setPointInput.getText());
+               float newSPSpeed = Float.parseFloat(setPointInput.getText()); //this is in mph
                float suggestedSpeed = (float)tc.getSuggestedSpeedInMPH();
                float speedLimit = (float)tc.getSpeedLimitInCustomary();
-               //System.out.printf("SPI: " + newSPSpeed + " with ss: " + suggestedSpeed + " and sl: " + speedLimit);
+               System.out.println("SPI in MPH: " + newSPSpeed + " with ss in MPH: " + suggestedSpeed + " and sl in MPH: " + speedLimit);
                if(newSPSpeed > suggestedSpeed){
                    newSPSpeed = suggestedSpeed;
                }
@@ -276,7 +282,7 @@ public class TrainControllerController implements Initializable {
                tc.update();
                tc.updateModelCommandedSpeed();
                setPointInput.setText("");
-               setPointInput.setPromptText("" + tc.getsetpointSpeedInCustomary() + " MPH");
+               setPointInput.setPromptText("" + String.format("%.2f", tc.getsetpointSpeedInCustomary()) + " MPH");
            } catch (NumberFormatException e) {
                System.out.println("nfe found");
            }

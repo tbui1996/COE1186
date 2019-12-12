@@ -14,20 +14,7 @@
          <children>
             <VBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="362.0">
                <children>
-                  <HBox prefHeight="29.0" prefWidth="369.0">
-                     <children>
-                        <ChoiceBox fx:id="trainChoice" minHeight="2.0" minWidth="2.0" prefHeight="27.0" prefWidth="154.0" />
-                        <Button mnemonicParsing="false" onAction="#reloadDropdown" text="Reload">
-                           <HBox.margin>
-                              <Insets left="5.0" top="6.0" />
-                           </HBox.margin>
-                           <font>
-                              <Font size="8.0" />
-                           </font>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <Label fx:id="idLabel" text="ID:">
+                  <Label fx:id="idLabel" prefHeight="36.0" prefWidth="95.0" text="ID:">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -84,6 +71,7 @@
                         </Button>
                      </children>
                   </HBox>
+                  <Label fx:id="sBrakeStatusLabel" text="Service Brake: " />
                   <ToggleButton fx:id="eBrakeToggle" mnemonicParsing="false" onAction="#toggleEBrake" prefHeight="27.0" prefWidth="156.0" text="Emergency Break">
                      <VBox.margin>
                         <Insets top="5.0" />
@@ -107,6 +95,19 @@
                            <HBox.margin>
                               <Insets right="10.0" top="10.0" />
                            </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="29.0" prefWidth="369.0">
+                     <children>
+                        <ChoiceBox fx:id="trainChoice" minHeight="2.0" minWidth="2.0" prefHeight="27.0" prefWidth="154.0" />
+                        <Button mnemonicParsing="false" onAction="#reloadDropdown" text="Reload">
+                           <HBox.margin>
+                              <Insets left="5.0" top="6.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="8.0" />
+                           </font>
                         </Button>
                      </children>
                   </HBox>

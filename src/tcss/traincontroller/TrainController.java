@@ -12,6 +12,7 @@ import java.util.ArrayList;
  * Additionally, this module must be vital, and utilizes TMR to satisfy this goal
  */
 public class TrainController {
+    private final float KPH_TO_MPS = 0.2777777f;
 
     //Static class variables
     public static ArrayList<TrainController> TrainControllerList = new ArrayList<TrainController>();
@@ -34,6 +35,8 @@ public class TrainController {
     private boolean sBrake;
     private float[] lastVerrs;
     private float[] lastmuk;
+    private boolean wasJustMoving = false;
+    private boolean wasJustResting = true;
 
     private float[] powerVotes = {0,0,0};
     private boolean[] sBrakeVotes = {true, true, true};
@@ -46,8 +49,9 @@ public class TrainController {
     final private float T = 1; //sampling rate of trains - PWRCMD calculation rate
     private float PWRCMD;
     private boolean[] doors = {false, false, false, false, false, false, false, false};
-    private float MAX_OPERATING_SPEED = 70f*1000f*100f/2.54f/12f/5280f; //km/h converted to miles/hours
-    private float SLOW_OPERATING_SPEED = MAX_OPERATING_SPEED;//4*2.235f; //~5 MPH but in meters/s
+    private float MAX_OPERATING_SPEED_METERSPERSECOND = 70f*1000/3600;
+    private float MAX_OPERATING_SPEED_MPH = 70f*1000f*100f/2.54f/12f/5280f; //km/h converted to miles/hours
+    private float SLOW_OPERATING_SPEED = MAX_OPERATING_SPEED_METERSPERSECOND;//4*2.235f; //~5 MPH but in meters/s
 
 
 
@@ -60,10 +64,9 @@ public class TrainController {
         System.out.println("Adding a new train controller for train model: " + model.getID());
         this.model = model;
         this.id = model.getID();
-        this.authority = model.getAuthority();
-        this.suggestedSpeed = model.getSSpeed();
+        initialSpeedLimit(model.getSpeedLimit());
+        passCommands(model.getAuthority(), model.getSSpeed());
         this.setpointSpeed = suggestedSpeed; //since we start in auto, we can set sps to the suggested
-        this.speedLimit = model.getSpeedLimit();
         this.underground = model.getUnderground();
         this.eBrake = model.getEBrake(); //gets the ebrake status from the model.
         this.lastVerrs = new float[]{0, 0, 0}; //for use in the vital pwrcmd calcs
@@ -78,10 +81,11 @@ public class TrainController {
     }
 
     public TrainController(int id, int authority, float suggestedSpeed, float speedLimit, boolean underground, float temp){
+        //System.out.println("in second constructor");
         this.id = id;
         this.authority = authority;
         this.suggestedSpeed = suggestedSpeed;
-        this.speedLimit = speedLimit;
+        setSpeedLimit(speedLimit);
         this.underground = underground;
         this.temp = temp;
         this.setpointSpeed = suggestedSpeed; //since we start in auto, we can set sps to the suggested
@@ -130,14 +134,15 @@ public class TrainController {
             boolean d = doors[i];
             model.setDoor(i, d);
         }
-        if(currentSpeed > 0){
+        if(currentSpeed > 0 && hasBegunToMove()){
             setDoors(new boolean[]{false, false, false, false, false, false, false, false});
-        } else if(currentSpeed == 0){
+        } else if(currentSpeed == 0 && hasComeToRest()){
             setDoors(new boolean[]{true, true, true, true, true, true, true, true});
         } else {
             //System.out.println("The current speed is negative");
         }
         currentSpeed = model.getCurV()*3600/1000;
+        //System.out.println("current speed im mps is " + currentSpeed);
         if(model.getEBrake()){
             //System.out.println("EBRAKE SET TO TRUE BECAUSE IT WAS TRUE IN THE MODEL");
             eBrake = true;
@@ -197,8 +202,9 @@ public class TrainController {
     public void prepareVoters(){
         commandedSpeed = Math.min(setpointSpeed, suggestedSpeed);
         commandedSpeed = Math.min(commandedSpeed, speedLimit);
-        commandedSpeed = Math.min(commandedSpeed, MAX_OPERATING_SPEED); //these should all be in km/hr
-        System.out.println("Commanded Speed is: " + commandedSpeed);
+        commandedSpeed = Math.min(commandedSpeed, MAX_OPERATING_SPEED_MPH); //these should all be in km/hr
+        //System.out.println("comparing: " + setpointSpeed + " " + suggestedSpeed + " " + speedLimit + " " + MAX_OPERATING_SPEED_METERSPERSECOND);
+        //System.out.println("Commanded Speed in meters per second is: " + commandedSpeed);
         if(eBrake){
             commandedSpeed = 0;
         }
@@ -231,44 +237,48 @@ public class TrainController {
         } else if(powerVotes[1] - MAX_PWR_CMD*0.03 <= powerVotes[2] && powerVotes[2] <= powerVotes[1] + MAX_PWR_CMD*0.03){ //b agrees with c
             RESOLVED_PWR_CMD = (powerVotes[1] + powerVotes[2])/2;
         }
-        System.out.println("MAJORITY VOTE; S: " + RESOLVED_S_BRAKE + " E: " + RESOLVED_E_BRAKE + " PWR: " + RESOLVED_PWR_CMD);
+        //System.out.println("MAJORITY VOTE; S: " + RESOLVED_S_BRAKE + " E: " + RESOLVED_E_BRAKE + " PWR: " + RESOLVED_PWR_CMD);
     }
 
-    private void getPWRCMD(float cmdSpeed, int id){
-        if(cmdSpeed > MAX_OPERATING_SPEED){
-            cmdSpeed = MAX_OPERATING_SPEED;
+    private void getPWRCMD(float cmdSpeed, int id) {
+        if (cmdSpeed > MAX_OPERATING_SPEED_METERSPERSECOND) {
+            cmdSpeed = MAX_OPERATING_SPEED_METERSPERSECOND;
         }
         float CMD = 0;
         float vErr = cmdSpeed - currentSpeed;
-        CMD = kp*vErr + ki*(lastmuk[id] + T/2*(vErr + lastVerrs[id]));
+        CMD = kp * vErr + ki * (lastmuk[id] + T / 2 * (vErr + lastVerrs[id]));
         lastVerrs[id] = vErr;
-        if(CMD > MAX_PWR_CMD){
-            CMD = kp*vErr + ki*lastmuk[id];
+        if (CMD > MAX_PWR_CMD) {
+            CMD = kp * vErr + ki * lastmuk[id];
         } else {
-            lastmuk[id] = lastmuk[id] + T/2*(vErr + lastVerrs[id]);
+            lastmuk[id] = lastmuk[id] + T / 2 * (vErr + lastVerrs[id]);
         }
 
         eBrakeVotes[id] = false;
 
-        if(eBrake) {
+        if (eBrake) {
             eBrakeVotes[id] = true;
-            System.out.println("EBRAKEVOTE SET TO TRUE BECAUSE IT IS CURRENTLY ACTIVE");
+            //System.out.println("EBRAKEVOTE SET TO TRUE BECAUSE IT IS CURRENTLY ACTIVE");
         } else if(authority > 0 && authority < 3 && currentSpeed > SLOW_OPERATING_SPEED){ //manage speed down to safe slow speed
             sBrakeVotes[id] = true;
-            System.out.println("SBRAKEVOTE SET TO TRUE BECAUSE WE WANT TO SLOW THE TRAIN DOWN");
+            //System.out.println("SBRAKEVOTE SET TO TRUE BECAUSE WE WANT TO SLOW THE TRAIN DOWN");
         } else if (authority > 0 && authority < 3 && currentSpeed <= SLOW_OPERATING_SPEED) {
             sBrakeVotes[id] = false;
-            System.out.println("SBRAKEVOTE set to FALSE because we are already below the slow operating speed");
+            //System.out.println("SBRAKEVOTE set to FALSE because we are already below the slow operating speed");
         } else if(authority == 0){
             sBrakeVotes[id] = true;
-            System.out.println("SBRAKEVOTE SET TO TRUE BECAUSE WE HAVE REACHED OUR DESTINATION");
+            //System.out.println("Request for speedlimit from: " + speedLimit + " to MPH: " + speedLimit*100/2.54/12/3600*5280);
+            //System.out.println("SBRAKEVOTE SET TO TRUE BECAUSE WE HAVE REACHED OUR DESTINATION");
         } else if(authority < 0){
             eBrakeVotes[id] = true;
-            System.out.println("EBRAKEVOTE SET TO TRUE BECAUSE WE HAVE PASSED OUR DESTINATION");
+            //System.out.println("EBRAKEVOTE SET TO TRUE BECAUSE WE HAVE PASSED OUR DESTINATION");
+        } else if(currentSpeed > commandedSpeed){
+            sBrakeVotes[id] = true;
+            eBrakeVotes[id] = false;
         } else {
             eBrakeVotes[id] = false;
             sBrakeVotes[id] = false;
-            System.out.println("EBRAKEVOTE SET TO FALSE BECAUSE WE HAVE NO REASON TO EBRAKE");
+            //System.out.println("EBRAKEVOTE SET TO FALSE BECAUSE WE HAVE NO REASON TO EBRAKE");
         }
         //TODO: Find out what negative value is absurd to be sent and determine values where break is desired instead.
 
@@ -283,6 +293,28 @@ public class TrainController {
         }
     }
 
+    public boolean hasComeToRest(){
+        if(wasJustMoving && currentSpeed == 0){
+            wasJustMoving = false;
+            wasJustResting = true;
+            return true;
+        } else if (wasJustMoving && currentSpeed != 0){
+            wasJustMoving = true;
+            wasJustResting = false;
+            return false;
+        } else if(currentSpeed != 0){
+            wasJustMoving = true;
+            return false;
+        } else {
+            wasJustResting = true;
+            return false;
+        }
+    }
+
+    public boolean hasBegunToMove(){
+        return wasJustResting && currentSpeed != 0;
+    }
+
     public void adjustDoors(boolean [] doors){
         if(currentSpeed == 0){
             this.doors = doors;
@@ -291,7 +323,7 @@ public class TrainController {
 
     public void enterNewBlock(){
         authority-=1;
-        System.out.println("WE HAVE ENTERED A NEW BLOCK SO WE HAVE DECREMENTED AUTHORITY");
+        //System.out.println("WE HAVE ENTERED A NEW BLOCK SO WE HAVE DECREMENTED AUTHORITY");
     }
 
     public boolean[] getDoorStatus(){
@@ -309,14 +341,14 @@ public class TrainController {
     }
 
     public float getCommandedSpeedInCustomary(){
-        return commandedSpeed;
+        return commandedSpeed*100/2.54f/12/5280*3600;
     }
 
     public void passCommands(int a, float ss){
         authority = a;
-        System.out.println("SS from passCOmmands: " + ss);
+        //System.out.println("SS from passCOmmands: " + ss);
         suggestedSpeed = ss*1000/3600; //convert km/h to meters/second
-        System.out.println("SS as mps: " + suggestedSpeed);
+        //System.out.println("SS as mps: " + suggestedSpeed);
     }
 
     public int getID(){
@@ -332,8 +364,8 @@ public class TrainController {
     }
 
     public float getsetpointSpeedInCustomary(){
-        //System.out.println("METRIC SPS: " + setpointSpeed + " CUSTOMARY: " + setpointSpeed*1000*100/2.54f/12/5280);
-        return setpointSpeed*1000*100/2.54f/12/5280;
+        //System.out.println("METRIC SPS: " + setpointSpeed + " CUSTOMARY: " + setpointSpeed*100/2.54f/12/5280*3600);
+        return setpointSpeed*100/2.54f/12/5280*3600;
     }
 
     public int getAuthority() {
@@ -352,11 +384,12 @@ public class TrainController {
     }
 
     public void setSetpointSpeed(float setpointSpeed){
-        this.setpointSpeed = setpointSpeed;
+        this.setpointSpeed = setpointSpeed*1000/3600;
     }
 
     public void setSetpointSpeedFromCustomary(float setpointSpeed){
-        this.setpointSpeed =  (float)(setpointSpeed/3600*5280*12*2.54/1000);
+        //System.out.println("assignment of setpoint speed from MPH to meterspersec: " + setpointSpeed + " " + (float)(setpointSpeed*5280*12*2.54/100/3600));
+        this.setpointSpeed =  (float)(setpointSpeed*5280*12*2.54/100/3600);
     }
 
     public boolean getOpMode() {
@@ -397,6 +430,7 @@ public class TrainController {
     }
 
     public double getCurrentSpeedInCustomary(){ //convert from meters/second to miles/hour
+        //System.out.println("Converting current" + currentSpeed + " to MPH: " + (currentSpeed*100/2.54f/12/5280*3600));
         return (currentSpeed*100/2.54f/12/5280*3600);
     }
 
@@ -408,6 +442,12 @@ public class TrainController {
         return model;
     }
 
+    public void initialSpeedLimit(float speedLimit){
+        //System.out.println("Set for speedlimit as: " + speedLimit);
+        this.speedLimit = speedLimit*1000/3600;
+    }
+
+
     public void setSpeedLimit(float speedLimit){
         this.speedLimit = speedLimit;
     }
@@ -417,6 +457,7 @@ public class TrainController {
     }
 
     public double getSpeedLimitInCustomary(){
+        //System.out.println("Request for speedlimit from: " + speedLimit + " to MPH: " + speedLimit*100/2.54/12/5280*3600);
         return speedLimit*100/2.54/12/5280*3600;
     }
 

@@ -47,7 +47,7 @@
 }
 
 .choice-box .menu-item > .label {
-    -fx-font-size: 15px;
+    -fx-font-size: 14px;
     -fx-text-fill: rgb(43, 39, 49);
 }
 
