@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="919.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <AnchorPane layoutX="14.0" layoutY="6.0" prefHeight="29.0" prefWidth="847.0" style="-fx-background-color: #bdc3c7;">
+            <children>
+                <Label fx:id="title" layoutX="291.0" text="Track Controller">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
+        <AnchorPane id="AnchorPane" layoutY="37.0" prefHeight="612.0" prefWidth="782.0">
+            <children>
+                <AnchorPane layoutX="14.0" layoutY="458.0" prefHeight="190.0" prefWidth="413.0" style="-fx-background-color: #bdc3c7;">
+                    <children>
+                        <Button fx:id="defaultSwitch" layoutX="165.0" layoutY="68.0" mnemonicParsing="false" onAction="#manDefaultSwitchClick" prefHeight="26.0" prefWidth="90.0" text="Default" textAlignment="CENTER" visible="true" />
+                        <Button fx:id="raiseCrossing" layoutX="165.0" layoutY="108.0" mnemonicParsing="false" onAction="#manRaiseCrossingClick" prefHeight="26.0" prefWidth="90.0" text="Raise" textAlignment="CENTER" visible="true" />
+                        <Button fx:id="greenLightSet" layoutX="166.0" layoutY="146.0" mnemonicParsing="false" onAction="#manGreenSignalClick" prefHeight="26.0" prefWidth="90.0" text="Green" textAlignment="CENTER" visible="true" />
+                        <Label fx:id="switchMurphyLabel" layoutX="40.0" layoutY="79.0" prefHeight="18.0" prefWidth="89.0" text="Switch State" visible="false" />
+                        <Label fx:id="crossingMurphyLabel" layoutX="40.0" layoutY="118.0" text="Railway Crossing" visible="false" />
+                        <Label fx:id="signalMurphyLabel" layoutX="40.0" layoutY="157.0" prefHeight="18.0" prefWidth="89.0" text="Signal State" visible="false" />
+                        <Button fx:id="notDefaultSwitch" layoutX="275.0" layoutY="68.0" mnemonicParsing="false" onAction="#manNotDefaultSwitchClick" prefHeight="26.0" prefWidth="97.0" text="Not Default" textAlignment="CENTER" visible="true" />
+                        <Button fx:id="lowerCrossing" layoutX="276.0" layoutY="108.0" mnemonicParsing="false" onAction="#manLowerCrossingClick" prefHeight="26.0" prefWidth="97.0" text="Lower" textAlignment="CENTER" visible="true" />
+                        <Button fx:id="redLightSet" layoutX="276.0" layoutY="146.0" mnemonicParsing="false" onAction="#manRedSignalClick" prefHeight="26.0" prefWidth="98.0" text="Red" textAlignment="CENTER" visible="true" />
+                        <Label layoutX="125.0" layoutY="22.0" text="Manual Mode">
+                            <font>
+                                <Font size="21.0" />
+                            </font>
+                        </Label>
+                    </children></AnchorPane>
+                <AnchorPane layoutX="15.0" layoutY="289.0" prefHeight="156.0" prefWidth="847.0" style="-fx-background-color: #bdc3c7;">
+                    <children>
+                        <Label layoutX="532.0" layoutY="14.0" text="Data From CTC">
+                            <font>
+                                <Font size="21.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="trackOccupancy" layoutX="245.0" layoutY="56.0" prefWidth="183.0" text="Occupied" textFill="RED">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="commandedSpeed" layoutX="642.0" layoutY="56.0" text="10 mph" textFill="RED">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="commandedAuthority" layoutX="644.0" layoutY="113.0" text="1000 ft" textFill="RED">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <Label layoutX="87.0" layoutY="14.0" text="Data From Track Model">
+                            <font>
+                                <Font size="21.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </AnchorPane>
+                <AnchorPane layoutX="14.0" layoutY="7.0" prefHeight="270.0" prefWidth="847.0" style="-fx-background-color: #bdc3c7;">
+                    <children>
+                        <Label layoutX="118.0" layoutY="45.0" text="Track Controller Information">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <Label layoutX="469.0" layoutY="44.0" text="Outputs">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <Label layoutX="197.0" layoutY="83.0" text="Track:" />
+                        <Label layoutX="161.0" layoutY="114.0" text="Merge Block:" />
+                        <Label layoutX="162.0" layoutY="131.0" text="Split Present:" />
+                        <Label layoutX="172.0" layoutY="149.0" text="Split Block:" />
+                        <Label layoutX="159.0" layoutY="167.0" text="Default Block:" />
+                        <Label layoutX="150.0" layoutY="185.0" text="Crossing State:" />
+                        <Label layoutX="163.0" layoutY="203.0" text="Signal State:" />
+                        <Label fx:id="trackName" layoutX="250.0" layoutY="83.0" text="Red" textFill="RED" />
+                        <Label fx:id="mergeBlock" layoutX="250.0" layoutY="114.0" text="1" textFill="RED" />
+                        <Label fx:id="splitBool" layoutX="250.0" layoutY="131.0" text="True" textFill="RED" />
+                        <Label fx:id="splitBlock" layoutX="250.0" layoutY="149.0" text="2" textFill="RED" />
+                        <Label fx:id="defaultBlock" layoutX="250.0" layoutY="167.0" text="3" textFill="RED" />
+                        <Label fx:id="crossingState" layoutX="250.0" layoutY="185.0" text="Raised" textFill="RED" />
+                        <Label fx:id="signalState" layoutX="250.0" layoutY="203.0" text="Green" textFill="RED" />
+                        <Label layoutX="358.0" layoutY="82.0" text="Suggested Speed:">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <Label layoutX="422.0" layoutY="110.0" text="Authority:">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <Label layoutX="374.0" layoutY="136.0" text="Switch Position:">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <Label layoutX="406.0" layoutY="164.0" text="Light Color:">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="outputSpeed" layoutX="521.0" layoutY="82.0" text="10 mph" textFill="RED">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="outputAuthority" layoutX="524.0" layoutY="110.0" text="1000 ft" textFill="RED">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="outputSwitch" layoutX="524.0" layoutY="136.0" text="Open" textFill="RED">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="outputLights" layoutX="524.0" layoutY="164.0" text="Green" textFill="RED">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <Label layoutX="149.0" layoutY="98.0" text="Merge Present:" />
+                        <Label fx:id="mergeBool" layoutX="250.0" layoutY="98.0" text="True" textFill="RED" />
+                        <RadioButton fx:id="manualMode" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#setManualMode" text="Manual Mode" />
+                    </children>
+                </AnchorPane>
+                <Label layoutX="96.0" layoutY="345.0" text="Track Occupancy:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <Label layoutX="484.0" layoutY="345.0" text="Commanded Speed:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <Label layoutX="567.0" layoutY="404.0" text="Authority:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <AnchorPane layoutX="447.0" layoutY="458.0" prefHeight="190.0" prefWidth="413.0" style="-fx-background-color: #bdc3c7;" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" height="163.0" layoutX="551.0" layoutY="476.0" stroke="BLACK" strokeType="INSIDE" width="104.0" />
+                <Circle fx:id="greenLight" fill="#22ff00" layoutX="603.0" layoutY="516.0" radius="28.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fx:id="redLight" fill="#ff1f1f" layoutX="603.0" layoutY="596.0" radius="28.0" stroke="BLACK" strokeType="INSIDE" />
+                <Button fx:id="importPLC" alignment="CENTER" layoutX="715.0" layoutY="540.0" mnemonicParsing="false" onAction="#onPLCClick" prefHeight="56.0" prefWidth="112.0" text="Import PLC" textAlignment="CENTER" />
+                <Label alignment="CENTER" layoutX="723.0" layoutY="506.0" prefHeight="20.0" prefWidth="90.0" text="PLC File">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>
