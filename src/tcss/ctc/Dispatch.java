@@ -94,9 +94,12 @@ public class Dispatch {
 
     public void setRequests() {
         //Set Departure Time
-        int fMin = this.schedule.getStopMin(0);
+        //int fMin = this.schedule.getStopMin(0);
         double distance = Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(0))), 0); // Returns the distance in meters
-        int travelTime = (int) distance / 40 / 60; //Distance / slowest speed on track returns travel time in seconds.  Divide my 60 again for minutes
+        int travelTime = ((int) distance) / 11; //Distance / slowest speed on track returns travel time in seconds.  Divide my 60 again for minutes
+        if (travelTime >= 60) {
+            travelTime = travelTime / 60;
+        }
         this.dHr = this.schedule.getStopHour(0) - (travelTime / 60);
         if ((this.schedule.getStopMin(0) - (travelTime % 60)) == 0) {
             this.dMin = 0;
