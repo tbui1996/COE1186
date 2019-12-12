@@ -19,11 +19,11 @@ public class TrainController {
     //Instance Variables
     public int id;
     private TrainModel model;
-    private float suggestedSpeed;
-    private float setpointSpeed;
-    private float commandedSpeed;
-    private float currentSpeed;
-    private float speedLimit;
+    private float suggestedSpeed; //meters/second
+    private float setpointSpeed; //meters/second
+    private float commandedSpeed; //meters/second
+    private float currentSpeed; //meters/second
+    private float speedLimit; //meters/second
     private float temp;
     public boolean opMode = false; //default to automatic
     int authority;
@@ -47,6 +47,8 @@ public class TrainController {
     private float PWRCMD;
     private boolean[] doors = {true, true, true, true, true, true, true, true};
     private float SLOW_OPERATING_SPEED = 2.235f;
+    private float MAX_OPERATING_SPEED = 70f*1000f/3600f; //m/s
+
 
 
     /**
@@ -181,8 +183,9 @@ public class TrainController {
     }
 
     public void prepareVoters(){
-        commandedSpeed = setpointSpeed < suggestedSpeed ? setpointSpeed : suggestedSpeed;
-        commandedSpeed = suggestedSpeed < speedLimit ? suggestedSpeed : speedLimit;
+        commandedSpeed = Math.min(setpointSpeed, suggestedSpeed);
+        commandedSpeed = Math.min(commandedSpeed, speedLimit);
+        commandedSpeed = Math.min(commandedSpeed, MAX_OPERATING_SPEED);
         for(int id = 0; id < 3; id++) {
             getPWRCMD(commandedSpeed, id);
         }
@@ -201,15 +204,15 @@ public class TrainController {
         RESOLVED_S_BRAKE = (sBrakeVotes[0] && sBrakeVotes[1]) || (sBrakeVotes[0] && sBrakeVotes[2]) || (sBrakeVotes[1] && sBrakeVotes[2]);
         RESOLVED_E_BRAKE = (eBrakeVotes[0] && eBrakeVotes[1]) || (eBrakeVotes[0] && eBrakeVotes[2]) || (eBrakeVotes[1] && eBrakeVotes[2]);
 
-        if(powerVotes[1] - MAX_PWR_CMD <= powerVotes[0] && powerVotes[0] <= powerVotes[1] + MAX_PWR_CMD){ //At least A and B agree
-            if(powerVotes[2] - MAX_PWR_CMD <= powerVotes[0] && powerVotes[0] <= powerVotes[2] + MAX_PWR_CMD){ //A also agrees with C
+        if(powerVotes[1] - MAX_PWR_CMD*0.03 <= powerVotes[0] && powerVotes[0] <= powerVotes[1] + MAX_PWR_CMD*0.03){ //At least A and B agree
+            if(powerVotes[2] - MAX_PWR_CMD*0.03 <= powerVotes[0] && powerVotes[0] <= powerVotes[2] + MAX_PWR_CMD*0.03){ //A also agrees with C
                 RESOLVED_PWR_CMD = (powerVotes[0] + powerVotes[1] + powerVotes[2])/3;
             } else { //A only agrees with B and not with C
                 RESOLVED_PWR_CMD = (powerVotes[0] + powerVotes[1])/2;
             }
-        } else if(powerVotes[2]-MAX_PWR_CMD <= powerVotes[0] && powerVotes[0] <= powerVotes[2]+MAX_PWR_CMD ) { //A does not agree with b but does agree with c
+        } else if(powerVotes[2]-MAX_PWR_CMD*0.03 <= powerVotes[0] && powerVotes[0] <= powerVotes[2]+MAX_PWR_CMD*0.03 ) { //A does not agree with b but does agree with c
             RESOLVED_PWR_CMD = (powerVotes[0] + powerVotes[2])/2;
-        } else if(powerVotes[1] - MAX_PWR_CMD <= powerVotes[2] && powerVotes[2] <= powerVotes[1] + MAX_PWR_CMD){ //b agrees with c
+        } else if(powerVotes[1] - MAX_PWR_CMD*0.03 <= powerVotes[2] && powerVotes[2] <= powerVotes[1] + MAX_PWR_CMD*0.03){ //b agrees with c
             RESOLVED_PWR_CMD = (powerVotes[1] + powerVotes[2])/2;
         }
     }
@@ -217,17 +220,10 @@ public class TrainController {
 
     //TODO: Rearrange this so that you dont do math if you dont need to
     private void getPWRCMD(float cmdSpeed, int id){
-        float CMD_PRE = 0;
+        if(cmdSpeed > MAX_OPERATING_SPEED){
+            cmdSpeed = MAX_OPERATING_SPEED;
+        }
         float CMD = 0;
-        if(eBrake){
-            CMD_PRE = -1000; //-1000 will be considered eBrake
-        }
-        if(authority == 1 && currentSpeed > SLOW_OPERATING_SPEED){ //manage speed down to safe slow speed
-           CMD_PRE = -240; //sBrake
-        }
-        if(authority == 0){
-            CMD_PRE = -240; // -1 is coded as s-brake
-        }
         float vErr = cmdSpeed - currentSpeed;
         CMD = kp*vErr + ki*(lastmuk[id] + T/2*(vErr + lastVerrs[id]));
         lastVerrs[id] = vErr;
@@ -236,27 +232,25 @@ public class TrainController {
         } else {
             lastmuk[id] = lastmuk[id] + T/2*(vErr + lastVerrs[id]);
         }
+
+        if(eBrake){
+            eBrakeVotes[id] = true; //-1000 will be considered eBrake
+        }
+        if(authority == 1 && currentSpeed > SLOW_OPERATING_SPEED){ //manage speed down to safe slow speed
+           sBrakeVotes[id] = true;
+        }
+        if(authority <= 0){
+            sBrakeVotes[id] = true;
+        }
         //TODO: Find out what negative value is absurd to be sent and determine values where break is desired instead.
-        if(CMD_PRE < 0){
-            if(CMD_PRE > -500){ //should return an sBrake
-                powerVotes[id] = 0;
-                sBrakeVotes[id] = true;
-                eBrakeVotes[id] = false;
-            } else if(CMD_PRE < -500) { //CMD is less than zero, and less than -500
-                powerVotes[id] = 0;
-                sBrakeVotes[id] = false;
-                eBrakeVotes[id] = true;
-            } else {
-                System.out.println("*****************You should handle this Patrick");
-            }
-        } else if(CMD > 120000){
+
+        if(CMD > 120000){
             powerVotes[id] = 120000;
-            sBrakeVotes[id] = false;
-            eBrakeVotes[id] = false;
-        } else {
+        } else if(CMD < 0){
+            powerVotes[id] = 0;
+            sBrakeVotes[id] = true;
+        } else { //CMD is in the normal range
             powerVotes[id] = CMD;
-            sBrakeVotes[id] = false;
-            eBrakeVotes[id] = false;
         }
     }
 
@@ -321,6 +315,10 @@ public class TrainController {
         this.setpointSpeed = setpointSpeed;
     }
 
+    public void setSetpointSpeedFromCustomary(float setpointSpeed){
+        this.setpointSpeed =  (float)(setpointSpeed/3600*5280*12*2.54/1000);
+    }
+
     public boolean getOpMode() {
         return opMode;
     }
@@ -358,6 +356,10 @@ public class TrainController {
         return currentSpeed;
     }
 
+    public double getCurrentSpeedInCustomary(){
+        return (currentSpeed*100/2.54/12/5280*3600);
+    }
+
     public TrainModel getTrain() {
         return model;
     }
@@ -368,6 +370,10 @@ public class TrainController {
 
     public float getSpeedLimit(){
         return speedLimit;
+    }
+
+    public double getSpeedLimitInCustomary(){
+        return speedLimit*100/2.54/12/5280*3600;
     }
 
     public boolean issBrake() {

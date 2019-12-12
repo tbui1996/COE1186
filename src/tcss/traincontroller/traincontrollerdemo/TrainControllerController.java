@@ -166,7 +166,7 @@ public class TrainControllerController implements Initializable {
         powerCommandLabel.setText("Power: " + tc.getPWRCMD());
         kilabel.setText("Ki: " + tc.getKi());
         kplabel.setText("Kp: " + tc.getKp());
-        currentSpeedLabel.setText("Current Speed: " + tc.getCurrentSpeed());
+        currentSpeedLabel.setText("Current Speed: " + tc.getCurrentSpeedInCustomary());
 
     }
 
