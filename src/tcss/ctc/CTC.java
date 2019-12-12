@@ -48,17 +48,14 @@ public class CTC {
     private int totalDwell = 5 * 35; //This is the total amount of times the system updates in 35 simulation seconds
 
 
-
-
+    /**
+     *Initializes the CTC
+     * @throws Exception
+     */
     public CTC() throws Exception {
 
         redLine = new HashMap<>();
         greenLine = new HashMap<>();
-
-        //Temporary Red and Green Line setup for creating a Dispatch
-        //redLine = tcss.main.Main.tm.getRedLine().getBlockHashMap();     //Red Line Hash Map
-        //greenLine = tcss.main.Main.tm.getGreenLine().getBlockHashMap();                   //Green Line Hash Map
-        System.out.println(redLine);
 
         //Private Track Model
         privateTrack = new TrackModel();
@@ -96,18 +93,21 @@ public class CTC {
            greenLine.replace(mapElement.getKey(), new Block(mapElement.getValue()));
             //updates station to block number hash map
             if (greenLine.get(mapElement.getKey()).getStation() != null) {
-                if (!greenStations.contains(greenLine.get(mapElement.getKey()).getStation().getName())){
+                if (!greenStations.contains(greenLine.get(mapElement.getKey()).getStation().getName())) {
                     stationToBlockNumGreen.put(greenLine.get(mapElement.getKey()).getStation().getName(), mapElement.getKey());
                     greenStations.add(greenLine.get(mapElement.getKey()).getStation().getName());
                 }
             }
         }
-
-        System.out.println("Red Stations: \n" + redStations.size());
-        System.out.println("Green Stations: \n" + greenStations.size());
     }
 
-    //Automatic Mode
+
+
+    /**
+     * Creates the dispatches for the CTC if a file is uploaded for scheduling
+     * @param schedules
+     * @throws IOException
+     */
     public void automaticDispatch(File schedules) throws IOException {
         XSSFWorkbook myExcelBook = new XSSFWorkbook(new FileInputStream(schedules));
         ArrayList<Dispatch> autoDispatch = new ArrayList<>();
@@ -167,22 +167,38 @@ public class CTC {
 
         for (int i = 0; i < autoDispatch.size(); i++) {
             autoDispatch.get(i).setRequests();
+            autoDispatch.get(i).getTrain().setStation(autoDispatch.get(i).schedule.getStopName(0));
+            autoDispatch.get(i).getTrain().setDTime(autoDispatch.get(i).getDepartureHour(), autoDispatch.get(i).getDepartureMin());
         }
 
-        System.out.println("Dispatch: \n" + autoDispatch.get(0));
+        System.out.println("Dispatch: \n" + autoDispatch.get(7));
 
         dispatchList.addAll(autoDispatch);
     }
 
+    /**
+     * Add a dispatch to the list in the CTC
+     * @param d
+     */
     public void addDispatch(Dispatch d) {
         this.dispatchList.add(d);
     }
 
+    /**
+     * Add a maintenance request to the list in the CTC
+     * @param hr
+     * @param min
+     * @param line
+     * @param block
+     * @param length
+     */
     public void addMaintenance(int hr, int min, int line, int block, int length) {
         maintenanceList.add(new Maintenance(hr, min, line, block, length));
     }
 
-    //This checks dispatch list to see if a new suggested speed and authority need to be sent
+    /**
+     * Called every cycle.  Checks when a new SS and Authority needs to be sent for each Train
+     */
     public void checkDispatchList () {
         for (Dispatch temp : dispatchList) {
             //if train is not dispatched yet
@@ -204,19 +220,15 @@ public class CTC {
                         }
                     }
                 }
-                /*
-                if (11 >= temp.getDepartureHour()) { //This should be if departure time == current global time
-                    temp.setSS(temp.getSpeed(temp.getCurrStop()+1));
-                    temp.setAuth(temp.getAuth(temp.getCurrStop()+1));
-                    System.out.println("Train sent");
-                    //Sends SS and Auth to new
-                    tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop()+1),temp.getAuth(temp.getCurrStop()+1),YARD)
-                }*/
             }
             //If train is already dispatched
             else {
                 //Check block occupancy list to see if next stop block is currently occupied.  If so, a new request must be sent to keep train moving
                 if (temp.getLine() == 1) {
+                    if (Integer.parseInt(temp.getTrain().getBlock()) == 9 && temp.getCurrStop() == temp.schedule.getStopNums()) {
+                        dispatchList.remove(temp);
+                        continue;
+                    }
                     if (temp.getCurrStop() < temp.schedule.getStopNums()-1 && redLine.get(blockReturner(temp.getLine(), temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
                         if (temp.getDwell() == totalDwell) {
                             temp.setDwell(0);
@@ -228,6 +240,10 @@ public class CTC {
                         }
                     }
                 } else {
+                    if (Integer.parseInt(temp.getTrain().getBlock()) == 63 && temp.getCurrStop() == temp.schedule.getStopNums()) {
+                        dispatchList.remove(temp);
+                        continue;
+                    }
                     if (temp.getCurrStop() < temp.schedule.getStopNums()-1 && greenLine.get(blockReturner(temp.getLine(), temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
                         if (temp.getDwell() == totalDwell) {
                             temp.setDwell(0);
@@ -244,6 +260,9 @@ public class CTC {
         }
     }
 
+    /**
+     * Called every cycle.  Checks when a new block needs to be opened/closed from Maintenance request
+     */
     public void checkMaintenanceList() {
         for (Maintenance temp : maintenanceList) {
             //Check if request is done, if active already
@@ -274,6 +293,9 @@ public class CTC {
         }
     }
 
+    /**
+     * Updates the private instance of the track in the CTC to use for calculations later.  Updated every cycle
+     */
     public void updateTrackState() {
         for (int j = 1; j < (redLine.size()); j++) {
             //updating red line
@@ -342,6 +364,9 @@ public class CTC {
         }
     }
 
+    /**
+     * Updates throughput every 3 seconds and adds it to the total numbers
+     */
     public void updateThroughput() {
         DecimalFormat df = new DecimalFormat("#.#");
         if (Double.parseDouble(df.format(tcss.main.Main.getSimTime().getSec())) % 3 == 0) {
@@ -352,15 +377,27 @@ public class CTC {
         }
     }
 
+    /**
+     * Used privately to determine if a new row needs to be read in from the Excel file.  Used for automatic dispatching
+     * @param row
+     * @return
+     */
     private static boolean isRowEmpty(Row row) {
         for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
             Cell cell = row.getCell(c);
-            if (cell != null && cell.getCellType() != Cell.CELL_TYPE_BLANK)
+            if (cell != null && cell.getCellType() != Cell.CELL_TYPE_BLANK) {
                 return false;
+            }
         }
         return true;
     }
 
+    /**
+     * Used to return an integer representation of the block, given the block number or station name on the block
+     * @param l
+     * @param b
+     * @return
+     */
     public int blockReturner(int l, String b) {
         if (b.length() > 3) {
             if (l == 1) {
@@ -377,15 +414,17 @@ public class CTC {
         return dispatchList.get(i);
     }
 
-    public String getDispatchString(int i) {
-        return dispatchList.get(i).toString();
-    }
-
     public int numDispatches() {
         return this.dispatchList.size();
     }
 
     //Return a String array of all stops in a line
+
+    /**
+     * Returns a String array of every block on the line, and adds the station name if applicable
+     * @param l
+     * @return
+     */
     public String [] getAllStops(int l) {
         if (l == 1) {
             String [] temp = new String[redLine.size()];
@@ -412,6 +451,19 @@ public class CTC {
         }
     }
 
+    public int getRedTicketTotal() {
+        return this.redTicketTotal;
+    }
+
+    public int getGreenTicketTotal() {
+        return this.greenTicketTotal;
+    }
+
+    /**
+     * Returns an int representation of the line, given the uppercase String
+     * @param line Upper case String name of the line
+     * @return integer representation of selected line
+     */
     public int lineStringToInt(String line) {
         if (line.equals("RED"))
             return 1;
@@ -422,6 +474,12 @@ public class CTC {
     }
 
     //returns total block number in the line
+
+    /**
+     * Returns the length of a given line
+     * @param l int representaion of line.  Red == 1, Green == 2
+     * @return int value of length in block number
+     */
     public int lineLength(int l) {
         if (l == 1) {
             return redLine.size();
@@ -434,6 +492,12 @@ public class CTC {
         }
     }
 
+    /**
+     * Returns a block object given a line and block number
+     * @param l line the block is located on
+     * @param b Index of block number for the line
+     * @return Block object from private track layout
+     */
     public Block getBlock(int l, int b) {
         if (l == 1) {
             return redLine.get(b);

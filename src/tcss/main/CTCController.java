@@ -44,6 +44,12 @@ public class CTCController implements Initializable{
     @FXML private TextField mMin;
     @FXML private ChoiceBox<String> mHalf;
     @FXML private TextField closeTime;
+    @FXML private Label tName;
+    @FXML private Label tSchedule;
+    @FXML private Label redTickets;
+    @FXML private Label greenTickets;
+    @FXML private AnchorPane trainViewer;
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -57,6 +63,12 @@ public class CTCController implements Initializable{
         //Sets up Table to display dispatches
         nameList.setCellValueFactory(new PropertyValueFactory<>("name"));
         locList.setCellValueFactory(new PropertyValueFactory<>("block"));
+
+        //Populates mHalf drop down
+        mHalf.getItems().clear();
+        mHalf.getItems().add("AM");
+        mHalf.getItems().add("PM");
+        mHalf.setValue("AM");
 
         // Create Timeline for periodic updating
         Timeline loop = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
@@ -127,7 +139,17 @@ public class CTCController implements Initializable{
         //Block block = Main.ctc.getBlock(Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]));
 
         //Adds maintenance request to list in CTC
-        Main.ctc.addMaintenance(Integer.parseInt(mHour.getText()), Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]), Integer.parseInt(closeTime.getText()));
+        if (mHalf.getSelectionModel().getSelectedItem().equals("AM")) {
+            if (mHour.getText().equals("12")) {
+                Main.ctc.addMaintenance(0, Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]), Integer.parseInt(closeTime.getText()));
+            }
+        } else {
+            if (mHour.getText().equals("12")) {
+                Main.ctc.addMaintenance(12, Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]), Integer.parseInt(closeTime.getText()));
+            } else {
+                Main.ctc.addMaintenance(Integer.parseInt(mHour.getText()) + 12, Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]), Integer.parseInt(closeTime.getText()));
+            }
+        }
     }
 
     //Updates dispatch list periodically
@@ -139,6 +161,14 @@ public class CTCController implements Initializable{
             dispatchList.getItems().add(tcss.main.Main.ctc.getDispatch(i).getTrain());
         }
         dispatchList.getSelectionModel().select(selected);
+
+        if (selected >= 0) {
+            tName.setText(dispatchList.getSelectionModel().getSelectedItem().toString());
+            tSchedule.setText(Main.ctc.getDispatch(dispatchList.getSelectionModel().getSelectedIndex()).toString());
+        }
+
+        redTickets.setText("Red Line Throughput: " + Main.ctc.getRedTicketTotal() / (Main.getSimTime().getHour()+1) + " tickets/hour");
+        greenTickets.setText("Green Line Throughput: " + Main.ctc.getGreenTicketTotal() / (Main.getSimTime().getHour()+1) + " tickets/hour");
     }
 
     public void closeWindow(ActionEvent actionEvent) throws Exception {

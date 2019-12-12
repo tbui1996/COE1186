@@ -157,9 +157,17 @@ public class TrackController {
     //nexBlock: block after currentblock that train will proceed to
     //destBLock: block after nexBlock
     public boolean proceed(int line, int blockId, int nexBlock, int destBlock, int authority, float suggestedspeed) {
-        Block currentBlock = track.getBlock(blockId);
-        Block nextBlock = track.getBlock(currentBlock.getNextBlock().getBlockNum());
-        Block destinationBlock = track.getBlock(nextBlock.getNextBlock().getBlockNum());
+        Block currentBlock = this.track.getBlock(blockId);
+        Block nextBlock;
+        Block destinationBlock;
+        if(currentBlock.isOccupied()){
+            nextBlock = this.track.getBlock(currentBlock.getNextBlock().getBlockNum());
+            destinationBlock = this.track.getBlock(currentBlock.getBlockAhead(2).getBlockNum());
+
+        } else{
+            nextBlock = this.track.getBlock(currentBlock.getNextBlock().getBlockNum());
+            destinationBlock = this.track.getBlock(nextBlock.getNextBlock().getBlockNum());
+        }
 
         boolean reverse = currentBlock.getPreviousBlock().getBlockNum() == nexBlock;
         int prev = reverse ? currentBlock.getNextBlock().getBlockNum() : currentBlock.getBlockNum();
@@ -179,38 +187,61 @@ public class TrackController {
 
         //if next block is a switch
         //need to know how next block is a switch block
-        boolean canswitch = plc.verifySwitch(nextBlock, destinationBlock);
+       // boolean canswitch = plc.verifySwitch(nextBlock, destinationBlock);
+       // boolean canswitch = plc.verifySwitch(nextBlock, destinationBlock);
         if (nextBlock.getSwitch() != null) {
+            boolean reversed = false;
             boolean switchposition = nextBlock.getSwitch().getStraight();
             boolean isSwitch = blockId == nextBlock.getBlockNum();
             int nextBlockID = switchposition ? nextBlock.getTail().getBlockNum() : nextBlock.getBranch().getBlockNum();
             if ((destinationBlock.getBlockNum() != nextBlockID) || (isSwitch && (blockId != nextBlockID))) {
-                //toggle switch
-                if (currentBlock.getBlockNum() != nextBlockID) {
-                    if (!switchRequest(line, nextBlock.getBlockNum(), destBlock)) {
-                        currentBlock.setSuggSpeedAndAuth(0, 0);
+                if (destinationBlock.getBlockNum() == nextBlock.getPreviousBlock().getBlockNum()) {
+                    //toggle switch
+                    reversed = true;
+                    if (currentBlock.getBlockNum() != nextBlockID) {
+                        if (!switchRequest(line, nextBlock.getBlockNum(), destBlock)) {
+                            currentBlock.setSuggSpeedAndAuth(0, 0);
+                            return false;
+                        }
+                    }
+                } else if (!switchRequest(line, nextBlock.getBlockNum(), nexBlock)) {
+                    destinationBlock = getBlock(nextBlockID);
+                }
+
+            }
+            if(!plc.verifySwitch(nextBlock,destinationBlock)){
+                if(!reverse && switchRequest(line, nextBlock.getBlockNum(),destBlock)){
+                    switchposition = nextBlock.getSwitch().getStraight();
+                    nexBlock = switchposition ? nextBlock.getSwitch().getStraightDest() : nextBlock.getSwitch().getStraightDest();
+                    nextBlock.getNextBlock();
+                    destinationBlock = this.track.getBlock(nexBlock);
+                    if(!plc.verifySwitch(nextBlock,destinationBlock)){
                         return false;
                     }
                 }
+                else{
+                    return false;
+                }
             }
         }
+
 
         //if curr block is a switch
         if (currentBlock.getSwitch()!=null) {
             boolean switchposition = currentBlock.getSwitch().getStraight();
             int nextBlockId = switchposition ? currentBlock.getBlockNum() : currentBlock.getNextBlock().getBlockNum();
             //switch changed
-            if (nextBlock.getBlockNum() != nextBlockId) {
+            if (destinationBlock.getBlockNum() != nextBlockId) {
                 nextBlock = getBlock(nextBlockId);
                 destBlock = reverse ? nextBlock.getPreviousBlock().getBlockNum() : nextBlock.getNextBlock().getBlockNum();
                 nextBlock.getNextBlock();
-                destinationBlock = track.getBlock(destBlock);
+                destinationBlock = getBlock(destBlock);
             }
         }
 
             boolean canProceed = plc.verifyProceed(nextBlock, destinationBlock);
             if (!canProceed) {
-                currentBlock.setSuggSpeedAndAuth(0, 0);
+                //currentBlock.setSuggSpeedAndAuth(0, 0);
                 return false;
             }
 
