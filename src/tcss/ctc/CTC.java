@@ -1,5 +1,9 @@
 package tcss.ctc;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import tcss.main.Main;
 import tcss.trackcontroller.TrackController;
 import tcss.trackmodel.Block;
@@ -8,6 +12,9 @@ import tcss.trackmodel.Track;
 import tcss.trackmodel.TrackModel;
 import tcss.trainmodel.TrainModel;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -100,6 +107,73 @@ public class CTC {
         System.out.println("Green Stations: \n" + greenStations.size());
     }
 
+    //Automatic Mode
+    public void automaticDispatch(File schedules) throws IOException {
+        XSSFWorkbook myExcelBook = new XSSFWorkbook(new FileInputStream(schedules));
+        ArrayList<Dispatch> autoDispatch = new ArrayList<>();
+
+        XSSFSheet sched;
+        sched = myExcelBook.getSheet("Schedules");
+
+        Row firstRow = sched.getRow(0);
+        Row currRow;
+
+        //System.out.println(firstRow.getLastCellNum());
+        //Initialize trains
+        int trainCount = 0;
+        //i is the block number
+        for (int i = 31; i < firstRow.getLastCellNum(); i++) {
+            if (firstRow.getCell(i) == null) {
+                break;
+            }
+            String name = firstRow.getCell(i).toString();
+            if (!name.contains("Arrival Time at Station")) {
+                break;
+            }
+            name = name.replace(" Arrival Time at Station", "");
+            Dispatch temp = new Dispatch("GREEN", name);
+            //System.out.println(name);
+            temp.createSchedule(temp.getLine());
+            autoDispatch.add(temp);
+            trainCount++;
+        }
+        //System.out.println(trainCount);
+
+
+        //iterate through sheet, adding stops
+        for (int r=1; !isRowEmpty(sched.getRow(r)); r++) {
+            currRow = sched.getRow(r);
+            //System.out.println("Here");
+
+            for (int i = 31; i < trainCount+31; i++) {
+                //If there is an arrival time
+                if (currRow.getCell(i) != null) {
+                    if (currRow.getCell(i).getDateCellValue() != null) {
+                        System.out.println((currRow.getCell(i).getDateCellValue()));
+                        Date temp = currRow.getCell(i).getDateCellValue();
+                        String[] time = currRow.getCell(i).getDateCellValue().toString().split(":");
+                        //if (i == 32)
+                        //System.out.println(currRow.getCell(i).getDateCellValue());
+                        String hour = new StringBuilder(time[0].charAt(time[0].length() - 2)).append(time[0].charAt(time[0].length() - 1)).toString();
+
+                        //System.out.println(hour);
+                        //System.out.println(Integer.parseInt(time[1]));
+                        autoDispatch.get(i - 31).schedule.addStop(Integer.toString(r), Integer.parseInt(hour), Integer.parseInt(time[1]));
+                    }
+                }
+            }
+        }
+        System.out.println(autoDispatch.get(0).schedule.toString());
+
+        for (int i = 0; i < autoDispatch.size(); i++) {
+            autoDispatch.get(i).setRequests();
+        }
+
+        System.out.println("Dispatch: \n" + autoDispatch.get(0));
+
+        dispatchList.addAll(autoDispatch);
+    }
+
     public void addDispatch(Dispatch d) {
         this.dispatchList.add(d);
     }
@@ -143,22 +217,22 @@ public class CTC {
             else {
                 //Check block occupancy list to see if next stop block is currently occupied.  If so, a new request must be sent to keep train moving
                 if (temp.getLine() == 1) {
-                    if (temp.getCurrStop() < temp.schedule.getStopNums()-1 && redLine.get(stationToBlockNumRed.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
+                    if (temp.getCurrStop() < temp.schedule.getStopNums()-1 && redLine.get(blockReturner(temp.getLine(), temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
                         if (temp.getDwell() == totalDwell) {
                             temp.setDwell(0);
                             temp.setCurrStop(temp.getCurrStop() + 1);
-                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), stationToBlockNumRed.get(temp.getStopName(temp.getCurrStop())));
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), blockReturner(temp.getLine(), temp.getStopName(temp.getCurrStop())));
                         }
                         else {
                             temp.setDwell(temp.getDwell() + 1);
                         }
                     }
                 } else {
-                    if (temp.getCurrStop() < temp.schedule.getStopNums()-1 && greenLine.get(stationToBlockNumGreen.get(temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
+                    if (temp.getCurrStop() < temp.schedule.getStopNums()-1 && greenLine.get(blockReturner(temp.getLine(), temp.schedule.getStopName(temp.getCurrStop() + 1))).isOccupied()) {
                         if (temp.getDwell() == totalDwell) {
                             temp.setDwell(0);
                             temp.setCurrStop(temp.getCurrStop() + 1);
-                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), stationToBlockNumGreen.get(temp.getStopName(temp.getCurrStop())));
+                            tcss.main.Main.tc.getNextStop(temp.getSpeed(temp.getCurrStop() + 1), temp.getAuth(temp.getCurrStop() + 1), temp.lineToTc(), blockReturner(temp.getLine(), temp.getStopName(temp.getCurrStop())));
                         }
                         else {
                            temp.setDwell(temp.getDwell() + 1);
@@ -275,6 +349,27 @@ public class CTC {
             greenTicketTotal += tcss.main.Main.tm.updateThroughput(1);
             //System.out.println(redTicketTotal);
             //System.out.println(greenTicketTotal);
+        }
+    }
+
+    private static boolean isRowEmpty(Row row) {
+        for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
+            Cell cell = row.getCell(c);
+            if (cell != null && cell.getCellType() != Cell.CELL_TYPE_BLANK)
+                return false;
+        }
+        return true;
+    }
+
+    public int blockReturner(int l, String b) {
+        if (b.length() > 3) {
+            if (l == 1) {
+                return stationToBlockNumRed.get(b);
+            } else {
+                return stationToBlockNumGreen.get(b);
+            }
+        } else {
+            return Integer.parseInt(b);
         }
     }
 
