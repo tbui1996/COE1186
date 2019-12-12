@@ -47,6 +47,8 @@
             <Label fx:id="switchLabel" text="Switch:" />
             <Label fx:id="rxrLabel" text="RXR:" />
             <Label fx:id="beaconLabel" text="Beacon:" />
+            <Label fx:id="closedLabel" text="Closed:" />
+            <Label fx:id="failureModeLabel" text="Failure Mode:" />
          </children>
       </VBox>
       <Label fx:id="titleLabel" layoutX="250.0" layoutY="25.0" text="Track Model" />
