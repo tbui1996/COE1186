@@ -20,6 +20,12 @@ import java.util.ResourceBundle;
 
 public class TrainModelController implements Initializable {
 
+    // Unit conversions
+    private final float MPS_T0_MPH = 2.236936f;		// Convert from meters/second to miles/hour
+    private final float MSS_TO_FSS = 3.28084f;		// Convert from meters/second^2 to feet/second^2
+    private final float M_TO_FT = 3.28084f;			// Convert from meters to feet
+
+
     // UI variables
 
     // Labels
@@ -291,12 +297,12 @@ public class TrainModelController implements Initializable {
     }
 
     public void update() {
-        curSpeedLabel.setText("Current Speed: " + train.getCurV());
-        accelLabel.setText("Current Acceleration: " + train.getCurA());
-        powerLabel.setText("Power Command: " + train.getPower());
-        massLabel.setText("Mass: " + train.getMass());
-        gradeLabel.setText("Grade: " + train.getGrade());
-        forceLabel.setText("Force: " + train.getForce());
+        curSpeedLabel.setText("Current Speed: " + Math.round(train.getCurV()*MPS_T0_MPH * 100f)/100f + " MPH");
+        accelLabel.setText("Current Acceleration: " + Math.round(train.getCurA()*MSS_TO_FSS*100f)/100f + " ft/s²");
+        powerLabel.setText("Power Command: " + Math.round(train.getPower()*100f)/100f + " W");
+        massLabel.setText("Mass: " + Math.round(train.getMass()*100f)/100f + " kg");
+        gradeLabel.setText("Grade: " + Math.round(train.getGrade()*100f)/100f + "%");
+        forceLabel.setText("Force: " + Math.round(train.getForce()*100f)/100f + " N");
 
         if(train.getSBrake()) {
             sBrakeLabel.setText("True");
@@ -324,7 +330,7 @@ public class TrainModelController implements Initializable {
             lightsLabel.setText("False");
             lightsLabel.setTextFill(Color.RED);
         }
-        distanceLabel.setText("Δx in Block: " + train.getX());
+        distanceLabel.setText("Δx in Block: " + Math.round(train.getX()*M_TO_FT*10f)/10f + " ft");
         blocksLabel.setText("Blocks Traveled: " + train.getBlocksTraveled());
         curBeaconLabel.setText("Current Beacon: " + train.getCurBeaconSignal().toString());
         lastBeaconLabel.setText("Last Beacon: " + train.getLastBeaconSignal());

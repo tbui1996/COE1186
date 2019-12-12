@@ -8,16 +8,28 @@ public class Schedule {
     private int line;   //Red == 1, Green == 2
     private ArrayList<String> stopList;
     private ArrayList<Float> dwellList;
+    private ArrayList<Integer> aHr;
+    private ArrayList<Integer> aMin;
 
+
+    //Manual Mode
     public Schedule(int line) {
         this.line = line;
         this.stopList = new ArrayList<String>();
         this.dwellList = new ArrayList<Float>();
+        this.aHr = new ArrayList<>();
+        this.aMin = new ArrayList<>();
     }
 
-    public void addStop(String stopName, float seconds) {
+    /*public void addStop(String stopName, float seconds) {
         this.stopList.add(stopName);
         this.dwellList.add(seconds);
+    }*/
+
+    public void addStop(String stopName, int hr, int min) {
+        this.stopList.add(stopName);
+        this.aHr.add(hr);
+        this.aMin.add(min);
     }
 
     public String getLine() {
@@ -44,11 +56,19 @@ public class Schedule {
         return dwellList.get(i);
     }
 
+    public int getStopHour(int i) {
+        return this.aHr.get(i);
+    }
+
+    public int getStopMin(int i) {
+        return this.aMin.get(i);
+    }
+
     public String toString() {
         StringBuilder temp = new StringBuilder();
         temp.append("line: " + this.getLine());
         for (int i = 0; i < this.stopList.size(); i++)
-            temp.append("\nStop Name: " + this.stopList.get(i) + "\nDwell: " + this.dwellList.get(i));
+            temp.append("\nStop Name: " + this.stopList.get(i) + "\nArrival Time: " + this.aHr.get(i) + ":" + this.aMin.get(i));
 
         return temp.toString();
     }

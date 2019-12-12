@@ -6,9 +6,11 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
@@ -50,7 +52,7 @@
                                           <GridPane fx:id="infoView" layoutX="100.0" layoutY="37.0" prefHeight="164.0" prefWidth="482.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columnConstraints>
                                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                             </columnConstraints>
                                             <rowConstraints>
                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -61,6 +63,22 @@
                                                 <Label fx:id="locLabel" textFill="WHITE" />
                                                 <Label fx:id="occLabel" textFill="WHITE" GridPane.rowIndex="1" />
                                                 <Label fx:id="stationLabel" textFill="WHITE" GridPane.columnIndex="1" />
+                                                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="2.0" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <Label text="Start: " textFill="WHITE" />
+                                                      <TextField fx:id="mHr" disable="true" prefHeight="25.0" prefWidth="29.0" promptText="Hr" />
+                                                      <Label text=":" textFill="WHITE" />
+                                                      <TextField fx:id="mMin" disable="true" prefHeight="25.0" prefWidth="39.0" promptText="Min" />
+                                                      <ChoiceBox fx:id="mHalf" disable="true" prefHeight="31.0" prefWidth="42.0" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <TextField fx:id="closeTime" disable="true" prefHeight="25.0" prefWidth="59.0" promptText="Length" />
+                                                      <Label text="min" textFill="WHITE" />
+                                                      <Button fx:id="closeBlock" disable="true" mnemonicParsing="false" onAction="#closeBlock" text="Close Block" />
+                                                   </children>
+                                                </HBox>
                                              </children>
                                           </GridPane>
                                        </children>
@@ -77,8 +95,8 @@
                <children>
                   <TableView fx:id="dispatchList" layoutX="-25.0" layoutY="49.0" prefHeight="562.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
-                      <TableColumn fx:id="nameList" prefWidth="89.0" text="Name" />
-                      <TableColumn fx:id="locList" prefWidth="110.0" text="Location" />
+                      <TableColumn fx:id="nameList" prefWidth="131.4000244140625" text="Name" />
+                      <TableColumn fx:id="locList" prefWidth="97.5999755859375" text="Location" />
                     </columns>
                   </TableView>
                </children>

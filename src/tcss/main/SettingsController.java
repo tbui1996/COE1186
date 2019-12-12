@@ -61,11 +61,7 @@ public class SettingsController implements Initializable {
     public void submitSettings() throws Exception {
 
         if(file != null) {
-            //TODO Delete this testing
-            Scanner f = new Scanner(file);
-            while (f.hasNextLine()) {
-                System.out.println(f.nextLine());
-            }
+
         }
 
         Stage s = (Stage) submitButton.getScene().getWindow();

@@ -3,6 +3,7 @@ package tcss.trackmodel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -27,6 +28,9 @@ public class TrackModel {
         //TODO: get rid of hard-coded startBlock if possible
         getRedLine().setStartBlock(getRedLine().getBlock(9));
         getGreenLine().setStartBlock(getGreenLine().getBlock(63));
+
+        addBeacons(getRedLine());
+        addBeacons(getGreenLine());
 
         System.out.println("Verifying Red Line...");
         if(!verify(getRedLine())){
@@ -440,13 +444,18 @@ public class TrackModel {
             travelCount++;
         }
 
+        /*
         Block testBlock = track.getBlock((int) (Math.random() * track.getBlockHashMap().size()) + 1);
         currBlock.setDirection(Direction.FROM_TAIL);
         System.out.println("From Tail: " + testBlock.getBlockNum());
+        //testBlock.initTrain(0, 0, 0);
         for(int i=0;i<30;i++){
             testBlock = testBlock.trainGetNextBlock();
             System.out.println("=> " + testBlock.getBlockNum());
-        }
+        }*/
+
+        //clear test train
+        //testBlock.setTrain(null);
 
         if(track == getRedLine()){
             Block b1 = track.getBlock(1);
@@ -577,6 +586,15 @@ public class TrackModel {
 
         r5.getHead().add(r1);
         r5.getTail().add(r3);
+    }
+
+    public void addBeacons(Track currTrack){
+
+        ArrayList<Block> stationBlocks = currTrack.getStationBlocks();
+        for(Block b: stationBlocks){
+            b.getHead().setBeacon(new Beacon(b.getStation().getName()));
+            b.getTail().setBeacon(new Beacon(b.getStation().getName()));
+        }
     }
 
     public int updateThroughput(int line){

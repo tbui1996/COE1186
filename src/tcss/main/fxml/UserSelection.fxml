@@ -11,17 +11,17 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="614.0" prefWidth="761.0" styleClass="body" stylesheets="@../css/UserSelection.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.UserSelectionController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="761.0" styleClass="body" stylesheets="@../css/UserSelection.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.UserSelectionController">
    <children>
-      <Button layoutX="430.0" layoutY="245.0" mnemonicParsing="false" onAction="#passengerView" styleClass="userButton" text="Passenger" />
-      <Button fx:id="dispatcher" layoutX="150.0" layoutY="100.0" mnemonicParsing="false" onAction="#dispatcherView" styleClass="userButton" text="Dispatcher" textFill="#120a22">
+      <Button layoutX="176.0" layoutY="268.0" mnemonicParsing="false" onAction="#passengerView" styleClass="userButton" text="Passenger" />
+      <Button fx:id="dispatcher" layoutX="63.0" layoutY="118.0" mnemonicParsing="false" onAction="#dispatcherView" styleClass="userButton" text="Dispatcher" textFill="#120a22">
          <tooltip>
             <Tooltip autoHide="true" text="Testing" />
          </tooltip>
       </Button>
-      <Button fx:id="driver" layoutX="430.0" layoutY="100.0" mnemonicParsing="false" onAction="#driverView" styleClass="userButton" text="Train Driver" />
-      <Button fx:id="trackEngineer" layoutX="150.0" layoutY="245.0" mnemonicParsing="false" onAction="#trackEngineerView" prefHeight="100.0" prefWidth="175.0" styleClass="userButton" text="Track Engineer" />
-      <Pane layoutY="527.0" prefHeight="88.0" prefWidth="761.0" styleClass="timebar">
+      <Button fx:id="driver" layoutX="294.0" layoutY="118.0" mnemonicParsing="false" onAction="#driverView" styleClass="userButton" text="Train Driver" />
+      <Button fx:id="trackEngineer" layoutX="526.0" layoutY="118.0" mnemonicParsing="false" onAction="#trackEngineerView" prefHeight="100.0" prefWidth="175.0" styleClass="userButton" text="Track Engineer" />
+      <Pane layoutY="417.0" prefHeight="88.0" prefWidth="761.0" styleClass="timebar">
          <children>
             <Button id="playpausebutton" fx:id="playpause" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" layoutX="356.0" layoutY="22.0" mnemonicParsing="false" onAction="#togglePlay" prefHeight="50.0" prefWidth="50.0" styleClass="play">
                <padding>
@@ -56,6 +56,6 @@
       </Text>
       <Button fx:id="close" ellipsisString="" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#closeWindow" styleClass="exit-button" />
       <Button fx:id="settingsButton" layoutX="715.0" layoutY="11.0" mnemonicParsing="false" onAction="#openSettings" styleClass="settings" />
-      <Button layoutX="293.0" layoutY="393.0" mnemonicParsing="false" onAction="#murphyView" styleClass="userButton" text="Error Simulations" />
+      <Button layoutX="409.0" layoutY="268.0" mnemonicParsing="false" onAction="#murphyView" styleClass="userButton" text="Error Simulations" />
    </children>
 </AnchorPane>

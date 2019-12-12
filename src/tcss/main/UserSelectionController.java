@@ -51,6 +51,7 @@ public class UserSelectionController implements Initializable {
         rate.getItems().add("1x");
         rate.getItems().add("10x");
         rate.getItems().add("50x");
+        rate.getItems().add("60x");
         rate.getSelectionModel().select(0);
         clockLabel.setText("00:00");
 
@@ -94,7 +95,6 @@ public class UserSelectionController implements Initializable {
         Parent dispatchRoot = dispatchLoader.load();
         dispatch.setTitle("CTC");
         dispatch.setScene(new Scene(dispatchRoot));
-        dispatch.setResizable(false);
         dispatch.getIcons().add(new Image("file:resources/train.png"));
 
         dispatch.show();
