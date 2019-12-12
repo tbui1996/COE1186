@@ -27,6 +27,10 @@
             <Label fx:id="outputLights" layoutX="-1.0" layoutY="-11.0" text="Lights:" />
             <Label fx:id="railroadcrossing" layoutX="-1.0" layoutY="26.0" text="Railroad Crossing:" />
             <RadioButton fx:id="manualMode" layoutX="435.0" layoutY="50.0" mnemonicParsing="false" onAction="#setManualMode" text="Manual Mode" textFill="WHITE" />
+            <Button fx:id="manualraiseCrossing" layoutX="6.0" layoutY="68.0" mnemonicParsing="false" onAction="#raiseCrossing" prefHeight="30.0" prefWidth="75.0" text="Raise" />
+            <Button fx:id="manuallightLabel" layoutX="6.0" layoutY="102.0" mnemonicParsing="false" onAction="#setGreen" prefHeight="30.0" prefWidth="75.0" text="Green" />
+            <Button fx:id="manuallowerCrossing" layoutX="136.0" layoutY="68.0" mnemonicParsing="false" onAction="#lowerCrossing" prefHeight="30.0" prefWidth="75.0" text="Lower" />
+            <Button fx:id="manualRedLabel" layoutX="136.0" layoutY="102.0" mnemonicParsing="false" onAction="#setRed" prefHeight="30.0" prefWidth="75.0" text="Green" />
             </children>
             <padding>
                 <Insets left="25.0" />
@@ -41,5 +45,7 @@
       <Label layoutX="12.0" layoutY="203.0" text="Crossing:" />
       <ChoiceBox fx:id="blockChoice" layoutX="397.0" layoutY="91.0" prefWidth="150.0" />
       <ChoiceBox fx:id="trackChoice" layoutX="398.0" layoutY="136.0" prefWidth="150.0" />
+      <Button fx:id="manualswitchhLabel" layoutX="21.0" layoutY="425.0" mnemonicParsing="false" onAction="#switchClick" prefHeight="30.0" prefWidth="75.0" text="Switch" />
+      <Button fx:id="manualBranchLabel" layoutX="151.0" layoutY="425.0" mnemonicParsing="false" onAction="#branchClick" prefHeight="30.0" prefWidth="75.0" text="Branch" />
     </children>
 </AnchorPane>

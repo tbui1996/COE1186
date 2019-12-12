@@ -29,6 +29,7 @@ public class Block{
     private boolean occupied;
     private boolean closed;
     private boolean startBlock;
+    private boolean yardBlock;
     private boolean passengerUpdateDone;
 
     private Failure failure;
@@ -62,6 +63,7 @@ public class Block{
         setUnderground(false);
         setOccupied(false);
         setStartBlock(false);
+        setYardBlock(false);
         setPassengerUpdateDone(false);
 
         setFailure(Failure.NONE);
@@ -124,8 +126,15 @@ public class Block{
 
     public Block trainGetNextBlock(){
 
-        Block retBlock;
+        Block retBlock = getBlockAhead(1);
+        if(!moveTrain(retBlock)){
+            System.out.println("failed to move train");
+            return null;
+        }
 
+        return retBlock;
+
+        /*
         if(getBranch() == null){
 
             if(getDirection() == Direction.FROM_TAIL){
@@ -204,9 +213,7 @@ public class Block{
         }else{
             System.out.println("trainGetNextBlock(): no references on returned block point to current block");
             return null;
-        }
-
-        return retBlock;
+        }*/
     }
 
     public Block getNextBlock(){
@@ -401,7 +408,50 @@ public class Block{
     }
 
 
-    public boolean moveTrain(){
+    public boolean moveTrain(Block nextBlock){
+
+        if(!isOccupied()){
+            System.out.println("Train Direction == " + getDirection());
+            System.out.println("No train present on block " + getBlockNum());
+            return false;
+        }else if(nextBlock.isOccupied()){
+            System.out.println("Trains crashed on block" + getBlockNum());
+            return false;
+        }else if(nextBlock.isYardBlock()){
+            getTrain().toYard();
+            setTrain(null);
+            setOccupied(false);
+            setDirection(Direction.NONE);
+            setPassengerUpdateDone(false);
+            return true;
+        }
+
+        //set train of next block to that of current block
+        nextBlock.setTrain(getTrain());
+        nextBlock.setOccupied(true);
+        setTrain(null);
+        setOccupied(false);
+        setDirection(Direction.NONE);
+        setPassengerUpdateDone(false);
+
+        //if next block has beacon, set train beacon data
+        if(nextBlock.getBeacon() != null){
+            nextBlock.getTrain().setBeacon(nextBlock.getBeacon().getData().toCharArray());
+        }
+
+        //set direction of next block
+        if(this == nextBlock.getHead()){
+            nextBlock.setDirection(Direction.FROM_HEAD);
+        }else if(this == nextBlock.getTail()){
+            nextBlock.setDirection(Direction.FROM_TAIL);
+            nextBlock.getTrain().setGrade(nextBlock.getGrade() * -1);
+        }else if(nextBlock.getBranch() != null){
+            nextBlock.setDirection(Direction.FROM_BRANCH);
+        }else{
+            System.out.println("moveTrain(): no references on next block point to current block");
+            return false;
+        }
+
         return true;
     }
 
@@ -468,11 +518,12 @@ public class Block{
             System.out.println("Failed to init, block is occupied");
             return false;
         }
-        System.out.println("Hello");
         TrainModel train = new TrainModel(suggSpeed, auth, id, this);
         setTrain(train);
         setOccupied(true);
         setDirection(Direction.FROM_HEAD);
+        setSuggestedSpeed(suggSpeed);
+        setAuthority(auth);
         return true;
     }
 
@@ -532,6 +583,10 @@ public class Block{
 
     public boolean isStartBlock(){
         return startBlock;
+    }
+
+    public boolean isYardBlock(){
+        return yardBlock;
     }
 
     public boolean isPassengerUpdateDone(){
@@ -634,6 +689,10 @@ public class Block{
 
     public void setStartBlock(boolean startBlock){
         this.startBlock = startBlock;
+    }
+
+    public void setYardBlock(boolean yardBlock){
+        this.yardBlock = yardBlock;
     }
 
     public void setPassengerUpdateDone(boolean passengerUpdateDone) {
