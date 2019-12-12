@@ -191,8 +191,8 @@ public class TrackModelIndividualController implements Initializable {
         {
             public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n){
 
-                RadioButton rb = (RadioButton)rxrGroup.getSelectedToggle();
-
+                RadioButton rb = (RadioButton)switchGroup.getSelectedToggle();
+                System.out.println(rb.getText());
                 if (rb != null) {
                     String s = rb.getText();
                     if(cur.getSwitch() != null) {
@@ -212,7 +212,7 @@ public class TrackModelIndividualController implements Initializable {
         {
             public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n){
 
-                RadioButton rb = (RadioButton)rxrGroup.getSelectedToggle();
+                RadioButton rb = (RadioButton)maintenanceGroup.getSelectedToggle();
 
                 if (rb != null) {
                     String s = rb.getText();
