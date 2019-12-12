@@ -134,8 +134,8 @@ public class TrainController {
             this.PWRCMD = 0;
         }
 
-        System.out.println("THE CURRENT SUGGESTED SPEED: " + suggestedSpeed + " AND AUTHORITY " + authority);
-        System.out.println("THE CURRENT SBRAKE: " + sBrake + " AND EBRAKE " + eBrake);
+        //System.out.println("THE CURRENT SUGGESTED SPEED: " + suggestedSpeed + " AND AUTHORITY " + authority);
+        //System.out.println("THE CURRENT SBRAKE: " + sBrake + " AND EBRAKE " + eBrake);
 
         prepareVoters();
         majorityVote();
@@ -143,9 +143,9 @@ public class TrainController {
         sBrake = RESOLVED_S_BRAKE;
         eBrake = RESOLVED_E_BRAKE;
 
-        System.out.println("THE CALCED PWRCMD: " + PWRCMD);
-        System.out.println("THE CALCED SBRAKE: " + sBrake);
-        System.out.println("THE CALCED EBRAKE: " + eBrake);
+        //System.out.println("THE CALCED PWRCMD: " + PWRCMD);
+        //System.out.println("THE CALCED SBRAKE: " + sBrake);
+        //System.out.println("THE CALCED EBRAKE: " + eBrake);
 
         if(PWRCMD >= 0){
             model.setPWRCMD(PWRCMD);

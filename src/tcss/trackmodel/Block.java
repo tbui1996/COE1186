@@ -124,8 +124,15 @@ public class Block{
 
     public Block trainGetNextBlock(){
 
-        Block retBlock;
+        Block retBlock = getBlockAhead(1);
+        if(!moveTrain(retBlock)){
+            System.out.println("failed to move train");
+            return null;
+        }
 
+        return retBlock;
+
+        /*
         if(getBranch() == null){
 
             if(getDirection() == Direction.FROM_TAIL){
@@ -204,9 +211,7 @@ public class Block{
         }else{
             System.out.println("trainGetNextBlock(): no references on returned block point to current block");
             return null;
-        }
-
-        return retBlock;
+        }*/
     }
 
     public Block getNextBlock(){
@@ -401,7 +406,43 @@ public class Block{
     }
 
 
-    public boolean moveTrain(){
+    public boolean moveTrain(Block nextBlock){
+
+        if(!isOccupied()){
+            System.out.println("Train Direction == " + getDirection());
+            System.out.println("No train present on block " + getBlockNum());
+            return false;
+        }else if(nextBlock.isOccupied()){
+            System.out.println("Trains crashed on block" + getBlockNum());
+            return false;
+        }
+
+        //set train of next block to that of current block
+        nextBlock.setTrain(getTrain());
+        nextBlock.setOccupied(true);
+        setTrain(null);
+        setOccupied(false);
+        setDirection(Direction.NONE);
+        setPassengerUpdateDone(false);
+
+        //if next block has beacon, set train beacon data
+        if(nextBlock.getBeacon() != null){
+            nextBlock.getTrain().setBeacon(nextBlock.getBeacon().getData().toCharArray());
+        }
+
+        //set direction of next block
+        if(this == nextBlock.getHead()){
+            nextBlock.setDirection(Direction.FROM_HEAD);
+        }else if(this == nextBlock.getTail()){
+            nextBlock.setDirection(Direction.FROM_TAIL);
+            nextBlock.getTrain().setGrade(nextBlock.getGrade() * -1);
+        }else if(nextBlock.getBranch() != null){
+            nextBlock.setDirection(Direction.FROM_BRANCH);
+        }else{
+            System.out.println("moveTrain(): no references on next block point to current block");
+            return false;
+        }
+
         return true;
     }
 
