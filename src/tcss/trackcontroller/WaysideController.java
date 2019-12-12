@@ -192,11 +192,11 @@ public class WaysideController {
         Block curBlock = null;
 
         if(line == 0){
-            this.line = greenTrack.getBlockList().get(blockId).getLine();
+            this.line = 0;
             curBlock = track.getBlockList().get(blockId);
         }
         if(line == 1){
-            this.line = redTrack.getBlockList().get(blockId).getLine();
+            this.line = 1;
             curBlock = track.getBlockList().get(blockId);
         }
         int next = curBlock.getNextBlock().getBlockNum();
