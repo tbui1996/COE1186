@@ -231,6 +231,12 @@ public class Block{
             return currBlock;
         }
 
+        if(!isOccupied()){
+            System.out.println("Train Direction == " + getDirection());
+            System.out.println("No train present on block " + getBlockNum());
+            return null;
+        }
+
         Direction dir = getDirection();
 
         for(int i=0;i<numAhead;i++){
