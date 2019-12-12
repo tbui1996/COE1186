@@ -2,17 +2,21 @@ package tcss.trackmodel;
 
 public class Beacon {
 
-    private char[] data;
+    private String data;
+    private final int MAX_BEACON_CHARS = 128;
 
-    public Beacon(){
-        setData("".toCharArray());
+    public Beacon(String data){
+        if(data.length() > MAX_BEACON_CHARS){
+            data = data.substring(0, MAX_BEACON_CHARS);
+        }
+        setData(data);
     }
 
-    public char[] getData(){
+    public String getData(){
         return data;
     }
 
-    public void setData(char[] d){
-        data = d;
+    public void setData(String data){
+        this.data = data;
     }
 }

@@ -24,227 +24,217 @@ import java.util.ResourceBundle;
 
 public class TrainModelController implements Initializable {
 
-    // UI variables
+	// Unit conversions
+	private final float MPS_T0_MPH = 2.236936f;		// Convert from meters/second to miles/hour
+	private final float MSS_TO_FSS = 3.28084f;		// Convert from meters/second^2 to feet/second^2
+	private final float M_TO_FT = 3.28084f;			// Convert from meters to feet
+	// UI variables
 
-    // Labels
-    @FXML Label titleLabel;
-    @FXML private Label curSpeedLabel;
-    @FXML private Label accelLabel;
-    @FXML private Label massLabel;
-    @FXML private Label gradeLabel;
-    @FXML private Label sBrakeLabel;
-    @FXML private Label eBrakeLabel;
-    @FXML private Label passengersLabel;
-    @FXML private Label lightsLabel;
-    @FXML private Label distanceLabel;
-    @FXML private Label blocksLabel;
-    @FXML private Label curBeaconLabel;
-    @FXML private Label lastBeaconLabel;
-    @FXML private Label powerLabel;
-    @FXML private Label forceLabel;
-    @FXML private Label tempLabel;
+	// Labels
+	@FXML Label titleLabel;
+	@FXML private Label curSpeedLabel;
+	@FXML private Label accelLabel;
+	@FXML private Label massLabel;
+	@FXML private Label gradeLabel;
+	@FXML private Label sBrakeLabel;
+	@FXML private Label eBrakeLabel;
+	@FXML private Label passengersLabel;
+	@FXML private Label lightsLabel;
+	@FXML private Label distanceLabel;
+	@FXML private Label blocksLabel;
+	@FXML private Label curBeaconLabel;
+	@FXML private Label lastBeaconLabel;
+	@FXML private Label powerLabel;
+	@FXML private Label forceLabel;
+	@FXML private Label tempLabel;
 
 
-    // Radio buttons
-    @FXML private RadioButton eBrakeOff;
-    @FXML private RadioButton eBrakeOn;
+	// Radio buttons
+	@FXML private RadioButton eBrakeOff;
+	@FXML private RadioButton eBrakeOn;
 
-    // Radio button groups
-    private ToggleGroup eBrakeGroup = new ToggleGroup();
+	// Radio button groups
+	private ToggleGroup eBrakeGroup = new ToggleGroup();
 
-    // Circles
-    @FXML private Circle d1Status;
-    @FXML private Circle d2Status;
-    @FXML private Circle d3Status;
-    @FXML private Circle d4Status;
-    @FXML private Circle d5Status;
-    @FXML private Circle d6Status;
-    @FXML private Circle d7Status;
-    @FXML private Circle d8Status;
+	// Circles
+	@FXML private Circle d1Status;
+	@FXML private Circle d2Status;
+	@FXML private Circle d3Status;
+	@FXML private Circle d4Status;
+	@FXML private Circle d5Status;
+	@FXML private Circle d6Status;
+	@FXML private Circle d7Status;
+	@FXML private Circle d8Status;
 
-    @FXML private AnchorPane pane;
+	@FXML private AnchorPane pane;
 //    @FXML private ChoiceBox trainChoice;
 
-    // Testing input filter
+	// Testing input filter
 //    @FXML private TextField tField;
 
-    // Train for the current window
-    TrainModel train;
+	// Train for the current window
+	TrainModel train;
 
 
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
+	@Override
+	public void initialize(URL url, ResourceBundle rb) {
 
 //        train = Main.train;
 
-        curBeaconLabel.setWrapText(true);
-        lastBeaconLabel.setWrapText(true);
+		curBeaconLabel.setWrapText(true);
+		lastBeaconLabel.setWrapText(true);
 
-        // Add radio buttons to groups
-        eBrakeOff.setToggleGroup(eBrakeGroup);
-        eBrakeOn.setToggleGroup(eBrakeGroup);
+		// Add radio buttons to groups
+		eBrakeOff.setToggleGroup(eBrakeGroup);
+		eBrakeOn.setToggleGroup(eBrakeGroup);
 
-        // Add change listeners to toggle groups
-        eBrakeGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>()
-        {
-            public void changed(ObservableValue<? extends Toggle> ob,
-                                Toggle o, Toggle n)
-            {
+		// Add change listeners to toggle groups
+		eBrakeGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>()
+		{
+			public void changed(ObservableValue<? extends Toggle> ob,
+								Toggle o, Toggle n)
+			{
 
-                RadioButton rb = (RadioButton)eBrakeGroup.getSelectedToggle();
+				RadioButton rb = (RadioButton)eBrakeGroup.getSelectedToggle();
 
-                if (rb != null) {
-                    String s = rb.getText();
-                    if(s.equals("Off")) {
-                        train.setEBrake(false);
-                    }
-                    else if(s.equals("On")) {
-                        train.setEBrake(true);
-                    }
-                }
-            }
-        });
+				if (rb != null) {
+					String s = rb.getText();
+					if(s.equals("Off")) {
+						train.setEBrake(false);
+					} else if(s.equals("On")) {
+						train.setEBrake(true);
+					}
+				}
+			}
+		});
 
-        // Create Timeline for periodic updating
-        Timeline loop = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                update();
+		// Create Timeline for periodic updating
+		Timeline loop = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				update();
 //                System.out.println("GUI Updated!!");
-            }
-        }));
-        loop.setCycleCount(Timeline.INDEFINITE);
-        loop.play();
+			}
+		}));
+		loop.setCycleCount(Timeline.INDEFINITE);
+		loop.play();
 
-    }
+	}
 
-    public void update() {
-        curSpeedLabel.setText("Current Speed: " + train.getCurV());
-        accelLabel.setText("Current Acceleration: " + train.getCurA());
-        powerLabel.setText("Power Command: " + train.getPower());
-        massLabel.setText("Mass: " + train.getMass());
-        gradeLabel.setText("Grade: " + train.getGrade());
-        forceLabel.setText("Force: " + train.getForce());
-        tempLabel.setText("Temp: " + train.getTemp());
+	public void update() {
+		curSpeedLabel.setText("Current Speed: " + Math.round(train.getCurV()*MPS_T0_MPH * 100f)/100f + " MPH");
+		accelLabel.setText("Current Acceleration: " + Math.round(train.getCurA()*MSS_TO_FSS*100f)/100f + " ft/s²");
+		powerLabel.setText("Power Command: " + Math.round(train.getPower()*100f)/100f + " W");
+		massLabel.setText("Mass: " + Math.round(train.getMass()*100f)/100f + " kg");
+		gradeLabel.setText("Grade: " + Math.round(train.getGrade()*100f)/100f + "%");
+		forceLabel.setText("Force: " + Math.round(train.getForce()*100f)/100f + " N");
+		tempLabel.setText("Temp: " + Math.round(train.getTemp()*10f)/10f + "° F");
 
-        if(train.getSBrake()) {
-            sBrakeLabel.setText("True");
-            sBrakeLabel.setTextFill(Color.GREEN);
-        }
-        else {
-            sBrakeLabel.setText("False");
-            sBrakeLabel.setTextFill(Color.RED);
-        }
-        if(train.getEBrake())
-        {
-            eBrakeLabel.setText("True");
-            eBrakeLabel.setTextFill(Color.GREEN);
-        }
-        else {
-            eBrakeLabel.setText("False");
-            eBrakeLabel.setTextFill(Color.RED);
-        }
-        passengersLabel.setText("Passengers: " + train.getPassengers());
-        if(train.getLights()) {
-            lightsLabel.setText("True");
-            lightsLabel.setTextFill(Color.GREEN);
-        }
-        else {
-            lightsLabel.setText("False");
-            lightsLabel.setTextFill(Color.RED);
-        }
-        distanceLabel.setText("Δx in Block: " + train.getX());
-        blocksLabel.setText("Blocks Traveled: " + train.getBlocksTraveled());
-        curBeaconLabel.setText("Current Beacon: " + train.getCurBeaconSignal());
-        lastBeaconLabel.setText("Last Beacon: " + train.getLastBeaconSignal());
+		if(train.getSBrake()) {
+			sBrakeLabel.setText("True");
+			sBrakeLabel.setTextFill(Color.GREEN);
+		} else {
+			sBrakeLabel.setText("False");
+			sBrakeLabel.setTextFill(Color.RED);
+		}
+		if(train.getEBrake())
+		{
+			eBrakeLabel.setText("True");
+			eBrakeLabel.setTextFill(Color.GREEN);
+		} else {
+			eBrakeLabel.setText("False");
+			eBrakeLabel.setTextFill(Color.RED);
+		}
+		passengersLabel.setText("Passengers: " + train.getPassengers());
+		if(train.getLights()) {
+			lightsLabel.setText("True");
+			lightsLabel.setTextFill(Color.GREEN);
+		} else {
+			lightsLabel.setText("False");
+			lightsLabel.setTextFill(Color.RED);
+		}
+		distanceLabel.setText("Δx in Block: " + Math.round(train.getX()*M_TO_FT*10f)/10f + " ft");
+		blocksLabel.setText("Blocks Traveled: " + train.getBlocksTraveled());
+		curBeaconLabel.setText("Current Beacon: " + train.getCurBeaconSignal());
+		lastBeaconLabel.setText("Last Beacon: " + train.getLastBeaconSignal());
 
-        //Update door statuses
-        if(train.getDoor(0)) {
-            d1Status.setFill(Color.GREEN);
-        }
-        else {
-            d1Status.setFill(Color.RED);
-        }
+		//Update door statuses
+		if(train.getDoor(0)) {
+			d1Status.setFill(Color.GREEN);
+		} else {
+			d1Status.setFill(Color.RED);
+		}
 
-        if(train.getDoor(1)) {
-            d2Status.setFill(Color.GREEN);
-        }
-        else {
-            d2Status.setFill(Color.RED);
-        }
+		if(train.getDoor(1)) {
+			d2Status.setFill(Color.GREEN);
+		} else {
+			d2Status.setFill(Color.RED);
+		}
 
-        if(train.getDoor(2)) {
-            d3Status.setFill(Color.GREEN);
-        }
-        else {
-            d3Status.setFill(Color.RED);
-        }
+		if(train.getDoor(2)) {
+			d3Status.setFill(Color.GREEN);
+		} else {
+			d3Status.setFill(Color.RED);
+		}
 
-        if(train.getDoor(3)) {
-            d4Status.setFill(Color.GREEN);
-        }
-        else {
-            d4Status.setFill(Color.RED);
-        }
+		if(train.getDoor(3)) {
+			d4Status.setFill(Color.GREEN);
+		} else {
+			d4Status.setFill(Color.RED);
+		}
 
-        if(train.getDoor(4)) {
-            d5Status.setFill(Color.GREEN);
-        }
-        else {
-            d5Status.setFill(Color.RED);
-        }
+		if(train.getDoor(4)) {
+			d5Status.setFill(Color.GREEN);
+		} else {
+			d5Status.setFill(Color.RED);
+		}
 
-        if(train.getDoor(5)) {
-            d6Status.setFill(Color.GREEN);
-        }
-        else {
-            d6Status.setFill(Color.RED);
-        }
+		if(train.getDoor(5)) {
+			d6Status.setFill(Color.GREEN);
+		} else {
+			d6Status.setFill(Color.RED);
+		}
 
-        if(train.getDoor(6)) {
-            d7Status.setFill(Color.GREEN);
-        }
-        else {
-            d7Status.setFill(Color.RED);
-        }
+		if(train.getDoor(6)) {
+			d7Status.setFill(Color.GREEN);
+		} else {
+			d7Status.setFill(Color.RED);
+		}
 
-        if(train.getDoor(7)) {
-            d8Status.setFill(Color.GREEN);
-        }
-        else {
-            d8Status.setFill(Color.RED);
-        }
+		if(train.getDoor(7)) {
+			d8Status.setFill(Color.GREEN);
+		} else {
+			d8Status.setFill(Color.RED);
+		}
 
-        if(train.getEBrake()) {
-            eBrakeOn.setSelected(true);
-        }
-        else {
-            eBrakeOff.setSelected(true);
-        }
+		if(train.getEBrake()) {
+			eBrakeOn.setSelected(true);
+		} else {
+			eBrakeOff.setSelected(true);
+		}
 
-    }
+	}
 
-    public void passTrain(TrainModel train) {
-        this.train = train;
+	public void passTrain(TrainModel train) {
+		this.train = train;
 
-        // Set radio buttons to train's current values
-        // EBrake
-        if(train.getEBrake()) {
-            eBrakeOn.setSelected(true);
-        }
-        else {
-            eBrakeOff.setSelected(true);
-        }
-        titleLabel.setText("Train " + train.getID());
-    }
+		// Set radio buttons to train's current values
+		// EBrake
+		if(train.getEBrake()) {
+			eBrakeOn.setSelected(true);
+		} else {
+			eBrakeOff.setSelected(true);
+		}
+		titleLabel.setText("Train " + train.getID());
+	}
 
-    public void closeWindow() {
-        Stage s = (Stage) titleLabel.getScene().getWindow();
-        s.close();
-    }
+	public void closeWindow() {
+		Stage s = (Stage) titleLabel.getScene().getWindow();
+		s.close();
+	}
 
-    public void goBack(ActionEvent actionEvent) throws Exception {
+	public void goBack(ActionEvent actionEvent) throws Exception {
 //        Parent trainModelParent = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
 //        Scene trainModelView = new Scene(trainModelParent);
 //
@@ -258,5 +248,5 @@ public class TrainModelController implements Initializable {
 //        window.setScene(moduleSelect);
 //        window.setTitle("Module Selection");
 
-    }
+	}
 }
