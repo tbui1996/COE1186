@@ -271,7 +271,11 @@ public class CTC {
                 //If it's been closed long enough
                 if (temp.getTimePassed() == temp.getLength() * 5 * 60) {
                     //Send request to reopen block
-                    Main.tc.maintenanceRequest(temp.getLine(), temp.getBlock());
+                    if (temp.getLine() == 1) {
+                        Main.tc.maintenanceRequest(temp.getLine(), temp.getBlock());
+                    } else {
+                        Main.tc.maintenanceRequest(0, temp.getBlock());
+                    }
                 }
                 //Update wait time
                 else {
@@ -285,7 +289,11 @@ public class CTC {
                     if (Main.getSimTime().getHour() > temp.getHour() || Main.getSimTime().getMin() >= temp.getMin()) {
                         //Send request if block is not occupied
                         if (!getBlock(temp.getLine(), temp.getBlock()).isOccupied()) {
-                            Main.tc.maintenanceRequest(temp.getLine(), temp.getBlock());
+                            if (temp.getLine() == 1) {
+                                Main.tc.maintenanceRequest(temp.getLine(), temp.getBlock());
+                            } else {
+                                Main.tc.maintenanceRequest(0, temp.getBlock());
+                            }
                             temp.setActive(true);
                         }
                     }

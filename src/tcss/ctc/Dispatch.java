@@ -43,53 +43,19 @@ public class Dispatch {
         //this.train = train;
     }
 
+    /**
+     * Calls the schedule constructor to create the object to be able to add stop to it
+     * @param l
+     */
     public void createSchedule(int l) {
         this.schedule = new Schedule(l);
         this.dHr = -1;
         this.dMin = -1;
     }
 
-    /*public void setRequests() {
-        speedList = new float[schedule.getStopNums() + 1];
-        authList = new int[schedule.getStopNums() + 1];
-
-        if (this.line == 1) {
-            for (int i = 0; i < schedule.getStopNums(); i++) {
-                //Calculates speed and authority for each stop
-                //(distance between blocks) / ((station w/ dwell) - dwell), unit is blocks/sec
-                if (i == 0) {
-                    if (this.schedule.getStopName(i).length() > 3) {
-                        speedList[i] = (float) (Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))), 0) / (this.schedule.getStopDwell(i) - 35)); //stationToYard((schedule.getStopName(i)) / schedule.getStopDwell(i) - 35
-                        authList[i] = (int) Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))), 1); //stationToYard(schedule.getStopName(i))
-                    } else {
-                        speedList[i] = (float) (Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Integer.parseInt(this.schedule.getStopName(i))), 0) / (this.schedule.getStopDwell(i) - 35)); //stationToYard((schedule.getStopName(i)) / schedule.getStopDwell(i) - 35
-                        authList[i] = (int) Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Integer.parseInt(this.schedule.getStopName(i))), 1); //stationToYard(schedule.getStopName(i))
-                    }
-                } else {
-                    //speedList[i] = stationToStation((schedule.getStopName(i-1),schedule.getStopName(i)) / schedule.getStopDwell(i)*60 - 35;
-                    //authList = stationToStation(schedule.getStopName(i-1), schedule.getStopName(i));
-                    if (this.schedule.getStopName(i).length() > 3) {
-                        speedList[i] = (float) (Main.redLine.distanceBetweenTwoBlocks(Main.ctc.redLine.get(Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))), Main.ctc.redLine.get(Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))), 0) / (float) (this.schedule.getStopDwell(i) - 35));
-                        authList[i] = (int) Main.redLine.distanceBetweenTwoBlocks(Main.ctc.redLine.get(Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))), Main.ctc.redLine.get(Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(i))), 1);
-                    } else {
-                        speedList[i] = (float) (Main.redLine.distanceBetweenTwoBlocks(Main.ctc.redLine.get(Integer.parseInt(this.schedule.getStopName(i))), Main.ctc.redLine.get(Integer.parseInt(this.schedule.getStopName(i))), 0) / (float) (this.schedule.getStopDwell(i) - 35));
-                        authList[i] = (int) Main.redLine.distanceBetweenTwoBlocks(Main.ctc.redLine.get(Integer.parseInt(this.schedule.getStopName(i))), Main.ctc.redLine.get(Integer.parseInt(this.schedule.getStopName(i))), 1);
-                    }
-                }
-            }
-            //Send back to yard when done
-            speedList[speedList.length-1] = 10; //Min Speed
-            if (this.schedule.getStopName(schedule.getStopNums()-1).length() > 3) {
-                authList[authList.length - 1] = (int) Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Main.ctc.stationToBlockNumRed.get(this.schedule.getStopName(schedule.getStopNums() - 1))), 1);//YARD
-            } else {
-                authList[authList.length - 1] = (int) Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Integer.parseInt(this.schedule.getStopName(schedule.getStopNums() - 1))), 1);//YARD
-            }
-        }
-        else {
-
-        }
-    }*/
-
+    /**
+     * Creates the SS and Auth to be sent for each stop on the schedule.  Stores them in an array to be sent at the proper time later
+     */
     public void setRequests() {
         //Set Departure Time
         //int fMin = this.schedule.getStopMin(0);
@@ -108,8 +74,12 @@ public class Dispatch {
             }
         }
         else {
-            this.dHr = this.schedule.getStopHour(0);
-            this.dMin = this.schedule.getStopMin(0);
+            if (this.schedule.getStopMin(0) != 0) {
+                this.dMin = this.schedule.getStopMin(0) - 1;
+            } else if (this.schedule.getStopHour(0) != 0) {
+                this.dHr = this.schedule.getStopHour(0) - 1;
+                this.dMin = 59;
+            }
         }
 
         if (dHr < 0) {
@@ -136,7 +106,7 @@ public class Dispatch {
                 if (i == 0) {
                     //Distance / Time
                     //(Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Main.ctc.blockReturner(this.line, this.schedule.getStopName(i))), 0)) / //time;
-                    speedList[i] = (float) 40;
+                    speedList[i] = (float) 11;
                     authList[i] = (int) Main.ctc.redLayout.distanceBetweenTwoBlocks(Main.ctc.redLine.get(9), Main.ctc.redLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(i))), 1);
                 } else {
                     int time = ((this.schedule.getStopHour(i)*60*60) + (this.schedule.getStopMin(i)*60)) - ((this.schedule.getStopHour(i-1)*60*60) + this.schedule.getStopMin(i-1)*60) - 35;
@@ -262,6 +232,11 @@ public class Dispatch {
         return this.schedule.toString();
     }
 
+    /**
+     * Converts the string representation of the line to the int version
+     * @param line
+     * @return
+     */
     private int lineStringToInt(String line) {
         if (line.equals("RED"))
             return 1;
@@ -291,6 +266,10 @@ public class Dispatch {
         this.dwell = i;
     }
 
+    /**
+     * Converts line to proper int for the Track Controller
+     * @return
+     */
     public int lineToTc() {
         if (this.line == 1)
             return this.line;
