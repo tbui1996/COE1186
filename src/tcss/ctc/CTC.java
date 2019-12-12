@@ -176,6 +176,7 @@ public class CTC {
         dispatchList.addAll(autoDispatch);
     }
 
+
     /**
      * Add a dispatch to the list in the CTC
      * @param d

@@ -49,6 +49,7 @@ public class CTCController implements Initializable{
     @FXML private Label redTickets;
     @FXML private Label greenTickets;
     @FXML private AnchorPane trainViewer;
+    @FXML private Button sendTrain;
 
 
     @Override
@@ -165,6 +166,7 @@ public class CTCController implements Initializable{
         if (selected >= 0) {
             tName.setText(dispatchList.getSelectionModel().getSelectedItem().toString());
             tSchedule.setText(Main.ctc.getDispatch(dispatchList.getSelectionModel().getSelectedIndex()).toString());
+            sendTrain.setDisable(false);
         }
 
         redTickets.setText("Red Line Throughput: " + Main.ctc.getRedTicketTotal() / (Main.getSimTime().getHour()+1) + " tickets/hour");
