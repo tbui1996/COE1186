@@ -40,6 +40,7 @@ public class WaysideController {
     public float ss;
     public int auth;
     public int blockId;
+    Block currentBlock;
 
     public WaysideController(Track redtrack, Track greenTrack) throws IOException {
         this.redTrack = redtrack;
@@ -71,8 +72,9 @@ public class WaysideController {
                 for (int x = (i * over - beforelap); x < (blocksinRedTC + (i * over - 2)); x++) {
                     int calculate;
                     calculate = x % listofredblocks.size();
-                    if (calculate < 0)
+                    if (calculate < 0) {
                         calculate += listofredblocks.size();
+                    }
                     Block curBlock = listofredblocks.get(calculate);
                     blocks.put(curBlock.getBlockNum(), curBlock);
                     if (curBlock.getRXR() != null) {
@@ -80,7 +82,7 @@ public class WaysideController {
                     } else calculateHashMaps(blocks, switching, curBlock, listofredblocks);
 
                 }
-                TrackController redTrC = new TrackController(i, 1, blocks, switching, RXR);
+                TrackController redTrC = new TrackController(i, 1, blocks, switching, RXR, redTrack);
                 redTC.add(redTrC);
                 redTrC.loadPLC("resources/plctest.plc");
             }
@@ -123,7 +125,7 @@ public class WaysideController {
                     }
 
                 }
-                TrackController greenTrC = new TrackController(i, 1, blocks1, switching1, RXR1);
+                TrackController greenTrC = new TrackController(i, 1, blocks1, switching1, RXR1, greenTrack);
                 greenTC.add(greenTrC);
                 greenTrC.loadPLC("resources/plctest.plc");
                 }
@@ -131,11 +133,21 @@ public class WaysideController {
         }
     public void getNextStop(float SS, int auth, int line, int ID) {
         this.line = line;
+        boolean canProceed;
+        int nextBlock;
+        int upcomingBlock;
+
         if(this.line == 0){
             this.blockId = greenTrack.getBlock(ID).getBlockNum();
+            nextBlock = greenTrack.getBlock(ID).getNextBlock().getNextBlock().getBlockNum();
+            upcomingBlock =greenTrack.getBlock(nextBlock).getNextBlock().getNextBlock().getBlockNum();
             this.ss = SS;
             this.auth = auth;
-            greenTrack.getBlock(ID).setSuggSpeedAndAuth(this.ss,this.auth);
+            canProceed = proceed(0, this.blockId,nextBlock, upcomingBlock,auth,SS);
+            if(canProceed)
+                greenTrack.getBlock(ID).setSuggSpeedAndAuth(this.ss,this.auth);
+            else
+                greenTrack.getBlock(ID).setSuggSpeedAndAuth(0,this.auth);
         }
         if(this.line==1){
             this.blockId = redTrack.getBlock(ID).getBlockNum();
@@ -169,19 +181,19 @@ public class WaysideController {
         this.line = track.getBlockList().get(blockId).getLine();
         Block curBlock;
         curBlock = track.getBlockList().get(blockId);
-            int next = curBlock.getNextBlock().getBlockNum();
-            int prev = curBlock.getPreviousBlock().getBlockNum();
-            if (next >= 0)
-                blocklist.add(next);
-            if (prev >= 0)
-                blocklist.add(prev);
+        boolean isReverse = curBlock.getPreviousBlock().getBlockNum() == nexBlock;
+        int prev = isReverse ? curBlock.getNextBlock().getBlockNum() : curBlock.getPreviousBlock().getBlockNum();
+        if(prev>= 0)
+            blocklist.add(prev);
 
-            blocklist.add(blockId);
-            curTC = getTC(this.line, blocklist);
+        blocklist.add(blockId);
+        blocklist.add(nexBlock);
+        blocklist.add(destBlock);
+        curTC = getTC(line, blocklist);
 
-            if(curTC!=null){
+        if(curTC!=null){
                 return curTC.proceed(line, blockId,nexBlock,destBlock,authority,suggestedspeed);
-            }
+        }
 
         return false;
     }
@@ -259,9 +271,11 @@ public class WaysideController {
 
     public boolean getOccupied(int line, int blockId) {
         if (line == 1) {
+            this.occupancy = redTrack.getBlock(blockId).isOccupied();
             return redTrack.getBlock(blockId).isOccupied();
         }
         else {
+            this.occupancy = greenTrack.getBlock(blockId).isOccupied();
             return greenTrack.getBlock(blockId).isOccupied();
         }
     }

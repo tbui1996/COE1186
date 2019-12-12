@@ -40,13 +40,14 @@ public class TrackController {
     public TrackController waysideControllers[] = new TrackController[7];
 
 
-    public TrackController(int id, int line, HashMap<Integer, Block> blocks, HashMap<Integer, Block> switches, HashMap<Integer,Block>rxr){
+    public TrackController(int id, int line, HashMap<Integer, Block> blocks, HashMap<Integer, Block> switches, HashMap<Integer,Block>rxr, Track track){
 
         this.trackId = id;
         this.switchHashMap = switches;
         this.RXR = rxr;
         this.block = blocks;
         this.line = line;
+        this.track = track;
 
     }
 
@@ -61,7 +62,7 @@ public class TrackController {
         return trackControllerID;
     }
     public Block getBlock(int blockId){
-        return block.get(blockId);
+        return track.getBlock(blockId);
     }
 
     public Block getRXR(int blockId){
@@ -152,7 +153,9 @@ public class TrackController {
         crossingBlock.setSuggSpeedAndAuth(-3, 1);
         return false;
     }
-
+    //blockId: currentblock
+    //nexBlock: block after currentblock that train will proceed to
+    //destBLock: block after nexBlock
     public boolean proceed(int line, int blockId, int nexBlock, int destBlock, int authority, float suggestedspeed) {
         Block currentBlock = track.getBlock(blockId);
         Block nextBlock = track.getBlock(currentBlock.getNextBlock().getBlockNum());
@@ -160,12 +163,15 @@ public class TrackController {
 
         boolean reverse = currentBlock.getPreviousBlock().getBlockNum() == nexBlock;
         int prev = reverse ? currentBlock.getNextBlock().getBlockNum() : currentBlock.getBlockNum();
+        currentBlock.getPreviousBlock();
+        Block previousBlock = getBlock(prev);
 
         //if next block is crossing enter RXR
         //need to know how next block is a light block
         if (nextBlock.getRXR() != null) {
-            if (!(plc.verifyLightBlock(currentBlock, nextBlock))) {
-                currentBlock.setSuggSpeedAndAuth(-3, 0);
+            nextBlock.setRXR(nextBlock.getRXR());
+            if (!(plc.verifyRXR(currentBlock.getPreviousBlock(),currentBlock,nextBlock))) {
+                currentBlock.setSuggSpeedAndAuth(0, 0);
                 return false;
             }
         }
@@ -176,7 +182,9 @@ public class TrackController {
         boolean canswitch = plc.verifySwitch(nextBlock, destinationBlock);
         if (nextBlock.getSwitch() != null) {
             boolean switchposition = nextBlock.getSwitch().getStraight();
+            boolean isSwitch = switchposition == nextBlock.getSwitch().getStraight();
             int nextBlockID = switchposition ? nextBlock.getSwitch().getStraightDest() : nextBlock.getSwitch().getBranchDest();
+            nextBlock.getNextBlock();
             if ((destinationBlock.getBlockNum() != nextBlockID)) {
                 if (currentBlock.getBlockNum() != nextBlockID) {
                     if (!switchRequest(line, nextBlock.getBlockNum(), destBlock)) {
@@ -191,13 +199,14 @@ public class TrackController {
         if (currentBlock.getSwitch()!=null) {
             boolean switchposition = currentBlock.getSwitch().getStraight();
             int nextBlockId = switchposition ? currentBlock.getBlockNum() : currentBlock.getNextBlock().getBlockNum();
-
+            //switch changed
             if (nextBlock.getBlockNum() != nextBlockId) {
                 nextBlock = getBlock(nextBlockId);
                 destBlock = reverse ? nextBlock.getPreviousBlock().getBlockNum() : nextBlock.getNextBlock().getBlockNum();
+                nextBlock.getNextBlock();
                 destinationBlock = track.getBlock(destBlock);
             }
-
+        }
 
             boolean canProceed = plc.vitalProceed(nextBlock, destinationBlock);
             if (!canProceed) {
@@ -205,7 +214,7 @@ public class TrackController {
                 return false;
             }
 
-        }
+
         currentBlock.setSuggSpeedAndAuth(suggestedspeed, authority);
         return true;
     }
@@ -234,6 +243,8 @@ public class TrackController {
         if(result){
             currentswitchblock.getSwitch().setStraight(!switchposition);
             return true;
+        } else{
+            System.out.println("Cannot switch.");
         }
         return false;
 
@@ -250,6 +261,7 @@ public class TrackController {
     }
     public String blockRequest(int line, int blockId) {
         Block cur = block.get(blockId);
+
         if(cur==null)
             return null;
 

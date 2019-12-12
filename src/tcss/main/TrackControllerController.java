@@ -1,7 +1,10 @@
 package tcss.main;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -14,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import tcss.trackcontroller.PLC;
 import tcss.trackcontroller.TrackController;
 import tcss.trackcontroller.WaysideController;
@@ -88,8 +92,10 @@ public class TrackControllerController implements Initializable {
   private boolean switchState = true;
   private boolean occupied = false;
   private int blockId;
+  private boolean isTCChosen = false;
+  private boolean isblockChosen = false;
 
-    private Track currTrack;
+  private Track currTrack;
 
 
 
@@ -117,6 +123,9 @@ public class TrackControllerController implements Initializable {
           @Override
           public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
               if ((Integer) number2 > 0) {
+                  blockChoice.setDisable(false);
+                  //Integer.parseInt(rate.getValue().toString().replaceAll("\\D+", ""));
+
                   if ((Integer) number2 == 1) {
                       curTC = Main.tc.redTC.get(0);
                       currTrack = redLine;
@@ -157,6 +166,7 @@ public class TrackControllerController implements Initializable {
                   ArrayList<Block> listblock = new ArrayList<>(curTC.block.values());
 
 
+
                   for (Block block : switching){
                       blockChoice.getItems().add(block.getSection() + Integer.toString(block.getBlockNum()));
                       System.out.println("Adding switch to blockChoice");
@@ -177,9 +187,12 @@ public class TrackControllerController implements Initializable {
 
 
                   blockChoice.setDisable(false);
+                  isTCChosen = true;
+                  update();
               }
               else{
                   blockChoice.setDisable(true);
+                  isTCChosen = false;
               }
           }
       });
@@ -190,28 +203,39 @@ public class TrackControllerController implements Initializable {
                     @Override
                     public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) throws NullPointerException{
                         if ((Integer) number2 > 0) {
-                            int blockNumber = (Integer) number2 - 1;
-                            if (blockNumber == 0)
-                                blockNumber = 1;
-                            blockId = blockNumber;
-                            Block cur = currTrack.getBlock(blockNumber);
+
+                            ObservableList<String> l = blockChoice.getItems();
+                            String s = l.get((int)number2);
+                            int blockNum = Integer.parseInt(s.replaceAll("\\D+", ""));
+                            blockId = blockNum;
+                            Block cur = curTC.getBlock(blockNum);
+
+
+
+
+
 
                             blockId = cur.getBlockNum();
                             sSpeedLabel.setText("Suggested Speed: " + cur.getSuggestedSpeed() + " mph");
                             authLabel.setText("Authority: " + cur.getAuthority() + " blocks");
                             occupiedLabel.setText("Occupied: " + (cur.isOccupied() ? "Yes" : "No"));
 
-                            if (currTrack.getBlock(blockNumber).getSwitch() == null) {
+                            if (currTrack.getBlock(blockNum).getSwitch() == null) {
                                 outputLights.setText("Lights: N/A");
                                 outputSwitch.setText("Switch: N/A");
+                            } else{
+                                outputSwitch.setText("Switch: " + (cur.getSwitch().getStraight() ? "Straight" : "Branch"));
+                                outputLights.setText("Lights: " + (cur.getSwitch().getStraight() ? "Green:" : "Red"));
                             }
-                            if (currTrack.getBlock(blockNumber).getRXR() == null) {
+                            if (currTrack.getBlock(blockNum).getRXR() == null) {
                                 railroadcrossing.setText("Railroad Crossing: N/A");
+                            } else{
+                                railroadcrossing.setText("Railroad Crossing: " + (cur.getRXR().isDown() ? "Raised" : "Lowered"));
                             }
 
-                            outputSwitch.setText("Switch: " + (cur.getSwitch().getStraight() ? "Straight" : "Branch"));
-                            outputLights.setText("Lights: " + (cur.getSwitch().getStraight() ? "Green:" : "Red"));
-                            railroadcrossing.setText("Railroad Crossing: " + (cur.getRXR().isDown() ? "Raised" : "Lowered"));
+
+                            isblockChosen = true;
+                            update();
                         } else {
                             sSpeedLabel.setText("Suggested Speed: ");
                             authLabel.setText("Authority: ");
@@ -219,6 +243,7 @@ public class TrackControllerController implements Initializable {
                             outputSwitch.setText("Switch: ");
                             outputLights.setText("Lights: ");
                             railroadcrossing.setText("Railroad Crossing: ");
+                            isblockChosen = false;
 
                         }
 
@@ -244,6 +269,15 @@ public class TrackControllerController implements Initializable {
               }
           }
       });
+        Timeline loop = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                update();
+//                System.out.println("GUI Updated!!");
+            }
+        }));
+        loop.setCycleCount(Timeline.INDEFINITE);
+        loop.play();
 
   }
 
@@ -270,43 +304,6 @@ public class TrackControllerController implements Initializable {
  manualBranchLabel;
  manualRedLabel;
  */
-  @FXML
-    void setManualMode(ActionEvent event){
-      if(curTC == null) {
-          return;
-      }
-      if(opModeToggle.isSelected()){
-          opModeToggle.setText("Exit Manual Mode");
-          if(currTrack.getBlock(blockId).getSwitch() != null) {
-              manualswitchLabel.setVisible(true);
-              manuallightLabel.setVisible(true);
-              manuallightLabel.setVisible(true);
-              manualRedLabel.setVisible(true);
-          } else{
-              manualswitchLabel.setDisable(true);
-              manuallightLabel.setDisable(true);
-              manuallightLabel.setDisable(true);
-              manualRedLabel.setDisable(true);
-          }
-          if(currTrack.getBlock(blockId).getRXR() != null){
-              manuallowerCrossing.setVisible(true);
-              manualraiseCrossing.setVisible(true);
-          } else {
-              manuallowerCrossing.setVisible(false);
-              manualraiseCrossing.setVisible(false);
-          }
-
-      } else {
-          opModeToggle.setText("Enter Manual Mode");
-          manualswitchLabel.setVisible(false);
-          manuallightLabel.setVisible(false);
-          manualraiseCrossing.setVisible(false);
-          manuallowerCrossing.setVisible(false);
-          manualBranchLabel.setVisible(false);
-          manualRedLabel.setVisible(false);
-      }
-
-  }
 
   @FXML
   void raiseCrossing(ActionEvent event){
@@ -330,15 +327,87 @@ public class TrackControllerController implements Initializable {
   }
   @FXML
   void switchClick(ActionEvent event){
-
+    outputSwitch.setText("Straight");
+    currTrack.getBlock(blockId).getSwitch().setStraight(true);
   }
   @FXML
   void branchClick(ActionEvent event){
-
+    outputSwitch.setText("Branch");
+    currTrack.getBlock(blockId).getSwitch().setStraight(false);
   }
     public void closeWindow() {
         Stage s = (Stage) trackChoice.getScene().getWindow();
         s.close();
     }
 
+    public void update(){
+      if(currTrack==null || curTC == null ){
+          return;
+      }
+        if(isblockChosen && isTCChosen){
+            Block cur = currTrack.getBlock(blockId);
+            sSpeedLabel.setText("Suggested Speed: " + cur.getSuggestedSpeed() + " mph");
+            authLabel.setText("Authority: " + cur.getAuthority() + " blocks");
+            occupiedLabel.setText("Occupied: " + (cur.isOccupied() ? "Yes" : "No"));
+
+            if (currTrack.getBlock(blockId).getSwitch() == null) {
+                outputLights.setText("Lights: N/A");
+                outputSwitch.setText("Switch: N/A");
+            } else{
+                outputSwitch.setText("Switch: " + (cur.getSwitch().getStraight() ? "Straight" : "Branch"));
+                outputLights.setText("Lights: " + (cur.getSwitch().getStraight() ? "Green" : "Red"));
+            }
+            if (currTrack.getBlock(blockId).getRXR() == null) {
+                railroadcrossing.setText("Railroad Crossing: N/A");
+            } else{
+                railroadcrossing.setText("Railroad Crossing: " + (cur.getRXR().isDown() ? "Raised" : "Lowered"));
+
+            }
+
+
+        }
+
+            if(opModeToggle.isSelected() && isblockChosen && isTCChosen){
+                importPLC.setDisable(false);
+                importPLC.setVisible(true);
+                opModeToggle.setText("Exit Manual Mode");
+                manualswitchLabel.setVisible(true);
+                manuallightLabel.setVisible(true);
+                manualraiseCrossing.setVisible(true);
+                manuallowerCrossing.setVisible(true);
+                manualBranchLabel.setVisible(true);
+                manualRedLabel.setVisible(true);
+                if(currTrack.getBlock(blockId).getSwitch() != null) {
+                    manualswitchLabel.setDisable(false);
+                    manuallightLabel.setDisable(false);
+                    manualRedLabel.setDisable(false);
+                    manualBranchLabel.setDisable(false);
+
+                } else{
+                    manualswitchLabel.setDisable(true);
+                    manuallightLabel.setDisable(true);
+                    manualRedLabel.setDisable(true);
+                    manualBranchLabel.setDisable(true);
+                }
+                if(currTrack.getBlock(blockId).getRXR() != null){
+                    manuallowerCrossing.setDisable(false);
+                    manualraiseCrossing.setDisable(false);
+                } else {
+                    manuallowerCrossing.setDisable(true);
+                    manualraiseCrossing.setDisable(true);
+                }
+
+            } else {
+                opModeToggle.setText("Enter Manual Mode");
+                manualswitchLabel.setVisible(false);
+                manuallightLabel.setVisible(false);
+                manualraiseCrossing.setVisible(false);
+                manuallowerCrossing.setVisible(false);
+                manualBranchLabel.setVisible(false);
+                manualRedLabel.setVisible(false);
+                importPLC.setVisible(false);
+            }
+
+
+    }
 }
