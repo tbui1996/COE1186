@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
@@ -17,7 +21,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="pane" prefHeight="676.0" prefWidth="934.0" styleClass="body" stylesheets="@../css/CTC.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.CTCController">
+<AnchorPane fx:id="pane" prefHeight="676.0" prefWidth="934.0" styleClass="body" stylesheets="@../css/CTC.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.CTCController">
    <children>
       <SplitPane dividerPositions="0.75" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -46,7 +50,6 @@
                            <children>
                               <SplitPane dividerPositions="0.75" layoutX="239.0" layoutY="40.0" orientation="VERTICAL" prefHeight="560.0" prefWidth="421.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <items>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" styleClass="body" />
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" styleClass="body">
                                        <children>
                                           <SplitPane dividerPositions="0.75" layoutX="99.0" layoutY="161.0" orientation="VERTICAL" prefHeight="500.0" prefWidth="482.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -65,7 +68,7 @@
                                                 </AnchorPane>
                                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="126.0" prefWidth="480.0" styleClass="body">
                                                    <children>
-                                                      <ScrollPane prefHeight="121.0" prefWidth="480.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <ScrollPane prefHeight="120.0" prefWidth="479.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                         <content>
                                                           <AnchorPane fx:id="trainViewer" minHeight="0.0" minWidth="0.0" prefHeight="2000.0" prefWidth="463.0" styleClass="body">
                                                                <children>
