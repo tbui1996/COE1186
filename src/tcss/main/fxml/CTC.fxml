@@ -24,6 +24,7 @@
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" styleClass="body">
                            <children>
+                              <Button mnemonicParsing="false" onAction="#closeWindow" styleClass="exit-button" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
                               <VBox alignment="CENTER" prefHeight="276.0" prefWidth="175.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <Label styleClass="text" text="View Block" />
@@ -33,7 +34,7 @@
                                     <Label styleClass="text" text="Block:" />
                                     <ChoiceBox fx:id="blockSelector" prefWidth="150.0" />
                                     <Button fx:id="confirmBlock" mnemonicParsing="false" onAction="#viewBlock" text="View Block" />
-                                    <Button fx:id="newDispatch" mnemonicParsing="false" onAction="#openDispatchWindow" styleClass="userButton" text="create Dispatch" />
+                                    <Button fx:id="newDispatch" mnemonicParsing="false" onAction="#openDispatchWindow" prefWidth="160.0" styleClass="userButton" text="Create Dispatch" />
                                  </children>
                               </VBox>
                            </children>
@@ -42,11 +43,7 @@
                            <children>
                               <SplitPane dividerPositions="0.75" layoutX="239.0" layoutY="40.0" orientation="VERTICAL" prefHeight="560.0" prefWidth="421.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <items>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" styleClass="body">
-                                       <children>
-                                          <Button mnemonicParsing="false" onAction="#closeWindow" styleClass="exit-button" />
-                                       </children>
-                                    </AnchorPane>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" styleClass="body" />
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" styleClass="body">
                                        <children>
                                           <GridPane fx:id="infoView" layoutX="100.0" layoutY="37.0" prefHeight="164.0" prefWidth="482.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
