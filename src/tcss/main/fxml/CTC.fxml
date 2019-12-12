@@ -55,7 +55,7 @@
                                                    <children>
                                                       <ImageView fitHeight="294.0" fitWidth="480.0" layoutX="1.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
-                                                            <Image url="@../../ctc/RailArtboard%201.png" />
+                                                            <Image url="@../../ctc/RailArtboard1.png" />
                                                          </image>
                                                       </ImageView>
                                                       <Button mnemonicParsing="false" onAction="#closeWindow" styleClass="exit-button" />
@@ -72,7 +72,11 @@
                                                                   <HBox prefHeight="200.0" prefWidth="463.0" spacing="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <children>
                                                                         <Label fx:id="tName" textFill="WHITE" />
-                                                                        <Label fx:id="tSchedule" textFill="WHITE" />
+                                                                        <VBox prefHeight="1999.0" prefWidth="206.0">
+                                                                           <children>
+                                                                              <Label fx:id="tSchedule" textFill="WHITE" />
+                                                                           </children>
+                                                                        </VBox>
                                                                      </children>
                                                                   </HBox>
                                                                </children>
