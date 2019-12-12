@@ -9,7 +9,7 @@
     -fx-padding: 5 0;
     -fx-text-fill: #DFDFDF;
     -fx-font-family: 'Calibri';
-    -fx-font-size: 25px;
+    -fx-font-size: 20px;
 }
 
 .button {
@@ -47,7 +47,7 @@
 }
 
 .choice-box .menu-item > .label {
-    -fx-font-size: 15px;
+    -fx-font-size: 14px;
     -fx-text-fill: rgb(43, 39, 49);
 }
 

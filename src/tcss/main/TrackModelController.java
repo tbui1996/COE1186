@@ -102,8 +102,8 @@ public class TrackModelController implements Initializable {
                     DecimalFormat df = new DecimalFormat("#.##");
                     blockNumLabel.setText("Block #: " + cur.getBlockNum());
                     sectionLabel.setText("Section #: " + cur.getSection());
-                    sSpeedLabel.setText("Suggested Speed: " + Double.parseDouble(df.format(cur.getSuggestedSpeed() * 0.621)) + " mph");
-                    authLabel.setText("Authority: " + cur.getAuthority() + " blocks");
+                    sSpeedLabel.setText("Suggested Speed: " + Double.parseDouble(df.format(updateSuggestedSpeed(cur) * 0.621)) + " mph");
+                    authLabel.setText("Authority: " + updateAuth(cur) + " blocks");
                     lengthLabel.setText("Length: " + Double.parseDouble(df.format(cur.getLength() * 3.28)) + " ft");
                     gradeLabel.setText("Grade: " + cur.getGrade() + "%");
                     speedLimitLabel.setText("Speed Limit: " + Double.parseDouble(df.format(cur.getSpeedLimit() * 0.621)) + " mph");
@@ -137,6 +137,22 @@ public class TrackModelController implements Initializable {
                 }
             }
         });
+    }
+
+    public float updateSuggestedSpeed(Block cur){
+        if(cur.isOccupied()){
+            return cur.getTrain().getSSpeed();
+        }else{
+            return 0;
+        }
+    }
+
+    public int updateAuth(Block cur){
+        if(cur.isOccupied()){
+            return cur.getTrain().getAuthority();
+        }else{
+            return 0;
+        }
     }
 
     public String updateUnderground(Block cur){
