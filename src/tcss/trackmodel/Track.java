@@ -39,10 +39,11 @@ public class Track {
             }else{
                 return fromHeadDistance;
             }
-        }else if(fromTailDistance <= fromHeadDistance){
-            return fromTailDistance;
         }else{
-            return fromHeadDistance;
+            if(start.getBlockNum() == 7){
+                return fromHeadDistance;
+            }
+            return fromTailDistance;
         }
     }
 

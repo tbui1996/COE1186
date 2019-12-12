@@ -1,5 +1,6 @@
 package tcss.trackmodel;
 
+import javafx.util.Pair;
 import tcss.trainmodel.TrainModel;
 
 enum Failure{
@@ -64,7 +65,7 @@ public class Block{
         setPassengerUpdateDone(false);
 
         setFailure(Failure.NONE);
-        setDirection(Direction.FROM_TAIL);
+        setDirection(Direction.NONE);
 
         setHead(null);
         setTail(null);
@@ -209,11 +210,111 @@ public class Block{
     }
 
     public Block getNextBlock(){
-        return head;
+
+        return getBlockAhead(1);
+    }
+
+    public Block getBlockAhead(int numAhead){
+
+        Block currBlock = this;
+
+        if(numAhead <= 0){
+            return currBlock;
+        }
+
+        Direction dir = getDirection();
+
+        for(int i=0;i<numAhead;i++){
+            Pair<Block, Direction> currPair = getBlockAheadHelper(currBlock, dir);
+            currBlock = currPair.getKey();
+            dir = currPair.getValue();
+            System.out.println("=> " + currBlock.getBlockNum());
+        }
+
+        return currBlock;
+    }
+
+    public Pair<Block, Direction> getBlockAheadHelper(Block currBlock, Direction dir){
+
+        Block retBlock;
+
+        if(currBlock.getBranch() == null){
+
+            if(dir == Direction.FROM_TAIL){
+                retBlock = currBlock.getHead();
+            }else if(dir == Direction.FROM_HEAD){
+                retBlock = currBlock.getTail();
+            }else{
+                System.out.println("getBlockAheadHelper(): current block has no valid direction specified 1");
+                return null;
+            }
+        }else{
+            if(currBlock == currBlock.getBranch().getHead()){
+
+                //branching into a head
+                if(dir == Direction.FROM_BRANCH || dir == Direction.FROM_HEAD){
+                    //if from branch or from head, to tail
+                    retBlock = currBlock.getTail();
+                }else if(dir == Direction.FROM_TAIL){
+                    //if from tail
+
+                    if(!currBlock.getSwitch().getStraight()){
+                        //if switch is branched, to branch
+                        retBlock = currBlock.getBranch();
+                    }else{
+                        //else, to head
+                        retBlock = currBlock.getHead();
+                    }
+                }else{
+                    System.out.println("getBlockAheadHelper(): current block has no valid direction specified 2");
+                    return null;
+                }
+
+            }else{
+                //branching into a tail
+                if(dir == Direction.FROM_BRANCH || dir == Direction.FROM_TAIL){
+                    //if from branch or from tail, to head
+                    retBlock = currBlock.getHead();
+                }else if(dir == Direction.FROM_HEAD){
+
+                    //if from head
+                    if(!currBlock.getSwitch().getStraight()){
+                        //if switch is branched, to branch
+                        retBlock = currBlock.getBranch();
+                    }else{
+                        //else, to tail
+                        retBlock = currBlock.getTail();
+                    }
+                }else{
+                    System.out.println("getBlockAheadHelper(): current block has no direction specified 3");
+                    return null;
+                }
+            }
+        }
+
+        //update current direction of next block
+        Direction retDir;
+        if(currBlock == retBlock.getHead()){
+            retDir = Direction.FROM_HEAD;
+        }else if(currBlock == retBlock.getTail()){
+            retDir = Direction.FROM_TAIL;
+        }else if(retBlock.getBranch() != null){
+            retDir = Direction.FROM_BRANCH;
+        }else{
+            System.out.println("getBlockAheadHelper(): no references on returned block point to current block");
+            return null;
+        }
+
+        Pair<Block, Direction> retPair = new Pair<Block, Direction>(retBlock, retDir);
+        return retPair;
     }
 
     public Block getPreviousBlock(){
         return tail;
+    }
+
+    public boolean moveTrain(){
+        return true;
     }
 
     public boolean setSuggSpeedAndAuth(float ss, int a){
