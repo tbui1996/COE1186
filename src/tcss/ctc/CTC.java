@@ -268,36 +268,38 @@ public class CTC {
      * Called every cycle.  Checks when a new block needs to be opened/closed from Maintenance request
      */
     public void checkMaintenanceList() {
-        for (Maintenance temp : maintenanceList) {
+        for (int i = 0; i < maintenanceList.size(); i++) {
             //Check if request is done, if active already
-            if (temp.isActive()) {
+            if (maintenanceList.get(i).isActive()) {
                 //If it's been closed long enough
-                if (temp.getTimePassed() == temp.getLength() * 5 * 60) {
+                if (maintenanceList.get(i).getTimePassed() == maintenanceList.get(i).getLength() * 5 * 60) {
                     //Send request to reopen block
-                    if (temp.getLine() == 1) {
-                        Main.tc.maintenanceRequest(temp.getLine(), temp.getBlock());
+                    if (maintenanceList.get(i).getLine() == 1) {
+                        Main.tc.maintenanceRequest(maintenanceList.get(i).getLine(), maintenanceList.get(i).getBlock());
+                        maintenanceList.remove(i);
                     } else {
-                        Main.tc.maintenanceRequest(0, temp.getBlock());
+                        Main.tc.maintenanceRequest(0, maintenanceList.get(i).getBlock());
+                        maintenanceList.remove(i);
                     }
                 }
                 //Update wait time
                 else {
-                    temp.setTimePassed(temp.getTimePassed() + 1);
+                    maintenanceList.get(i).setTimePassed(maintenanceList.get(i).getTimePassed() + 1);
                 }
             }
             //Check if need to send out request
             else {
-                if (Main.getSimTime().getHour() >= temp.getHour()) {
+                if (Main.getSimTime().getHour() >= maintenanceList.get(i).getHour()) {
                     //If the time is now or has passed
-                    if (Main.getSimTime().getHour() > temp.getHour() || Main.getSimTime().getMin() >= temp.getMin()) {
+                    if (Main.getSimTime().getHour() > maintenanceList.get(i).getHour() || Main.getSimTime().getMin() >= maintenanceList.get(i).getMin()) {
                         //Send request if block is not occupied
-                        if (!getBlock(temp.getLine(), temp.getBlock()).isOccupied()) {
-                            if (temp.getLine() == 1) {
-                                Main.tc.maintenanceRequest(temp.getLine(), temp.getBlock());
+                        if (!getBlock(maintenanceList.get(i).getLine(), maintenanceList.get(i).getBlock()).isOccupied()) {
+                            if (maintenanceList.get(i).getLine() == 1) {
+                                Main.tc.maintenanceRequest(maintenanceList.get(i).getLine(), maintenanceList.get(i).getBlock());
                             } else {
-                                Main.tc.maintenanceRequest(0, temp.getBlock());
+                                Main.tc.maintenanceRequest(0, maintenanceList.get(i).getBlock());
                             }
-                            temp.setActive(true);
+                            maintenanceList.get(i).setActive(true);
                         }
                     }
                 }
