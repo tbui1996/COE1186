@@ -28,19 +28,21 @@ public class Track {
 
     public double distanceBetweenTwoBlocks(Block start, Block end, int unit){
 
-        double headDistance = distanceHelper(start, end, Direction.FROM_TAIL, unit);
-        double tailDistance = distanceHelper(start, end, Direction.FROM_HEAD, unit);
+        double fromTailDistance = distanceHelper(start, end, Direction.FROM_TAIL, unit);
+        double fromHeadDistance = distanceHelper(start, end, Direction.FROM_HEAD, unit);
+
+        System.out.println("From Tail Distance: " + fromTailDistance + ", From Head Distance: " + fromHeadDistance);
 
         if(start.isOccupied()){
             if(start.getDirection() == Direction.FROM_TAIL){
-                return headDistance;
+                return fromTailDistance;
             }else{
-                return tailDistance;
+                return fromHeadDistance;
             }
-        }else if(headDistance <= tailDistance){
-            return headDistance;
+        }else if(fromTailDistance <= fromHeadDistance){
+            return fromTailDistance;
         }else{
-            return tailDistance;
+            return fromHeadDistance;
         }
     }
 
