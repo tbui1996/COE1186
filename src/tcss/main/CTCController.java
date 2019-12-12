@@ -133,8 +133,8 @@ public class CTCController implements Initializable{
     //Updates dispatch list periodically
     private void updateView() {
 
-        dispatchList.getItems().clear();
         int selected = dispatchList.getSelectionModel().getSelectedIndex();
+        dispatchList.getItems().clear();
         for (int i = 0; i < tcss.main.Main.ctc.numDispatches(); i++) {
             dispatchList.getItems().add(tcss.main.Main.ctc.getDispatch(i).getTrain());
         }

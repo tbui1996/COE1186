@@ -36,7 +36,7 @@
             </HBox>
             <HBox fx:id="dTimeLine" alignment="CENTER" prefHeight="49.0" prefWidth="600.0" spacing="5.0">
                <children>
-                  <Label text="Departure Time: " textFill="WHITE" />
+                  <Label text="Arrival Time per Stop: " textFill="WHITE" />
                   <TextField fx:id="dHour" prefHeight="25.0" prefWidth="32.0" promptText="Hr" />
                   <Label text=":" textFill="WHITE" />
                   <TextField fx:id="dMin" prefHeight="25.0" prefWidth="36.0" promptText="Min" />
@@ -46,7 +46,6 @@
             <HBox alignment="CENTER" prefHeight="64.0" prefWidth="600.0" spacing="10.0">
                <children>
                   <ChoiceBox fx:id="stopSelector" prefWidth="150.0" />
-                  <TextField fx:id="timeToStop" promptText="Time to Stop" />
                   <Button fx:id="stopConfirm" mnemonicParsing="false" onAction="#confirmStop" text="Add Stop" />
                </children>
             </HBox>
