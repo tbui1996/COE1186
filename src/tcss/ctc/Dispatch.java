@@ -119,7 +119,7 @@ public class Dispatch {
                     //Distance / Time
                     //(Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Main.ctc.blockReturner(this.line, this.schedule.getStopName(i))), 0)) / //time;
                     speedList[i] = (float) 40;
-                    authList[i] = (int) Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(i))), 1);
+                    authList[i] = (int) Main.ctc.redLayout.distanceBetweenTwoBlocks(Main.ctc.redLine.get(9), Main.ctc.redLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(i))), 1);
                 } else {
                     int time = ((this.schedule.getStopHour(i)*60*60) + (this.schedule.getStopMin(i)*60)) - ((this.schedule.getStopHour(i-1)*60*60) + this.schedule.getStopMin(i-1)*60) - 35;
                     speedList[i] = (float) (Main.ctc.redLayout.distanceBetweenTwoBlocks(Main.ctc.redLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(i-1))), Main.ctc.redLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(i))), 0) / time);
@@ -129,7 +129,7 @@ public class Dispatch {
 
             //Send back to yard when done
             speedList[speedList.length-1] = 10; //Min Speed
-            authList[authList.length - 1] = (int) Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(schedule.getStopNums() - 1))), 1);//YARD
+            authList[authList.length - 1] = (int) Main.ctc.redLayout.distanceBetweenTwoBlocks(Main.ctc.redLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(schedule.getStopNums() - 1))), Main.ctc.redLine.get(9), 1);//YARD
 
         } else {
             for (int i = 0; i < this.schedule.getStopNums(); i++) {
@@ -139,7 +139,7 @@ public class Dispatch {
                     //Distance / Time
                     //(Main.ctc.redLayout.distanceToYard(Main.ctc.redLine.get(Main.ctc.blockReturner(this.line, this.schedule.getStopName(i))), 0)) / //time;
                     speedList[i] = (float) 40;
-                    authList[i] = (int) Main.ctc.greenLayout.distanceToYard(Main.ctc.greenLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(i))), 1);
+                    authList[i] = (int) Main.ctc.greenLayout.distanceBetweenTwoBlocks(Main.ctc.greenLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(i))), Main.ctc.redLine.get(57),1);
                 } else {
                     int time = ((this.schedule.getStopHour(i)*60*60) + (this.schedule.getStopMin(i)*60)) - ((this.schedule.getStopHour(i-1)*60*60) + this.schedule.getStopMin(i-1)*60) - 35;
                     speedList[i] = (float) (Main.ctc.greenLayout.distanceBetweenTwoBlocks(Main.ctc.greenLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(i-1))), Main.ctc.greenLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(i))), 0) / time);
@@ -149,7 +149,7 @@ public class Dispatch {
 
             //Send back to yard when done
             speedList[speedList.length-1] = 10; //Min Speed
-            authList[authList.length - 1] = (int) Main.ctc.greenLayout.distanceToYard(Main.ctc.greenLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(schedule.getStopNums() - 1))), 1);//YARD
+            authList[authList.length - 1] = (int) Main.ctc.greenLayout.distanceBetweenTwoBlocks(Main.ctc.redLine.get(57), Main.ctc.greenLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(schedule.getStopNums() - 1))), 1);//YARD
         }
     }
 
