@@ -47,6 +47,8 @@ public class TrainModelController implements Initializable {
 	@FXML private Label powerLabel;
 	@FXML private Label forceLabel;
 	@FXML private Label tempLabel;
+	@FXML private Label authLabel;
+	@FXML private Label sSpeedLabel;
 
 
 	// Radio buttons
@@ -130,6 +132,8 @@ public class TrainModelController implements Initializable {
 		gradeLabel.setText("Grade: " + Math.round(train.getGrade()*100f)/100f + "%");
 		forceLabel.setText("Force: " + Math.round(train.getForce()*100f)/100f + " N");
 		tempLabel.setText("Temp: " + Math.round(train.getTemp()*10f)/10f + "° F");
+		authLabel.setText("Authority: " + train.getAuthority() + " block(s)");
+		sSpeedLabel.setText("Suggested Speed: " + Math.round(train.getSSpeed()*MPS_T0_MPH * 100f)/100f + " MPH");
 
 		if(train.getSBrake()) {
 			sBrakeLabel.setText("True");

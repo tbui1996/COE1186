@@ -92,7 +92,7 @@ public class TrainModel {
 		curV = 0;
 
 		controller = new TrainController(this);
-		controller.setSpeedLimit(speedLimit);
+		controller.setSpeedLimit(speedLimit*KPH_TO_MPS);
 		controller.passCommands(authority, suggestedSpeed);
 
 		// Add to ArrayList
