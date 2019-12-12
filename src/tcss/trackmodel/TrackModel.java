@@ -165,7 +165,7 @@ public class TrackModel {
                 currBlock.setTail(track.getBlock(currBlock.getBlockNum() - 1));
 
                 //set head of previous block to be current block
-                currBlock.getPreviousBlock().setHead(currBlock);
+                currBlock.getTail().setHead(currBlock);
             }
 
             //populate lists that are referenced later
@@ -444,22 +444,18 @@ public class TrackModel {
             travelCount++;
         }
 
-        /*
-        Block testBlock = track.getBlock((int) (Math.random() * track.getBlockHashMap().size()) + 1);
-        currBlock.setDirection(Direction.FROM_TAIL);
-        System.out.println("From Tail: " + testBlock.getBlockNum());
-        //testBlock.initTrain(0, 0, 0);
-        for(int i=0;i<30;i++){
-            testBlock = testBlock.trainGetNextBlock();
-            System.out.println("=> " + testBlock.getBlockNum());
-        }*/
 
-        //clear test train
-        //testBlock.setTrain(null);
+        Block testBlock = track.getBlock((int) (Math.random() * track.getBlockHashMap().size()) + 1);
+        testBlock.setDirection(Direction.FROM_TAIL);
+        currBlock = testBlock;
+        System.out.println("From Tail: " + currBlock.getBlockNum());
+        currBlock = currBlock.getBlockAhead(30);
+        testBlock.setDirection(Direction.NONE);
+
 
         if(track == getRedLine()){
-            Block b1 = track.getBlock(1);
-            Block b2 = track.getBlock(66);
+            Block b1 = track.getBlock(7);
+            Block b2 = track.getBlock(9);
             System.out.println("Distance (meters) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 0));
             System.out.println("Distance (meters) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 0));
             System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 1));

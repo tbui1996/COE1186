@@ -1,5 +1,6 @@
 package tcss.trackmodel;
 
+import javafx.util.Pair;
 import tcss.trainmodel.TrainModel;
 
 enum Failure{
@@ -43,6 +44,8 @@ public class Block{
     private Beacon beacon;
     private TrainModel train;
 
+    private int trainID;
+
     public Block(){
         setLine(-1);
         setSection('\u0000');
@@ -62,7 +65,7 @@ public class Block{
         setPassengerUpdateDone(false);
 
         setFailure(Failure.NONE);
-        setDirection(Direction.FROM_TAIL);
+        setDirection(Direction.NONE);
 
         setHead(null);
         setTail(null);
@@ -73,6 +76,8 @@ public class Block{
         setRXR(null);
         setBeacon(null);
         setTrain(null);
+
+        trainID = 0;
     }
 
     public Block(Block b){
@@ -205,11 +210,193 @@ public class Block{
     }
 
     public Block getNextBlock(){
-        return head;
+        if(getDirection() == Direction.NONE){
+            return getHead();
+        }
+        return getBlockAhead(1);
     }
 
     public Block getPreviousBlock(){
-        return tail;
+        if(getDirection() == Direction.NONE){
+            return getTail();
+        }
+        return getBlockBehind(1);
+    }
+
+    public Block getBlockAhead(int numAhead){
+
+        Block currBlock = this;
+
+        if(numAhead <= 0){
+            return currBlock;
+        }
+
+        Direction dir = getDirection();
+
+        for(int i=0;i<numAhead;i++){
+            Pair<Block, Direction> currPair = getBlockAheadHelper(currBlock, dir);
+            currBlock = currPair.getKey();
+            dir = currPair.getValue();
+            System.out.println("=> " + currBlock.getBlockNum());
+        }
+
+        return currBlock;
+    }
+
+    public Pair<Block, Direction> getBlockAheadHelper(Block currBlock, Direction dir){
+
+        Block retBlock;
+
+        if(currBlock.getBranch() == null){
+
+            if(dir == Direction.FROM_TAIL){
+                retBlock = currBlock.getHead();
+            }else if(dir == Direction.FROM_HEAD){
+                retBlock = currBlock.getTail();
+            }else{
+                System.out.println("getBlockAheadHelper(): current block has no valid direction specified 1");
+                return null;
+            }
+        }else{
+            if(currBlock == currBlock.getBranch().getHead()){
+
+                //branching into a head
+                if(dir == Direction.FROM_BRANCH || dir == Direction.FROM_HEAD){
+                    //if from branch or from head, to tail
+                    retBlock = currBlock.getTail();
+                }else if(dir == Direction.FROM_TAIL){
+                    //if from tail
+
+                    if(!currBlock.getSwitch().getStraight()){
+                        //if switch is branched, to branch
+                        retBlock = currBlock.getBranch();
+                    }else{
+                        //else, to head
+                        retBlock = currBlock.getHead();
+                    }
+                }else{
+                    System.out.println("getBlockAheadHelper(): current block has no valid direction specified 2");
+                    return null;
+                }
+
+            }else{
+                //branching into a tail
+                if(dir == Direction.FROM_BRANCH || dir == Direction.FROM_TAIL){
+                    //if from branch or from tail, to head
+                    retBlock = currBlock.getHead();
+                }else if(dir == Direction.FROM_HEAD){
+
+                    //if from head
+                    if(!currBlock.getSwitch().getStraight()){
+                        //if switch is branched, to branch
+                        retBlock = currBlock.getBranch();
+                    }else{
+                        //else, to tail
+                        retBlock = currBlock.getTail();
+                    }
+                }else{
+                    System.out.println("getBlockAheadHelper(): current block has no direction specified 3");
+                    return null;
+                }
+            }
+        }
+
+        //update current direction of next block
+        Direction retDir;
+        if(currBlock == retBlock.getHead()){
+            retDir = Direction.FROM_HEAD;
+        }else if(currBlock == retBlock.getTail()){
+            retDir = Direction.FROM_TAIL;
+        }else if(retBlock.getBranch() != null){
+            retDir = Direction.FROM_BRANCH;
+        }else{
+            System.out.println("getBlockAheadHelper(): no references on returned block point to current block");
+            return null;
+        }
+
+        Pair<Block, Direction> retPair = new Pair<Block, Direction>(retBlock, retDir);
+        return retPair;
+    }
+
+    public Block getBlockBehind(int numBehind) {
+        Block currBlock = this;
+
+        if(numBehind <= 0){
+            return currBlock;
+        }
+
+        Direction dir = getOppositeDirection();
+
+        for(int i=0;i<numBehind;i++){
+            Pair<Block, Direction> currPair = getBlockAheadHelper(currBlock, dir);
+            currBlock = currPair.getKey();
+            dir = currPair.getValue();
+            System.out.println("=> " + currBlock.getBlockNum());
+        }
+
+        return currBlock;
+    }
+
+    public Direction getOppositeDirection(){
+
+        if(getBranch() == null){
+            //no branch, only head and tail, direct opposites
+            if(getDirection() == Direction.FROM_TAIL){
+                return Direction.FROM_HEAD;
+            }else if(getDirection() == Direction.FROM_HEAD){
+                return Direction.FROM_HEAD;
+            }else{
+                System.out.println("getOppositeDirection(): current block has no valid direction specified 1");
+                return Direction.NONE;
+            }
+        }else{
+            if(this == getBranch().getHead()){
+
+                //branching into a head
+                if(getDirection() == Direction.FROM_BRANCH || getDirection() == Direction.FROM_HEAD){
+                    //if from branch or from head, from tail
+                    return Direction.FROM_TAIL;
+                }else if(getDirection() == Direction.FROM_TAIL){
+                    //if from tail
+
+                    if(!getSwitch().getStraight()){
+                        //if switch is branched, from branch
+                        return Direction.FROM_BRANCH;
+                    }else{
+                        //else, from head
+                        return Direction.FROM_HEAD;
+                    }
+                }else{
+                    System.out.println("getOppositeDirection(): current block has no valid direction specified 2");
+                    return Direction.NONE;
+                }
+
+            }else{
+                //branching into a tail
+                if(getDirection() == Direction.FROM_BRANCH || getDirection() == Direction.FROM_TAIL){
+                    //if from branch or from tail, from head
+                    return Direction.FROM_HEAD;
+                }else if(getDirection() == Direction.FROM_HEAD){
+
+                    //if from head
+                    if(!getSwitch().getStraight()){
+                        //if switch is branched, from branch
+                        return Direction.FROM_BRANCH;
+                    }else{
+                        //else, from tail
+                        return Direction.FROM_TAIL;
+                    }
+                }else{
+                    System.out.println("getOppositeDirection(): current block has no direction specified 3");
+                    return Direction.NONE;
+                }
+            }
+        }
+    }
+
+
+    public boolean moveTrain(){
+        return true;
     }
 
     public boolean setSuggSpeedAndAuth(float ss, int a){
@@ -260,7 +447,7 @@ public class Block{
             System.out.println(getTrain() + " " + isStartBlock() + " " + getBlockNum());
             if(!isOccupied() && isStartBlock()){
                 System.out.println("Initializing train on block " + getBlockNum());
-                return initTrain(ss, a, 0);
+                return initTrain(ss, a, trainID++);
             }else{
                 //pass values to train on block
                 getTrain().passCommands(ss, a);
