@@ -458,8 +458,8 @@ public class TrackModel {
         //testBlock.setTrain(null);
 
         if(track == getRedLine()){
-            Block b1 = track.getBlock(1);
-            Block b2 = track.getBlock(66);
+            Block b1 = track.getBlock(7);
+            Block b2 = track.getBlock(9);
             System.out.println("Distance (meters) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 0));
             System.out.println("Distance (meters) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 0));
             System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 1));
