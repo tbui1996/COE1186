@@ -35,8 +35,8 @@ public class PLC {
         boolean result = true;
 
         for(int i = 0; i < 5; i++){
-            jexlcontent.set("Block 1 Occupied", nextBlock.isOccupied());
-            jexlcontent.set("Block 2 Occupied", destinationBlock.isOccupied());
+            jexlcontent.set("currentBlockOccupied", nextBlock.isOccupied());
+            jexlcontent.set("nextBlockOccupied", destinationBlock.isOccupied());
 
             result &= (boolean) expression.evaluate(jexlcontent);
 
@@ -57,8 +57,8 @@ public class PLC {
         JexlContext jexlcontent = new MapContext();
 
         for(int i=0; i < 5; i++){
-            jexlcontent.set("Block 1 Occupied", nextBlock.isOccupied());
-            jexlcontent.set("Block 2 Occupied", destinationBlock.isOccupied());
+            jexlcontent.set("nextBlockOccupied", nextBlock.isOccupied());
+            jexlcontent.set("nextnextBlockOccupied", destinationBlock.isOccupied());
 
             result &= (boolean) expression.evaluate(jexlcontent);
         }
@@ -73,15 +73,16 @@ public class PLC {
     private boolean vitalRXR(Block prevBlock, Block RXRBlock){
         Expression expression = jexlEvaluator.createExpression(RXR);
         JexlContext jexlcontent = new MapContext();
-        return vitalSwitchCalculation(prevBlock, RXRBlock, expression, jexlcontent);
+        return vitalRXRCalculation(prevBlock, RXRBlock, expression, jexlcontent);
     }
 
     private boolean vitalRXRCalculation(Block prevBlock, Block RXRBlock, Expression expression, JexlContext jexlcontent){
         boolean result = true;
-
+        boolean activated = RXRBlock.getRXR().isDown();
         for(int i= 0; i < 7; i++){
-            jexlcontent.set("Block 1 Occupied", prevBlock.isOccupied());
-            jexlcontent.set("Block 2 Occupied", RXRBlock.isOccupied());
+            jexlcontent.set("previousBlockOccupied", prevBlock.isOccupied());
+            jexlcontent.set("currentBlockOccupied", RXRBlock.isOccupied());
+            jexlcontent.set("nextBlockOccupied", activated);
 
             result &= (boolean) expression.evaluate(jexlcontent);
         }
@@ -102,9 +103,9 @@ public class PLC {
         boolean result = true;
 
         for(int i= 0; i < 7; i++){
-            jexlcontent.set("Block 1 Occupied", prevBlock.isOccupied());
-            jexlcontent.set("Block 2 Occupied", MaintenanceBlock.isOccupied());
-            jexlcontent.set("Block 3 Occupied", nextBlock.isOccupied());
+            jexlcontent.set("previousBlockOccupied", prevBlock.isOccupied());
+            jexlcontent.set("currentBlockOccupied", MaintenanceBlock.isOccupied());
+            jexlcontent.set("nextBlockOccupied", nextBlock.isOccupied());
 
             result &= (boolean) expression.evaluate(jexlcontent);
         }
@@ -120,8 +121,8 @@ public class PLC {
         Expression expression = jexlEvaluator.createExpression(lightslogic);
         JexlContext jexlcontent = new MapContext();
         for(int i=0; i < 7; i++){
-            jexlcontent.set("Normal Block occupied", normalBlock.getSwitch().getStraightDest());
-            jexlcontent.set("Alternative Block occupied", alternativeBlock.getSwitch().getBranchDest());
+            jexlcontent.set("normalBlockOccupied", normalBlock.getSwitch().getStraightDest());
+            jexlcontent.set("alternativeBlockOccupied", alternativeBlock.getSwitch().getBranchDest());
 
             result &= (boolean) expression.evaluate(jexlcontent);
         }
