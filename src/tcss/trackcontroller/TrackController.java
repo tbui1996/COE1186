@@ -169,7 +169,7 @@ public class TrackController {
         //if next block is crossing enter RXR
         //need to know how next block is a light block
         if (nextBlock.getRXR() != null) {
-            nextBlock.setRXR(nextBlock.getRXR());
+            nextBlock.setSuggSpeedAndAuth(-3, 0);
             if (!(plc.verifyRXR(currentBlock.getPreviousBlock(),currentBlock,nextBlock))) {
                 currentBlock.setSuggSpeedAndAuth(0, 0);
                 return false;
@@ -241,10 +241,11 @@ public class TrackController {
         boolean result = plc.vitalSwitch(currentswitchblock, nextBlock);
 
         if(result){
-            currentswitchblock.getSwitch().setStraight(!switchposition);
+            currentswitchblock.setSuggSpeedAndAuth(-4,1);
             return true;
         } else{
             System.out.println("Cannot switch.");
+            currentswitchblock.setSuggSpeedAndAuth(-4,0);
         }
         return false;
 
