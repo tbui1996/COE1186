@@ -159,7 +159,7 @@ public class WaysideController {
             this.auth = auth;
             canProceed = proceed(0, this.blockId,nextBlock, upcomingBlock,auth,SS);
             if(canProceed) {
-                greenTrack.getBlock(ID).setSuggSpeedAndAuth(this.ss, this.auth);
+                greenTrack.getBlock(ID).setSuggSpeedAndAuth(ss, auth);
             } else {
                 greenTrack.getBlock(ID).setSuggSpeedAndAuth(0, 0);
             }
@@ -228,19 +228,19 @@ public class WaysideController {
 
         return false;
     }
-    public boolean maintenanceRequest(int line, int blockId){
+    public boolean maintenanceRequest(int line, int blockId, boolean flag){
         TrackController tc;
         ArrayList<Integer> blocklist = new ArrayList<>();
 
         Block curBlock = null;
 
         if(line == 0){
-            this.line = greenTrack.getBlockList().get(blockId).getLine();
+            this.line = 0;
             curBlock = track.getBlockList().get(blockId);
         }
         if(line == 1){
             this.line = redTrack.getBlockList().get(blockId).getLine();
-            curBlock = track.getBlockList().get(blockId);
+            curBlock = redTrack.getBlockList().get(blockId);
         }
         int next = curBlock.getNextBlock().getBlockNum();
         int prev = curBlock.getPreviousBlock().getBlockNum();
@@ -252,7 +252,7 @@ public class WaysideController {
         blocklist.add(blockId);
         tc = getTC(line, blocklist);
         if(tc!=null)
-            return tc.maintenanceRequest(line,blockId);
+            return tc.maintenanceRequest(line,blockId, flag);
 
         return false;
     }

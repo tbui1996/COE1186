@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="609.0" prefWidth="784.0" styleClass="body" stylesheets="@../css/TrainModel.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.TrainModelController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="651.0" prefWidth="784.0" styleClass="body" stylesheets="@../css/TrainModel.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.main.TrainModelController">
    <children>
       <VBox>
          <children>
@@ -30,14 +30,16 @@
             </HBox>
          </children>
       </VBox>
-      <VBox alignment="CENTER" layoutY="91.0" prefHeight="486.0" prefWidth="784.0">
+      <VBox alignment="CENTER" layoutY="91.0" prefHeight="561.0" prefWidth="784.0">
          <children>
-            <HBox prefHeight="368.0" prefWidth="784.0">
+            <HBox prefHeight="425.0" prefWidth="784.0">
                <children>
                   <VBox prefHeight="368.0" prefWidth="388.0">
                      <children>
                         <Label fx:id="curSpeedLabel" text="Current Speed:" />
                         <Label fx:id="accelLabel" text="Current Acceleration:" />
+                        <Label fx:id="authLabel" text="Authority:" />
+                        <Label fx:id="sSpeedLabel" text="Suggested Speed:" />
                         <Label fx:id="powerLabel" text="Power:" />
                         <Label fx:id="massLabel" text="Mass:" />
                         <Label fx:id="gradeLabel" text="Grade:" />

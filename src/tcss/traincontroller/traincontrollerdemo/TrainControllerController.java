@@ -47,6 +47,7 @@ public class TrainControllerController implements Initializable {
     @FXML private Circle d1Status, d2Status, d3Status, d4Status, d5Status, d6Status, d7Status, d8Status;
 
     private TrainController tc;
+    private String id;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -77,8 +78,9 @@ public class TrainControllerController implements Initializable {
         trainButton.setDisable(true);
         trainChoice.getItems().add("Select Train");
         // Testing
-        for(TrainController t: TrainController.TrainControllerList)
+        for(TrainController t: TrainController.TrainControllerList) {
             trainChoice.getItems().add("Train " + t.getID());
+        }
         trainChoice.setValue("Select Train");
         trainChoice.setTooltip(new Tooltip("Select a train to view"));
         trainChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
@@ -90,7 +92,7 @@ public class TrainControllerController implements Initializable {
                     cur.update();
                     tc = cur;
                     idLabel.setText("ID: " + tc.getID());
-                    suggestedSpeedLabel.setText("Suggested Speed: " + tc.getSSpeed());
+                    suggestedSpeedLabel.setText("Suggested Speed: " + tc.getSuggestedSpeedInMPH() + " MPH");
                     setPointInput.setPromptText("" + tc.getsetpointSpeed());
                     setTempInput.setPromptText("" + tc.getTemp());
                     trainButton.setDisable(false);
@@ -140,6 +142,12 @@ public class TrainControllerController implements Initializable {
         window.setTitle("Engine");
     }
 
+    public void reloadDropdown(){
+        for(TrainController t: TrainController.TrainControllerList)
+            trainChoice.getItems().add("Train " + t.getID());
+        trainChoice.setValue(id);
+    }
+
     public void update(){
         if(tc == null) { return; }
         if(opModeToggle.isSelected()){
@@ -163,10 +171,52 @@ public class TrainControllerController implements Initializable {
             eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
         }
         opModeToggle.setSelected(tc.getOpMode()); //set toggle to true if it is in manual
-        powerCommandLabel.setText("Power: " + tc.getPWRCMD());
+        powerCommandLabel.setText("Power: " + String.format("%.2f", tc.getPWRCMD()/100) + " KW");
         kilabel.setText("Ki: " + tc.getKi());
         kplabel.setText("Kp: " + tc.getKp());
-        currentSpeedLabel.setText("Current Speed: " + tc.getCurrentSpeed());
+        currentSpeedLabel.setText("Current Speed: " + tc.getCurrentSpeedInCustomary() + " MPH");
+        updateDoors();
+    }
+
+    public void updateDoors(){
+        boolean[] doorStatus = tc.getDoorStatus();
+        if(doorStatus[0]){
+            d1Status.setFill(Color.GREEN);
+        } else {
+            d1Status.setFill(Color.RED);
+        }
+        if(doorStatus[1]){
+            d2Status.setFill(Color.GREEN);
+        } else {
+            d2Status.setFill(Color.RED);
+        }
+        if(doorStatus[2]){
+            d3Status.setFill(Color.GREEN);
+        } else {
+            d3Status.setFill(Color.RED);
+        }
+        if(doorStatus[3]){
+            d4Status.setFill(Color.GREEN);
+        } else {
+            d4Status.setFill(Color.RED);
+        }
+        if(doorStatus[4]){
+            d5Status.setFill(Color.GREEN);
+        } else {
+            d5Status.setFill(Color.RED);
+        }if(doorStatus[5]){
+            d6Status.setFill(Color.GREEN);
+        } else {
+            d6Status.setFill(Color.RED);
+        }if(doorStatus[6]){
+            d7Status.setFill(Color.GREEN);
+        } else {
+            d7Status.setFill(Color.RED);
+        }if(doorStatus[7]){
+            d8Status.setFill(Color.GREEN);
+        } else {
+            d8Status.setFill(Color.RED);
+        }
 
     }
 
@@ -278,6 +328,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d1Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor1(Event event) throws Exception{
@@ -290,6 +341,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d2Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor2(Event event) throws Exception{
@@ -302,6 +354,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d3Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor3(Event event) throws Exception{
@@ -314,6 +367,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d4Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor4(Event event) throws Exception{
@@ -325,6 +379,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d5Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor5(Event event) throws Exception{
@@ -336,6 +391,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d6Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor6(Event event) throws Exception{
@@ -347,6 +403,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d7Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor7(Event event) throws Exception{
@@ -358,6 +415,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d8Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
 

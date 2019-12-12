@@ -15,6 +15,7 @@
          <children>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
                <children>
+                  <Button fx:id="backButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#goBack" styleClass="backButton" />
                   <CheckBox fx:id="autoButton" mnemonicParsing="false" text="Automatic Mode" textFill="WHITE" />
                   <Button fx:id="browseSchedule" disable="true" mnemonicParsing="false" onAction="#importSchedule" text="Browse..." />
                </children>
