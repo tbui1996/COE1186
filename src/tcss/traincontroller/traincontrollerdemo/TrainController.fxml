@@ -47,6 +47,7 @@
                      <font>
                         <Font size="12.0" />
                      </font></Label>
+                  <Label fx:id="commandedSpeedLabel" text="Commanded Speed: " />
                   <HBox prefHeight="47.0" prefWidth="376.0">
                      <children>
                         <Label text="Setpoint Speed: ">

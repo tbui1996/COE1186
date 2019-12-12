@@ -128,7 +128,7 @@ public class Dispatch {
             }
 
             //Send back to yard when done
-            speedList[speedList.length-1] = 10; //Min Speed
+            speedList[speedList.length-1] = 40; //Min Speed
             authList[authList.length - 1] = (int) Main.ctc.redLayout.distanceBetweenTwoBlocks(Main.ctc.redLine.get(Main.ctc.blockReturner(this.getLine(), this.schedule.getStopName(schedule.getStopNums() - 1))), Main.ctc.redLine.get(9), 1);//YARD
 
         } else {

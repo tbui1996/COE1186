@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import tcss.traincontroller.TrainController;
 
+import javax.swing.*;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
@@ -43,31 +44,33 @@ public class TrainControllerController implements Initializable {
     @FXML private Label lightsDisplay;
     @FXML private Label powerCommandLabel, kilabel, kplabel;
     @FXML private Label currentSpeedLabel;
+    @FXML private Label commandedSpeedLabel;
     @FXML private TextField setTempInput;
     @FXML private Circle d1Status, d2Status, d3Status, d4Status, d5Status, d6Status, d7Status, d8Status;
 
     private TrainController tc;
+    private int id;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        DecimalFormat format = new DecimalFormat( "#.0" );
-        setPointInput.setTextFormatter( new TextFormatter<>(c -> {
-                if ( c.getControlNewText().isEmpty() )
-                    return c;
-                ParsePosition parsePosition = new ParsePosition( 0 );
-                Object object = format.parse( c.getControlNewText(), parsePosition );
-                if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() ){
-                    return null;
-                } else {
-                    return c;
-                }
-        }));
-        setTempInput.setTextFormatter( new TextFormatter<>(c -> {
-            if ( c.getControlNewText().isEmpty() )
+        DecimalFormat format = new DecimalFormat("#.0");
+        setPointInput.setTextFormatter(new TextFormatter<>(c -> {
+            if (c.getControlNewText().isEmpty())
                 return c;
-            ParsePosition parsePosition = new ParsePosition( 0 );
-            Object object = format.parse( c.getControlNewText(), parsePosition );
-            if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() ){
+            ParsePosition parsePosition = new ParsePosition(0);
+            Object object = format.parse(c.getControlNewText(), parsePosition);
+            if (object == null || parsePosition.getIndex() < c.getControlNewText().length()) {
+                return null;
+            } else {
+                return c;
+            }
+        }));
+        setTempInput.setTextFormatter(new TextFormatter<>(c -> {
+            if (c.getControlNewText().isEmpty())
+                return c;
+            ParsePosition parsePosition = new ParsePosition(0);
+            Object object = format.parse(c.getControlNewText(), parsePosition);
+            if (object == null || parsePosition.getIndex() < c.getControlNewText().length()) {
                 return null;
             } else {
                 return c;
@@ -77,7 +80,7 @@ public class TrainControllerController implements Initializable {
         trainButton.setDisable(true);
         trainChoice.getItems().add("Select Train");
         // Testing
-        for(TrainController t: TrainController.TrainControllerList)
+        for (TrainController t : TrainController.TrainControllerList)
             trainChoice.getItems().add("Train " + t.getID());
         trainChoice.setValue("Select Train");
         trainChoice.setTooltip(new Tooltip("Select a train to view"));
@@ -85,15 +88,16 @@ public class TrainControllerController implements Initializable {
             @Override
 
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-                if((Integer) number2 > 0) {
-                    TrainController cur = TrainController.TrainControllerList.get((Integer)number2-1);
+                if ((Integer) number2 > 0) {
+                    TrainController cur = TrainController.TrainControllerList.get((Integer) number2 - 1);
                     cur.update();
                     tc = cur;
+                    id = tc.getID();
                     initializeDoors();
                     idLabel.setText("ID: " + tc.getID());
-                    suggestedSpeedLabel.setText("Suggested Speed: " + tc.getSuggestedSpeedInMPH() + " MPH");
-                    setPointInput.setPromptText("" + tc.getsetpointSpeed() + " MPH");
-                    setTempInput.setPromptText("" + tc.getTemp() + " F");
+                    suggestedSpeedLabel.setText("Suggested Speed: " + String.format("%.2f", tc.getSuggestedSpeedInMPH()) + " MPH");
+                    setPointInput.setPromptText("" + String.format("%.2f", tc.getsetpointSpeedInCustomary()) + " MPH");
+                    setTempInput.setPromptText("" + String.format("%.2f", tc.getTemp()) + " ºF");
                     trainButton.setDisable(false);
                     update();
                 } else {
@@ -129,6 +133,16 @@ public class TrainControllerController implements Initializable {
 
     }
 
+
+
+    public void reloadDropdown(){
+        for(TrainController t: TrainController.TrainControllerList) {
+            trainChoice.getItems().add("Train " + t.getID());
+        }
+        trainChoice.setValue(id);
+    }
+
+
     /**
      * In this method we want to allow the user to see other information
      * @param actionEvent
@@ -148,7 +162,8 @@ public class TrainControllerController implements Initializable {
         } else {
             opModeToggle.setText("Enter Manual Mode");
         }
-        authLabel.setText("Authority: " + tc.getAuthority() + "Blocks");
+        suggestedSpeedLabel.setText("Suggested Speed: " + String.format("%.2f", tc.getSuggestedSpeedInMPH()) + " MPH");
+        authLabel.setText("Authority: " + tc.getAuthority() + " Blocks");
         if (tc.getUnderground()){
             lightsDisplay.setText("ON");
             lightsDisplay.setTextFill(Color.GREEN);
@@ -165,9 +180,10 @@ public class TrainControllerController implements Initializable {
         }
         opModeToggle.setSelected(tc.getOpMode()); //set toggle to true if it is in manual
         powerCommandLabel.setText("Power: " + String.format("%.2f", tc.getPWRCMD()/1000) + " KW");
+        commandedSpeedLabel.setText("Commanded Speed: " + String.format("%.2f", tc.getCommandedSpeedInCustomary()) + " MPH");
         kilabel.setText("Ki: " + tc.getKi());
         kplabel.setText("Kp: " + tc.getKp());
-        currentSpeedLabel.setText("Current Speed: " + tc.getCurrentSpeedInCustomary() + " MPH");
+        currentSpeedLabel.setText("Current Speed: " + String.format("%.2f", tc.getCurrentSpeedInCustomary()) + " MPH");
         updateDoors();
     }
 
@@ -247,20 +263,20 @@ public class TrainControllerController implements Initializable {
        try {
            try {
                float newSPSpeed = Float.parseFloat(setPointInput.getText());
-               float suggestedSpeed = tc.getSSpeed();
-               float speedLimit = tc.getSpeedLimit();
-               System.out.printf("SPI: " + newSPSpeed + " with ss: " + suggestedSpeed + " and sl: " + speedLimit);
+               float suggestedSpeed = (float)tc.getSuggestedSpeedInMPH();
+               float speedLimit = (float)tc.getSpeedLimitInCustomary();
+               //System.out.printf("SPI: " + newSPSpeed + " with ss: " + suggestedSpeed + " and sl: " + speedLimit);
                if(newSPSpeed > suggestedSpeed){
                    newSPSpeed = suggestedSpeed;
                }
                if(newSPSpeed > speedLimit){
                    newSPSpeed = speedLimit;
                }
-               tc.setSetpointSpeed(newSPSpeed);
+               tc.setSetpointSpeedFromCustomary(newSPSpeed);
                tc.update();
                tc.updateModelCommandedSpeed();
                setPointInput.setText("");
-               setPointInput.setPromptText("" + tc.getsetpointSpeed());
+               setPointInput.setPromptText("" + tc.getsetpointSpeedInCustomary() + " MPH");
            } catch (NumberFormatException e) {
                System.out.println("nfe found");
            }

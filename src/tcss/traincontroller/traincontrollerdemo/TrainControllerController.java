@@ -78,8 +78,9 @@ public class TrainControllerController implements Initializable {
         trainButton.setDisable(true);
         trainChoice.getItems().add("Select Train");
         // Testing
-        for(TrainController t: TrainController.TrainControllerList)
+        for(TrainController t: TrainController.TrainControllerList) {
             trainChoice.getItems().add("Train " + t.getID());
+        }
         trainChoice.setValue("Select Train");
         trainChoice.setTooltip(new Tooltip("Select a train to view"));
         trainChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
