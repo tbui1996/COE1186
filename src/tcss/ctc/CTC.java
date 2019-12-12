@@ -251,7 +251,7 @@ public class CTC {
                 //If it's been closed long enough
                 if (temp.getTimePassed() == temp.getLength() * 5 * 60) {
                     //Send request to reopen block
-
+                    Main.tc.maintenanceRequest(temp.getLine(), temp.getBlock());
                 }
                 //Update wait time
                 else {
