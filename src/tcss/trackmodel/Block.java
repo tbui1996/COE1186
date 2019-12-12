@@ -210,8 +210,17 @@ public class Block{
     }
 
     public Block getNextBlock(){
-
+        if(getDirection() == Direction.NONE){
+            return getHead();
+        }
         return getBlockAhead(1);
+    }
+
+    public Block getPreviousBlock(){
+        if(getDirection() == Direction.NONE){
+            return getTail();
+        }
+        return getBlockBehind(1);
     }
 
     public Block getBlockAhead(int numAhead){
@@ -309,9 +318,82 @@ public class Block{
         return retPair;
     }
 
-    public Block getPreviousBlock(){
-        return tail;
+    public Block getBlockBehind(int numBehind) {
+        Block currBlock = this;
+
+        if(numBehind <= 0){
+            return currBlock;
+        }
+
+        Direction dir = getOppositeDirection();
+
+        for(int i=0;i<numBehind;i++){
+            Pair<Block, Direction> currPair = getBlockAheadHelper(currBlock, dir);
+            currBlock = currPair.getKey();
+            dir = currPair.getValue();
+            System.out.println("=> " + currBlock.getBlockNum());
+        }
+
+        return currBlock;
     }
+
+    public Direction getOppositeDirection(){
+
+        if(getBranch() == null){
+            //no branch, only head and tail, direct opposites
+            if(getDirection() == Direction.FROM_TAIL){
+                return Direction.FROM_HEAD;
+            }else if(getDirection() == Direction.FROM_HEAD){
+                return Direction.FROM_HEAD;
+            }else{
+                System.out.println("getOppositeDirection(): current block has no valid direction specified 1");
+                return Direction.NONE;
+            }
+        }else{
+            if(this == getBranch().getHead()){
+
+                //branching into a head
+                if(getDirection() == Direction.FROM_BRANCH || getDirection() == Direction.FROM_HEAD){
+                    //if from branch or from head, from tail
+                    return Direction.FROM_TAIL;
+                }else if(getDirection() == Direction.FROM_TAIL){
+                    //if from tail
+
+                    if(!getSwitch().getStraight()){
+                        //if switch is branched, from branch
+                        return Direction.FROM_BRANCH;
+                    }else{
+                        //else, from head
+                        return Direction.FROM_HEAD;
+                    }
+                }else{
+                    System.out.println("getOppositeDirection(): current block has no valid direction specified 2");
+                    return Direction.NONE;
+                }
+
+            }else{
+                //branching into a tail
+                if(getDirection() == Direction.FROM_BRANCH || getDirection() == Direction.FROM_TAIL){
+                    //if from branch or from tail, from head
+                    return Direction.FROM_HEAD;
+                }else if(getDirection() == Direction.FROM_HEAD){
+
+                    //if from head
+                    if(!getSwitch().getStraight()){
+                        //if switch is branched, from branch
+                        return Direction.FROM_BRANCH;
+                    }else{
+                        //else, from tail
+                        return Direction.FROM_TAIL;
+                    }
+                }else{
+                    System.out.println("getOppositeDirection(): current block has no direction specified 3");
+                    return Direction.NONE;
+                }
+            }
+        }
+    }
+
 
     public boolean moveTrain(){
         return true;

@@ -165,7 +165,7 @@ public class TrackModel {
                 currBlock.setTail(track.getBlock(currBlock.getBlockNum() - 1));
 
                 //set head of previous block to be current block
-                currBlock.getPreviousBlock().setHead(currBlock);
+                currBlock.getTail().setHead(currBlock);
             }
 
             //populate lists that are referenced later
