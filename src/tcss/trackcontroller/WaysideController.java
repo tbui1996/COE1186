@@ -228,7 +228,7 @@ public class WaysideController {
 
         return false;
     }
-    public boolean maintenanceRequest(int line, int blockId){
+    public boolean maintenanceRequest(int line, int blockId, boolean flag){
         TrackController tc;
         ArrayList<Integer> blocklist = new ArrayList<>();
 
@@ -239,8 +239,8 @@ public class WaysideController {
             curBlock = track.getBlockList().get(blockId);
         }
         if(line == 1){
-            this.line = 1;
-            curBlock = track.getBlockList().get(blockId);
+            this.line = redTrack.getBlockList().get(blockId).getLine();
+            curBlock = redTrack.getBlockList().get(blockId);
         }
         int next = curBlock.getNextBlock().getBlockNum();
         int prev = curBlock.getPreviousBlock().getBlockNum();
@@ -252,7 +252,7 @@ public class WaysideController {
         blocklist.add(blockId);
         tc = getTC(line, blocklist);
         if(tc!=null)
-            return tc.maintenanceRequest(line,blockId);
+            return tc.maintenanceRequest(line,blockId, flag);
 
         return false;
     }

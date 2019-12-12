@@ -100,7 +100,7 @@ class TrackControllerTest {
 
     @Test
     void maintenanceRequest(){
-        boolean attempt = redTC.get(0).maintenanceRequest(1,1);
+        boolean attempt = redTC.get(0).maintenanceRequest(1,1, true);
         assertTrue(attempt);
     }
 

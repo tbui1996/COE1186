@@ -132,6 +132,7 @@ public class CTCController implements Initializable{
     }
 
     //Closes a Block for Maintenance
+    @FXML
     public void closeBlock(ActionEvent e) throws Exception {
         //System.out.println("Close block ");
         String [] loc = locLabel.getText().split(" ",2);

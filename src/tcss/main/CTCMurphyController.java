@@ -132,9 +132,9 @@ public class CTCMurphyController implements Initializable {
     public void blockFailure() {
         String [] split = blockSelector.getSelectionModel().getSelectedItem().split(": ",2);
         if (lineSelector.getSelectionModel().getSelectedItem().toUpperCase().equals("RED")) {
-            Main.tc.maintenanceRequest(1, Integer.parseInt(split[0]));
+            Main.tc.maintenanceRequest(1, Integer.parseInt(split[0]),true);
         } else {
-            Main.tc.maintenanceRequest(0, Integer.parseInt(split[0]));
+            Main.tc.maintenanceRequest(0, Integer.parseInt(split[0]), true);
         }
     }
 

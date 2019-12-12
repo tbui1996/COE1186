@@ -5,9 +5,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import tcss.main.Main;
-import tcss.trackcontroller.TrackController;
 import tcss.trackmodel.Block;
-import tcss.trackmodel.Station;
 import tcss.trackmodel.Track;
 import tcss.trackmodel.TrackModel;
 import tcss.trainmodel.TrainModel;
@@ -275,9 +273,9 @@ public class CTC {
                 if (temp.getTimePassed() == temp.getLength() * 5 * 60) {
                     //Send request to reopen block
                     if (temp.getLine() == 1) {
-                        Main.tc.maintenanceRequest(temp.getLine(), temp.getBlock());
+                        Main.tc.maintenanceRequest(temp.getLine(), temp.getBlock(), false);
                     } else {
-                        Main.tc.maintenanceRequest(0, temp.getBlock());
+                        Main.tc.maintenanceRequest(0, temp.getBlock(), false);
                     }
                 }
                 //Update wait time
@@ -293,9 +291,9 @@ public class CTC {
                         //Send request if block is not occupied
                         if (!getBlock(temp.getLine(), temp.getBlock()).isOccupied()) {
                             if (temp.getLine() == 1) {
-                                Main.tc.maintenanceRequest(temp.getLine(), temp.getBlock());
+                                Main.tc.maintenanceRequest(temp.getLine(), temp.getBlock(), true);
                             } else {
-                                Main.tc.maintenanceRequest(0, temp.getBlock());
+                                Main.tc.maintenanceRequest(0, temp.getBlock(), true);
                             }
                             temp.setActive(true);
                         }
