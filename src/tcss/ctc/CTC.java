@@ -265,7 +265,7 @@ public class CTC {
                     if (Main.getSimTime().getHour() > temp.getHour() || Main.getSimTime().getMin() >= temp.getMin()) {
                         //Send request if block is not occupied
                         if (!getBlock(temp.getLine(), temp.getBlock()).isOccupied()) {
-
+                            Main.tc.maintenanceRequest(temp.getLine(), temp.getBlock());
                             temp.setActive(true);
                         }
                     }
