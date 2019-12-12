@@ -43,6 +43,8 @@ public class Block{
     private Beacon beacon;
     private TrainModel train;
 
+    private int trainID;
+
     public Block(){
         setLine(-1);
         setSection('\u0000');
@@ -73,6 +75,8 @@ public class Block{
         setRXR(null);
         setBeacon(null);
         setTrain(null);
+
+        trainID = 0;
     }
 
     public Block(Block b){
@@ -183,11 +187,17 @@ public class Block{
         setDirection(Direction.NONE);
         setPassengerUpdateDone(false);
 
+        //if next block has beacon, set train beacon data
+        if(retBlock.getBeacon() != null){
+            retBlock.getTrain().setBeacon(retBlock.getBeacon().getData().toCharArray());
+        }
+
         //set direction of next block
         if(this == retBlock.getHead()){
             retBlock.setDirection(Direction.FROM_HEAD);
         }else if(this == retBlock.getTail()){
             retBlock.setDirection(Direction.FROM_TAIL);
+            retBlock.getTrain().setGrade(retBlock.getGrade() * -1);
         }else if(retBlock.getBranch() != null){
             retBlock.setDirection(Direction.FROM_BRANCH);
         }else{
@@ -254,7 +264,7 @@ public class Block{
             System.out.println(getTrain() + " " + isStartBlock() + " " + getBlockNum());
             if(!isOccupied() && isStartBlock()){
                 System.out.println("Initializing train on block " + getBlockNum());
-                return initTrain(ss, a, 0);
+                return initTrain(ss, a, trainID++);
             }else{
                 //pass values to train on block
                 getTrain().passCommands(ss, a);
@@ -273,7 +283,7 @@ public class Block{
         TrainModel train = new TrainModel(suggSpeed, auth, id, this);
         setTrain(train);
         setOccupied(true);
-        setDirection(Direction.FROM_TAIL);
+        setDirection(Direction.FROM_HEAD);
         return true;
     }
 

@@ -19,6 +19,7 @@ import static java.lang.Math.*;
 public class TrainModel {
 
 	private final int MAX_PASSENGERS = 222;
+	private final float KPH_TO_MPS = 0.2777777f;
 
 	// Error State Booleans
 	private boolean ENGINE_FAIL = false;
@@ -239,12 +240,13 @@ public class TrainModel {
 				block = block.trainGetNextBlock();
 				length = block.getLength();
 				grade = block.getGrade();
-				speedLimit = block.getSpeedLimit();
+				speedLimit = block.getSpeedLimit()*KPH_TO_MPS;
 				controller.setSpeedLimit(speedLimit);
 			}
 
 			blocksTraveled = blocksTraveled + 1;
 			controller.enterNewBlock();
+			authority--;
 			if(curBeaconSignal != null) {
 				lastBeaconSignal = curBeaconSignal;
 				curBeaconSignal = null;

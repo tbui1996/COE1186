@@ -39,10 +39,11 @@ public class CTCController implements Initializable{
     @FXML private Label locLabel;
     @FXML private Label occLabel;
     @FXML private Label stationLabel;
-    @FXML private Button closeBlock;
+    @FXML private Button closeBlockButton;
     @FXML private TextField mHour;
     @FXML private TextField mMin;
     @FXML private ChoiceBox<String> mHalf;
+    @FXML private TextField closeTime;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -104,12 +105,17 @@ public class CTCController implements Initializable{
             //Fills labels with proper values
             locLabel.setText(lineSelector.getSelectionModel().getSelectedItem().toUpperCase() + " " + block);
             occLabel.setText("Occupied: " + temp.isOccupied());
-            if (temp.getStation() != null)
+            if (temp.getStation() != null) {
                 stationLabel.setText("Station: " + temp.getStation().getName());
-            else
+            } else {
                 stationLabel.setText("Station: N/A");
+            }
 
-            closeBlock.setDisable(false);
+            mHour.setDisable(false);
+            mMin.setDisable(false);
+            mHalf.setDisable(false);
+            closeTime.setDisable(false);
+            closeBlockButton.setDisable(false);
     }
 
     //Closes a Block for Maintenance
@@ -118,18 +124,21 @@ public class CTCController implements Initializable{
         String [] loc = locLabel.getText().split(" ",2);
 
         //Finds what line is selected
-        Block block = Main.ctc.getBlock(Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]));
+        //Block block = Main.ctc.getBlock(Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]));
 
         //Adds maintenance request to list in CTC
-        Main.ctc.addMaintenance(Integer.parseInt(mHour.getText()), Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]));
+        Main.ctc.addMaintenance(Integer.parseInt(mHour.getText()), Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]), Integer.parseInt(closeTime.getText()));
     }
 
     //Updates dispatch list periodically
     private void updateView() {
 
+        int selected = dispatchList.getSelectionModel().getSelectedIndex();
         dispatchList.getItems().clear();
-        for (int i = 0; i < tcss.main.Main.ctc.numDispatches(); i++)
+        for (int i = 0; i < tcss.main.Main.ctc.numDispatches(); i++) {
             dispatchList.getItems().add(tcss.main.Main.ctc.getDispatch(i).getTrain());
+        }
+        dispatchList.getSelectionModel().select(selected);
     }
 
     public void closeWindow(ActionEvent actionEvent) throws Exception {
