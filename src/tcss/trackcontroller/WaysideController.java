@@ -161,7 +161,7 @@ public class WaysideController {
             if(canProceed) {
                 greenTrack.getBlock(ID).setSuggSpeedAndAuth(ss, auth);
             } else {
-                //greenTrack.getBlock(ID).setSuggSpeedAndAuth(0, 0);
+                greenTrack.getBlock(ID).setSuggSpeedAndAuth(0, 0);
             }
         }
         if(this.line==1){
@@ -179,7 +179,7 @@ public class WaysideController {
             if(canProceed){
                 redTrack.getBlock(ID).setSuggSpeedAndAuth(this.ss,this.auth);
             } else{
-                //redTrack.getBlock(ID).setSuggSpeedAndAuth(0,0);
+                redTrack.getBlock(ID).setSuggSpeedAndAuth(0,0);
             }
 
         }

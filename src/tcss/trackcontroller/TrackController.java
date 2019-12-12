@@ -152,9 +152,9 @@ public class TrackController {
         if(crossingMode){
             crossingBlock.setSuggSpeedAndAuth(-3,0);
             return true;
+        } else {
+            crossingBlock.setSuggSpeedAndAuth(-3, 1);
         }
-        //put it up
-        crossingBlock.setSuggSpeedAndAuth(-3, 1);
         return false;
     }
     //blockId: currentblock
