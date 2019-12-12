@@ -180,11 +180,25 @@ public class TrackModel {
         }
 
         System.out.println("Placing switches...");
+        ArrayList<Switch> noYardSwitches = new ArrayList<>();
         for(Switch sw: builtSwitches){
-            track.getBlock(sw.getRoot()).setSwitch(sw);
+            if(sw.getRoot() == 9 || sw.getRoot() == 63){
+                track.getBlock(sw.getRoot()).setSwitch(sw);
+                Block yardBlock = new Block();
+                yardBlock.setYardBlock(true);
+                track.getBlock(sw.getRoot()).setBranch(yardBlock);
+            }else if(sw.getRoot() == 57){
+                track.getBlock(sw.getRoot()).setSwitch(sw);
+                Block yardBlock = new Block();
+                yardBlock.setYardBlock(true);
+                track.getBlock(sw.getRoot()).setBranch(yardBlock);
+            }else {
+                track.getBlock(sw.getRoot()).setSwitch(sw);
+                noYardSwitches.add(sw);
+            }
         }
 
-        if(!connectBranches(track, branchEnds, builtSwitches)){
+        if(!connectBranches(track, branchEnds, noYardSwitches)){
             System.out.println("Track Build Error: Connecting Branches");
             return false;
         }
@@ -340,6 +354,21 @@ public class TrackModel {
                     sw.setRoot(root);
 
                     builtSwitches.add(sw);
+                }else if(infraSects[i].startsWith("SWITCH") && infraSects.length == 1){
+                    //redLine yard switch
+                    System.out.println("Maybe Yard Switch" + cell.getRowIndex());
+                    if(cell.getRowIndex() == 9 || cell.getRowIndex() == 63){
+                        System.out.println("Found Yard Switch");
+                        Switch sw = new Switch();
+                        sw.setStraightDest(cell.getRowIndex() + 1);
+                        sw.setRoot(cell.getRowIndex());
+                        builtSwitches.add(sw);
+                    }else if(cell.getRowIndex() == 58){
+                        Switch sw = new Switch();
+                        sw.setStraightDest(cell.getRowIndex());
+                        sw.setRoot(cell.getRowIndex() - 1);
+                        builtSwitches.add(sw);
+                    }
                 }
             }
         }else{
@@ -447,9 +476,9 @@ public class TrackModel {
 
         Block testBlock = track.getBlock((int) (Math.random() * track.getBlockHashMap().size()) + 1);
         testBlock.setDirection(Direction.FROM_TAIL);
-        currBlock = testBlock;
-        System.out.println("From Tail: " + currBlock.getBlockNum());
-        currBlock = currBlock.getBlockAhead(30);
+        System.out.println("From Tail: " + testBlock.getBlockNum());
+        currBlock = testBlock.getBlockAhead(30);
+        currBlock = testBlock.getBlockBehind(30);
         testBlock.setDirection(Direction.NONE);
 
 
