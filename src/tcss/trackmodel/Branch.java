@@ -7,6 +7,7 @@ public class Branch {
     private double totalLength;
     private int start;
     private int end;
+    private int numBlocks;
     private ArrayList<Branch> head;
     private ArrayList<Branch> tail;
     private Track track;
@@ -15,6 +16,9 @@ public class Branch {
 
         setStart(start);
         setEnd(end);
+
+        setNumBlocks(Math.abs(end-start) + 1);
+
 
         double sum = 0;
 
@@ -60,6 +64,8 @@ public class Branch {
         return end;
     }
 
+    public int getNumBlocks(){ return numBlocks; }
+
     public ArrayList<Branch> getHead(){
         return head;
     }
@@ -84,6 +90,10 @@ public class Branch {
 
     public void setEnd(int end) {
         this.end = end;
+    }
+
+    public void setNumBlocks(int numBlocks){
+        this.numBlocks = numBlocks;
     }
 
     public void setHead(ArrayList<Branch> head) {

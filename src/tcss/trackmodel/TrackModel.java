@@ -3,7 +3,9 @@ package tcss.trackmodel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
+import tcss.trackmodel.Block.Direction;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -27,6 +29,9 @@ public class TrackModel {
         //TODO: get rid of hard-coded startBlock if possible
         getRedLine().setStartBlock(getRedLine().getBlock(9));
         getGreenLine().setStartBlock(getGreenLine().getBlock(63));
+
+        addBeacons(getRedLine());
+        addBeacons(getGreenLine());
 
         System.out.println("Verifying Red Line...");
         if(!verify(getRedLine())){
@@ -161,28 +166,45 @@ public class TrackModel {
                 currBlock.setTail(track.getBlock(currBlock.getBlockNum() - 1));
 
                 //set head of previous block to be current block
-                currBlock.getPreviousBlock().setHead(currBlock);
+                currBlock.getTail().setHead(currBlock);
             }
 
-            track.addToHashMap(currBlock);
+            //populate lists that are referenced later
             track.getBlockList().add(currBlock);
+            track.addToHashMap(currBlock);
+            if(currBlock.getStation() != null){
+                track.getStationBlocks().add(currBlock);
+            }
             if(r == trackSheet.getLastRowNum()){
                 break;
             }
         }
 
         System.out.println("Placing switches...");
+        ArrayList<Switch> noYardSwitches = new ArrayList<>();
         for(Switch sw: builtSwitches){
-            track.getBlock(sw.getRoot()).setSwitch(sw);
+            if(sw.getRoot() == 9 || sw.getRoot() == 63){
+                track.getBlock(sw.getRoot()).setSwitch(sw);
+                Block yardBlock = new Block();
+                yardBlock.setYardBlock(true);
+                track.getBlock(sw.getRoot()).setBranch(yardBlock);
+            }else if(sw.getRoot() == 57){
+                track.getBlock(sw.getRoot()).setSwitch(sw);
+                Block yardBlock = new Block();
+                yardBlock.setYardBlock(true);
+                track.getBlock(sw.getRoot()).setBranch(yardBlock);
+            }else {
+                track.getBlock(sw.getRoot()).setSwitch(sw);
+                noYardSwitches.add(sw);
+            }
         }
 
-        if(!connectBranches(track, branchEnds, builtSwitches)){
+        if(!connectBranches(track, branchEnds, noYardSwitches)){
             System.out.println("Track Build Error: Connecting Branches");
             return false;
         }
 
         myExcelBook.close();
-
 
         System.out.println("Finished Building Track!");
         return true;
@@ -291,7 +313,8 @@ public class TrackModel {
                     //stations
                     String stationName = infraSects[i+1];
                     stationName = stationName.trim();
-                    b.setStation(new Station(stationName));
+                    Station newStation = new Station(stationName);
+                    b.setStation(newStation);
                 }else if(infraSects[i].startsWith("SWITCH") && infraSects.length > 1){
                     //switches
                     String switchString = infraSects[i] + infraSects[i+1];
@@ -332,6 +355,21 @@ public class TrackModel {
                     sw.setRoot(root);
 
                     builtSwitches.add(sw);
+                }else if(infraSects[i].startsWith("SWITCH") && infraSects.length == 1){
+                    //redLine yard switch
+                    System.out.println("Maybe Yard Switch" + cell.getRowIndex());
+                    if(cell.getRowIndex() == 9 || cell.getRowIndex() == 63){
+                        System.out.println("Found Yard Switch");
+                        Switch sw = new Switch();
+                        sw.setStraightDest(cell.getRowIndex() + 1);
+                        sw.setRoot(cell.getRowIndex());
+                        builtSwitches.add(sw);
+                    }else if(cell.getRowIndex() == 58){
+                        Switch sw = new Switch();
+                        sw.setStraightDest(cell.getRowIndex());
+                        sw.setRoot(cell.getRowIndex() - 1);
+                        builtSwitches.add(sw);
+                    }
                 }
             }
         }else{
@@ -436,26 +474,30 @@ public class TrackModel {
             travelCount++;
         }
 
+
         Block testBlock = track.getBlock((int) (Math.random() * track.getBlockHashMap().size()) + 1);
-        currBlock.setDirection(Direction.FROM_TAIL);
+        testBlock.setDirection(Direction.FROM_TAIL);
         System.out.println("From Tail: " + testBlock.getBlockNum());
-        for(int i=0;i<30;i++){
-            testBlock = testBlock.trainGetNextBlock();
-            System.out.println("=> " + testBlock.getBlockNum());
-        }
+        currBlock = testBlock.getBlockAhead(30);
+        currBlock = testBlock.getBlockBehind(30);
+        testBlock.setDirection(Direction.NONE);
+
 
         if(track == getRedLine()){
-            Block b1 = track.getBlock(1);
-            Block b2 = track.getBlock(66);
-            System.out.println("Distance between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2));
-            System.out.println("Distance between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1));
+            Block b1 = track.getBlock(7);
+            Block b2 = track.getBlock(9);
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 0));
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 0));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 1));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 1));
 
         }else{
             Block b1 = track.getBlock(1);
             Block b2 = track.getBlock(150);
-            System.out.println("Distance between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2));
-            System.out.println("Distance between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1));
-
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 0));
+            System.out.println("Distance (meters) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 0));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and " + b2.getBlockNum() + " = " + track.distanceBetweenTwoBlocks(b1,b2, 1));
+            System.out.println("Distance (blocks) between " + b1.getBlockNum() + " and yard = " + track.distanceToYard(b1, 1));
         }
 
         return true;
@@ -570,5 +612,61 @@ public class TrackModel {
 
         r5.getHead().add(r1);
         r5.getTail().add(r3);
+    }
+
+    public void addBeacons(Track currTrack){
+
+        ArrayList<Block> stationBlocks = currTrack.getStationBlocks();
+        for(Block b: stationBlocks){
+            b.getHead().setBeacon(new Beacon(b.getStation().getName()));
+            b.getTail().setBeacon(new Beacon(b.getStation().getName()));
+        }
+    }
+
+    public int updateThroughput(int line){
+
+        Track currTrack = null;
+
+        //set line based on passed int
+        if(line == 0){
+            currTrack = getRedLine();
+        }else{
+            currTrack = getGreenLine();
+        }
+
+        //init running total
+        int totalPassengers = 0;
+
+        //for each station on line, su
+        for(Block b: currTrack.getStationBlocks()){
+           totalPassengers += b.getStation().generatePassengers();
+        }
+
+        //return total
+        return totalPassengers;
+    }
+
+    public void updatePassengers(){
+        updatePassengersHelper(getRedLine());
+        updatePassengersHelper(getGreenLine());
+    }
+
+    public void updatePassengersHelper(Track currTrack){
+
+        ArrayList<Block> stationBlockList= currTrack.getStationBlocks();
+
+        for(Block b: stationBlockList){
+            if(b.getTrain() != null && b.getTrain().getCurV() == 0.0 && !b.isPassengerUpdateDone()){
+
+                int availableSpace = b.getTrain().removePassengers();
+                int addedPassengers = b.getStation().getPassengers();
+
+                if(addedPassengers >= availableSpace){
+                    addedPassengers = availableSpace;
+                }
+                b.getTrain().addPassengers(addedPassengers);
+                b.setPassengerUpdateDone(true);
+            }
+        }
     }
 }

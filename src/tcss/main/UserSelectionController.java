@@ -51,6 +51,7 @@ public class UserSelectionController implements Initializable {
         rate.getItems().add("1x");
         rate.getItems().add("10x");
         rate.getItems().add("50x");
+        rate.getItems().add("60x");
         rate.getSelectionModel().select(0);
         clockLabel.setText("00:00");
 
@@ -94,7 +95,6 @@ public class UserSelectionController implements Initializable {
         Parent dispatchRoot = dispatchLoader.load();
         dispatch.setTitle("CTC");
         dispatch.setScene(new Scene(dispatchRoot));
-        dispatch.setResizable(false);
         dispatch.getIcons().add(new Image("file:resources/train.png"));
 
         dispatch.show();
@@ -133,6 +133,17 @@ public class UserSelectionController implements Initializable {
 
     public void murphyView() throws Exception{
         System.out.println("OPEN MURPHY VIEW");
+
+        FXMLLoader murphyLoader = new FXMLLoader(getClass().getResource("fxml/ModuleSelection.fxml"));
+        Stage murphy = new Stage();
+        Parent murphyRoot = murphyLoader.load();
+        murphy.setTitle("Module Failure States");
+        murphy.setScene(new Scene(murphyRoot));
+        murphy.setResizable(false);
+        murphy.getIcons().add(new Image("file:resources/train.png"));
+
+        murphy.show();
+
     }
 
     public void openSettings() throws Exception {
@@ -148,7 +159,19 @@ public class UserSelectionController implements Initializable {
         settings.showAndWait();
     }
 
+    public void passengerView() throws Exception {
+        System.out.println("OPEN PASSENGER VIEW");
 
+        FXMLLoader passLoader = new FXMLLoader(getClass().getResource("fxml/Passenger.fxml"));
+        Stage passenger = new Stage();
+        Parent passRoot = passLoader.load();
+        passenger.setTitle("Passenger View");
+        passenger.setScene(new Scene(passRoot));
+        passenger.setResizable(false);
+        passenger.getIcons().add(new Image("file:resources/train.png"));
+
+        passenger.show();
+    }
 
 
     public void closeWindow() throws Exception{

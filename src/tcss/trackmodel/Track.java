@@ -1,19 +1,19 @@
 package tcss.trackmodel;
 
-import tcss.trainmodel.TrainModel;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import tcss.trackmodel.Block.Direction;
 
 public class Track {
 
     Map<Integer, Block> blockHashMap;
     Map<Integer, Branch> branchMap;
 
-    LinkedList<Block> blockList;
+    private LinkedList<Block> blockList;
 
+    ArrayList<Block> stationBlocks;
     ArrayList<Block> rxrBlocks;
     ArrayList<Block> switchBlocks;
 
@@ -24,66 +24,130 @@ public class Track {
         branchMap = new HashMap<>();
         startBlock = null;
         blockList = new LinkedList<Block>();
+        stationBlocks = new ArrayList<Block>();
     }
 
-    public boolean initTrain(float ss, int auth, int id){
-        System.out.println("Init Train");
-        return startBlock.setSuggSpeedAndAuth(ss, auth);
-    }
+    public double distanceBetweenTwoBlocks(Block start, Block end, int unit){
 
-    //distance between two blocks
-    public double distanceBetweenTwoBlocks(Block start, Block end){
+        double fromTailDistance = distanceHelper(start, end, Block.Direction.FROM_TAIL, unit);
+        double fromHeadDistance = distanceHelper(start, end, Block.Direction.FROM_HEAD, unit);
 
-        double headDistance = distanceHelper(start, end, Direction.FROM_TAIL);
-        double tailDistance = distanceHelper(start, end, Direction.FROM_HEAD);
+        System.out.println("From Tail Distance: " + fromTailDistance + ", From Head Distance: " + fromHeadDistance);
 
-        if(headDistance <= tailDistance){
-            return headDistance;
+        if(start.isOccupied()){
+            if(start.getDirection() == Block.Direction.FROM_TAIL){
+                return fromTailDistance;
+            }else{
+                return fromHeadDistance;
+            }
         }else{
-            return tailDistance;
+            if(start.getBlockNum() == 7 || start.getBlockNum() == 9){
+                return fromHeadDistance;
+            }
+            return fromTailDistance;
         }
     }
 
-    private double distanceHelper(Block start, Block end, Direction initialDir){
+    private double distanceHelper(Block start, Block end, Direction initialDir, int unit){
 
         double currDistance = 0.0;
+        boolean passFirst = false;
         Branch currBranch = getBranch(start.getBlockNum());
         Branch endBranch = getBranch(end.getBlockNum());
 
-        if(currBranch == endBranch){
-            return currBranch.getDistance(start.getBlockNum(), end.getBlockNum());
+        if(unit == 0){
+            //distance in meters
+            if(currBranch == endBranch){
+                if(currBranch.getEnd() > currBranch.getStart()){
+                    if((initialDir == Direction.FROM_TAIL && start.getBlockNum() < end.getBlockNum()) ||
+                            (initialDir == Direction.FROM_HEAD && end.getBlockNum() < start.getBlockNum())){
+
+                        return currBranch.getDistance(start.getBlockNum(), end.getBlockNum());
+                    }
+                }else if((initialDir == Direction.FROM_HEAD && start.getBlockNum() < end.getBlockNum()) ||
+                        (initialDir == Direction.FROM_TAIL && end.getBlockNum() < start.getBlockNum())){
+
+                    return currBranch.getDistance(start.getBlockNum(), end.getBlockNum());
+                }
+                passFirst = true;
+
+            }
+
+            if(initialDir == Direction.FROM_TAIL){
+                currDistance = currBranch.getDistance(start.getBlockNum(), currBranch.getEnd());
+            }else{
+                currDistance = currBranch.getDistance(start.getBlockNum(), currBranch.getStart());
+            }
+        }else{
+            //distance in blocks
+            if(currBranch == endBranch){
+                //if (from tail && )
+                if(currBranch.getEnd() > currBranch.getStart()){
+                    if((initialDir == Direction.FROM_TAIL && start.getBlockNum() < end.getBlockNum()) ||
+                            (initialDir == Direction.FROM_HEAD && end.getBlockNum() < start.getBlockNum())){
+
+                        return Math.abs(start.getBlockNum() - end.getBlockNum());
+                    }
+                }else if((initialDir == Direction.FROM_HEAD && start.getBlockNum() < end.getBlockNum()) ||
+                        (initialDir == Direction.FROM_TAIL && end.getBlockNum() < start.getBlockNum())){
+
+                    return Math.abs(start.getBlockNum() - end.getBlockNum());
+                }
+                passFirst = true;
+            }
+
+            if(initialDir == Direction.FROM_TAIL){
+                currDistance = Math.abs(start.getBlockNum() - currBranch.getEnd());
+            }else{
+                currDistance = Math.abs(start.getBlockNum() - currBranch.getStart());
+            }
         }
 
-        if(initialDir == Direction.FROM_TAIL){
-            currDistance = currBranch.getDistance(start.getBlockNum(), currBranch.getEnd());
-        }else{
-            currDistance = currBranch.getDistance(start.getBlockNum(), currBranch.getStart());
-        }
 
         Direction dir = initialDir;
-        while(currBranch != endBranch){
+        while(currBranch != endBranch || passFirst){
+            passFirst = false;
             ArrayList<Branch> next;
-            if(dir == Direction.FROM_TAIL) {
+            if (dir == Direction.FROM_TAIL){
                 next = currBranch.getHead();
-            }else {
+            } else {
                 next = currBranch.getTail();
             }
 
             double nextDist = 0.0;
             Branch nextBranch = null;
-            if(next.contains(endBranch)){
-                nextBranch = endBranch;
-                nextDist = 0.0;
-            }else if(next.size() == 1){
-                nextBranch = next.get(0);
-                nextDist = next.get(0).getTotalLength();
-            }else if(next.get(0).getTotalLength() < next.get(1).getTotalLength()){
-                nextBranch = next.get(0);
-                nextDist = next.get(0).getTotalLength();
+
+            if(unit == 0) {
+                if(next.contains(endBranch)){
+                    nextBranch = endBranch;
+                    nextDist = 0.0;
+                }else if(next.size() == 1){
+                    nextBranch = next.get(0);
+                    nextDist = next.get(0).getTotalLength();
+                }else if(next.get(0).getTotalLength() < next.get(1).getTotalLength()){
+                    nextBranch = next.get(0);
+                    nextDist = next.get(0).getTotalLength();
+                }else{
+                    nextBranch = next.get(1);
+                    nextDist = next.get(1).getTotalLength();
+                }
             }else{
-                nextBranch = next.get(1);
-                nextDist = next.get(1).getTotalLength();
+                //distance calculated in blocks
+                if(next.contains(endBranch)){
+                    nextBranch = endBranch;
+                    nextDist = 0.0;
+                }else if(next.size() == 1){
+                    nextBranch = next.get(0);
+                    nextDist = next.get(0).getNumBlocks();
+                }else if(next.get(0).getTotalLength() < next.get(1).getTotalLength()){
+                    nextBranch = next.get(0);
+                    nextDist = next.get(0).getNumBlocks();
+                }else{
+                    nextBranch = next.get(1);
+                    nextDist = next.get(1).getNumBlocks();
+                }
             }
+
 
             if(nextBranch.getTail().contains(currBranch)){
                 dir = Direction.FROM_TAIL;
@@ -97,23 +161,34 @@ public class Track {
 
             currBranch = nextBranch;
             currDistance += nextDist;
+            System.out.println("currDistance = " + currDistance);
 
             if(currBranch == endBranch){
-                if(dir == Direction.FROM_TAIL){
-                    currDistance += currBranch.getDistance(currBranch.getStart(), end.getBlockNum());
-                }else {
-                    currDistance += currBranch.getDistance(currBranch.getEnd(), end.getBlockNum());
+                if(unit == 0){
+                    if(dir == Direction.FROM_TAIL){
+                        currDistance += currBranch.getDistance(currBranch.getStart(), end.getBlockNum());
+                    }else {
+                        currDistance += currBranch.getDistance(currBranch.getEnd(), end.getBlockNum());
+                    }
+                    break;
+                }else{
+                    if(dir == Direction.FROM_TAIL){
+                        currDistance += Math.abs(currBranch.getStart() - end.getBlockNum());
+                    }else {
+                        currDistance += Math.abs(currBranch.getEnd() - end.getBlockNum());
+                    }
+                    break;
                 }
-                break;
+
             }
         }
 
         return currDistance;
     }
 
-    public double distanceToYard(Block start){
+    public double distanceToYard(Block start, int unit){
 
-        return distanceBetweenTwoBlocks(start, getStartBlock());
+        return distanceBetweenTwoBlocks(start, getStartBlock(), unit);
     }
 
     public boolean addToHashMap(Block b){
@@ -135,6 +210,8 @@ public class Track {
 
     public void setStartBlock(Block sb){
         startBlock = sb;
+        System.out.println("Block " + startBlock.getBlockNum() + " is a start block");
+        startBlock.setStartBlock(true);
     }
 
     public LinkedList<Block> getBlockList(){
@@ -155,5 +232,9 @@ public class Track {
 
     public Map<Integer, Branch> getBranchMap(){
         return branchMap;
+    }
+
+    public ArrayList<Block> getStationBlocks(){
+        return stationBlocks;
     }
 }

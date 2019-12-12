@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import tcss.traincontroller.TrainController;
 
+import javax.swing.*;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
@@ -43,31 +44,34 @@ public class TrainControllerController implements Initializable {
     @FXML private Label lightsDisplay;
     @FXML private Label powerCommandLabel, kilabel, kplabel;
     @FXML private Label currentSpeedLabel;
+    @FXML private Label commandedSpeedLabel;
+    @FXML private Label sBrakeStatusLabel;
     @FXML private TextField setTempInput;
     @FXML private Circle d1Status, d2Status, d3Status, d4Status, d5Status, d6Status, d7Status, d8Status;
 
     private TrainController tc;
+    private int id;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        DecimalFormat format = new DecimalFormat( "#.0" );
-        setPointInput.setTextFormatter( new TextFormatter<>(c -> {
-                if ( c.getControlNewText().isEmpty() )
-                    return c;
-                ParsePosition parsePosition = new ParsePosition( 0 );
-                Object object = format.parse( c.getControlNewText(), parsePosition );
-                if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() ){
-                    return null;
-                } else {
-                    return c;
-                }
-        }));
-        setTempInput.setTextFormatter( new TextFormatter<>(c -> {
-            if ( c.getControlNewText().isEmpty() )
+        DecimalFormat format = new DecimalFormat("#.0");
+        setPointInput.setTextFormatter(new TextFormatter<>(c -> {
+            if (c.getControlNewText().isEmpty())
                 return c;
-            ParsePosition parsePosition = new ParsePosition( 0 );
-            Object object = format.parse( c.getControlNewText(), parsePosition );
-            if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() ){
+            ParsePosition parsePosition = new ParsePosition(0);
+            Object object = format.parse(c.getControlNewText(), parsePosition);
+            if (object == null || parsePosition.getIndex() < c.getControlNewText().length()) {
+                return null;
+            } else {
+                return c;
+            }
+        }));
+        setTempInput.setTextFormatter(new TextFormatter<>(c -> {
+            if (c.getControlNewText().isEmpty())
+                return c;
+            ParsePosition parsePosition = new ParsePosition(0);
+            Object object = format.parse(c.getControlNewText(), parsePosition);
+            if (object == null || parsePosition.getIndex() < c.getControlNewText().length()) {
                 return null;
             } else {
                 return c;
@@ -77,7 +81,7 @@ public class TrainControllerController implements Initializable {
         trainButton.setDisable(true);
         trainChoice.getItems().add("Select Train");
         // Testing
-        for(TrainController t: TrainController.TrainControllerList)
+        for (TrainController t : TrainController.TrainControllerList)
             trainChoice.getItems().add("Train " + t.getID());
         trainChoice.setValue("Select Train");
         trainChoice.setTooltip(new Tooltip("Select a train to view"));
@@ -85,14 +89,21 @@ public class TrainControllerController implements Initializable {
             @Override
 
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-                if((Integer) number2 > 0) {
-                    TrainController cur = TrainController.TrainControllerList.get((Integer)number2-1);
+                if ((Integer) number2 > 0) {
+                    TrainController cur = TrainController.TrainControllerList.get((Integer) number2 - 1);
                     cur.update();
                     tc = cur;
+                    id = tc.getID();
+                    initializeDoors();
                     idLabel.setText("ID: " + tc.getID());
-                    suggestedSpeedLabel.setText("Suggested Speed: " + tc.getSSpeed());
-                    setPointInput.setPromptText("" + tc.getsetpointSpeed());
-                    setTempInput.setPromptText("" + tc.getTemp());
+                    suggestedSpeedLabel.setText("Suggested Speed: " + String.format("%.2f", tc.getSuggestedSpeedInMPH()) + " MPH");
+                    if(tc.issBrake()){
+                        sBrakeStatusLabel.setText("Service Brake: Active");
+                    } else {
+                        sBrakeStatusLabel.setText("Service Brake: Inactive");
+                    }
+                    setPointInput.setPromptText("" + String.format("%.2f", tc.getsetpointSpeedInCustomary()) + " MPH");
+                    setTempInput.setPromptText("" + String.format("%.2f", tc.getTemp()) + " ºF");
                     trainButton.setDisable(false);
                     update();
                 } else {
@@ -128,6 +139,16 @@ public class TrainControllerController implements Initializable {
 
     }
 
+
+
+    public void reloadDropdown(){
+        for(TrainController t: TrainController.TrainControllerList) {
+            trainChoice.getItems().add("Train " + t.getID());
+        }
+        trainChoice.setValue(id);
+    }
+
+
     /**
      * In this method we want to allow the user to see other information
      * @param actionEvent
@@ -147,7 +168,8 @@ public class TrainControllerController implements Initializable {
         } else {
             opModeToggle.setText("Enter Manual Mode");
         }
-        authLabel.setText("Authority: " + tc.getAuthority());
+        suggestedSpeedLabel.setText("Suggested Speed: " + String.format("%.2f", tc.getSuggestedSpeedInMPH()) + " MPH");
+        authLabel.setText("Authority: " + tc.getAuthority() + " Blocks");
         if (tc.getUnderground()){
             lightsDisplay.setText("ON");
             lightsDisplay.setTextFill(Color.GREEN);
@@ -163,12 +185,56 @@ public class TrainControllerController implements Initializable {
             eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
         }
         opModeToggle.setSelected(tc.getOpMode()); //set toggle to true if it is in manual
-        powerCommandLabel.setText("Power: " + tc.getPWRCMD());
+        powerCommandLabel.setText("Power: " + String.format("%.2f", tc.getPWRCMD()/1000) + " KW");
+        commandedSpeedLabel.setText("Commanded Speed: " + String.format("%.2f", tc.getCommandedSpeedInCustomary()) + " MPH");
         kilabel.setText("Ki: " + tc.getKi());
         kplabel.setText("Kp: " + tc.getKp());
-        currentSpeedLabel.setText("Current Speed: " + tc.getCurrentSpeed());
+        currentSpeedLabel.setText("Current Speed: " + String.format("%.2f", tc.getCurrentSpeedInCustomary()) + " MPH");
+        updateDoors();
+    }
+
+    public void updateDoors(){
+        boolean[] doorStatus = tc.getDoorStatus();
+        if(doorStatus[0]){
+            d1Status.setFill(Color.GREEN);
+        } else {
+            d1Status.setFill(Color.RED);
+        }
+        if(doorStatus[1]){
+            d2Status.setFill(Color.GREEN);
+        } else {
+            d2Status.setFill(Color.RED);
+        }
+        if(doorStatus[2]){
+            d3Status.setFill(Color.GREEN);
+        } else {
+            d3Status.setFill(Color.RED);
+        }
+        if(doorStatus[3]){
+            d4Status.setFill(Color.GREEN);
+        } else {
+            d4Status.setFill(Color.RED);
+        }
+        if(doorStatus[4]){
+            d5Status.setFill(Color.GREEN);
+        } else {
+            d5Status.setFill(Color.RED);
+        }if(doorStatus[5]){
+            d6Status.setFill(Color.GREEN);
+        } else {
+            d6Status.setFill(Color.RED);
+        }if(doorStatus[6]){
+            d7Status.setFill(Color.GREEN);
+        } else {
+            d7Status.setFill(Color.RED);
+        }if(doorStatus[7]){
+            d8Status.setFill(Color.GREEN);
+        } else {
+            d8Status.setFill(Color.RED);
+        }
 
     }
+
 
     public void goBack(ActionEvent actionEvent) throws Exception {
         Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("ModuleSelection.fxml")));
@@ -202,21 +268,21 @@ public class TrainControllerController implements Initializable {
     public void confirmSetpoint(ActionEvent actionEvent) throws Exception{
        try {
            try {
-               float newSPSpeed = Float.parseFloat(setPointInput.getText());
-               float suggestedSpeed = tc.getSSpeed();
-               float speedLimit = tc.getSpeedLimit();
-               System.out.printf("SPI: " + newSPSpeed + " with ss: " + suggestedSpeed + " and sl: " + speedLimit);
+               float newSPSpeed = Float.parseFloat(setPointInput.getText()); //this is in mph
+               float suggestedSpeed = (float)tc.getSuggestedSpeedInMPH();
+               float speedLimit = (float)tc.getSpeedLimitInCustomary();
+               System.out.println("SPI in MPH: " + newSPSpeed + " with ss in MPH: " + suggestedSpeed + " and sl in MPH: " + speedLimit);
                if(newSPSpeed > suggestedSpeed){
                    newSPSpeed = suggestedSpeed;
                }
                if(newSPSpeed > speedLimit){
                    newSPSpeed = speedLimit;
                }
-               tc.setSetpointSpeed(newSPSpeed);
+               tc.setSetpointSpeedFromCustomary(newSPSpeed);
                tc.update();
                tc.updateModelCommandedSpeed();
                setPointInput.setText("");
-               setPointInput.setPromptText("" + tc.getsetpointSpeed());
+               setPointInput.setPromptText("" + String.format("%.2f", tc.getsetpointSpeedInCustomary()) + " MPH");
            } catch (NumberFormatException e) {
                System.out.println("nfe found");
            }
@@ -282,6 +348,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d1Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor1(Event event) throws Exception{
@@ -294,6 +361,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d2Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor2(Event event) throws Exception{
@@ -306,6 +374,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d3Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor3(Event event) throws Exception{
@@ -318,6 +387,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d4Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor4(Event event) throws Exception{
@@ -329,6 +399,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d5Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor5(Event event) throws Exception{
@@ -340,6 +411,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d6Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor6(Event event) throws Exception{
@@ -351,6 +423,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d7Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor7(Event event) throws Exception{
@@ -362,6 +435,56 @@ public class TrainControllerController implements Initializable {
         } else {
             d8Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
+    }
+
+    public void initializeDoors(){
+        if(tc == null){
+            return;
+        }
+        boolean[] doors = tc.getDoorStatus();
+        if(doors[0]){
+            d1Status.setFill(Color.GREEN);
+        } else {
+            d1Status.setFill(Color.RED);
+        }
+        if(doors[1]){
+            d2Status.setFill(Color.GREEN);
+        } else {
+            d2Status.setFill(Color.RED);
+        }
+        if(doors[2]){
+            d3Status.setFill(Color.GREEN);
+        } else {
+            d3Status.setFill(Color.RED);
+        }
+        if(doors[3]){
+            d4Status.setFill(Color.GREEN);
+        } else {
+            d4Status.setFill(Color.RED);
+        }
+        if(doors[4]){
+            d5Status.setFill(Color.GREEN);
+        } else {
+            d5Status.setFill(Color.RED);
+        }
+        if(doors[5]){
+            d6Status.setFill(Color.GREEN);
+        } else {
+            d6Status.setFill(Color.RED);
+        }
+        if(doors[6]){
+            d7Status.setFill(Color.GREEN);
+        } else {
+            d7Status.setFill(Color.RED);
+        }
+        if(doors[7]){
+            d8Status.setFill(Color.GREEN);
+        } else {
+            d8Status.setFill(Color.RED);
+        }
+
+
     }
 
 
