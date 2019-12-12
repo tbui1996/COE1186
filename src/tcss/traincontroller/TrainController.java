@@ -45,7 +45,7 @@ public class TrainController {
     final private float MAX_PWR_CMD = 120000; //120 KW == 120,000 W
     final private float T = 1; //sampling rate of trains - PWRCMD calculation rate
     private float PWRCMD;
-    private boolean[] doors = {true, true, true, true, true, true, true, true};
+    private boolean[] doors = {false, false, false, false, false, false, false, false};
     private float SLOW_OPERATING_SPEED = 2.235f;
     private float MAX_OPERATING_SPEED = 70f*1000f/3600f; //m/s
 
@@ -215,6 +215,7 @@ public class TrainController {
         } else if(powerVotes[1] - MAX_PWR_CMD*0.03 <= powerVotes[2] && powerVotes[2] <= powerVotes[1] + MAX_PWR_CMD*0.03){ //b agrees with c
             RESOLVED_PWR_CMD = (powerVotes[1] + powerVotes[2])/2;
         }
+        System.out.println("MAJORITY VOTE; S: " + RESOLVED_S_BRAKE + " E: " + RESOLVED_E_BRAKE + " PWR: " + RESOLVED_PWR_CMD);
     }
 
 
@@ -234,13 +235,16 @@ public class TrainController {
         }
 
         if(eBrake){
-            eBrakeVotes[id] = true; //-1000 will be considered eBrake
+            eBrakeVotes[id] = true;
+            System.out.println("EBRAKEVOTE SET TO TRUE BECAUSE IT IS CURRENTLY ACTIVE");
         }
         if(authority == 1 && currentSpeed > SLOW_OPERATING_SPEED){ //manage speed down to safe slow speed
            sBrakeVotes[id] = true;
+           System.out.println("SBRAKEVOTE SET TO TRUE BECAUSE WE WANT TO SLOW THE TRAIN DOWN");
         }
         if(authority <= 0){
             sBrakeVotes[id] = true;
+            System.out.println("SBRAKEVOTE SET TO TRUE BECAUSE WE HAVE REACHED OUR DESTINATION");
         }
         //TODO: Find out what negative value is absurd to be sent and determine values where break is desired instead.
 
@@ -249,6 +253,7 @@ public class TrainController {
         } else if(CMD < 0){
             powerVotes[id] = 0;
             sBrakeVotes[id] = true;
+            System.out.println("SBRAKEVOTE SET TO TRUE BECAUSE WE HAVE A NEGATIVE POWER COMMAND");
         } else { //CMD is in the normal range
             powerVotes[id] = CMD;
         }
@@ -262,7 +267,7 @@ public class TrainController {
 
     public void enterNewBlock(){
         authority-=1;
-        System.out.println("YOU HAVE ENTERED A NEW BLOCK YOU SHOULD TAKE NOTE OF THIS AND MAKE SURE THAT IT IS HANDLED CORRECTLY");
+        System.out.println("WE HAVE ENTERED A NEW BLOCK SO WE HAVE DECREMENTED AUTHORITY");
     }
 
     public boolean[] getDoorStatus(){
@@ -360,6 +365,10 @@ public class TrainController {
         return (currentSpeed*100/2.54/12/5280*3600);
     }
 
+    public double getSuggestedSpeedInMPH(){
+        return (suggestedSpeed);
+    }
+
     public TrainModel getTrain() {
         return model;
     }
@@ -382,6 +391,10 @@ public class TrainController {
 
     public void setsBrake(boolean sBrake) {
         this.sBrake = sBrake;
+    }
+
+    public void setDoors(boolean [] doors){
+        this.doors = doors;
     }
 
     /**

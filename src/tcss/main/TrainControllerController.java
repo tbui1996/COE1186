@@ -164,12 +164,55 @@ public class TrainControllerController implements Initializable {
             eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
         }
         opModeToggle.setSelected(tc.getOpMode()); //set toggle to true if it is in manual
-        powerCommandLabel.setText("Power: " + tc.getPWRCMD());
+        powerCommandLabel.setText("Power: " + String.format("%.2f", tc.getPWRCMD()/100) + " KW");
         kilabel.setText("Ki: " + tc.getKi());
         kplabel.setText("Kp: " + tc.getKp());
-        currentSpeedLabel.setText("Current Speed: " + tc.getCurrentSpeed());
+        currentSpeedLabel.setText("Current Speed: " + tc.getCurrentSpeedInCustomary() + " MPH");
+        updateDoors();
+    }
+
+    public void updateDoors(){
+        boolean[] doorStatus = tc.getDoorStatus();
+        if(doorStatus[0]){
+            d1Status.setFill(Color.GREEN);
+        } else {
+            d1Status.setFill(Color.RED);
+        }
+        if(doorStatus[1]){
+            d2Status.setFill(Color.GREEN);
+        } else {
+            d2Status.setFill(Color.RED);
+        }
+        if(doorStatus[2]){
+            d3Status.setFill(Color.GREEN);
+        } else {
+            d3Status.setFill(Color.RED);
+        }
+        if(doorStatus[3]){
+            d4Status.setFill(Color.GREEN);
+        } else {
+            d4Status.setFill(Color.RED);
+        }
+        if(doorStatus[4]){
+            d5Status.setFill(Color.GREEN);
+        } else {
+            d5Status.setFill(Color.RED);
+        }if(doorStatus[5]){
+            d6Status.setFill(Color.GREEN);
+        } else {
+            d6Status.setFill(Color.RED);
+        }if(doorStatus[6]){
+            d7Status.setFill(Color.GREEN);
+        } else {
+            d7Status.setFill(Color.RED);
+        }if(doorStatus[7]){
+            d8Status.setFill(Color.GREEN);
+        } else {
+            d8Status.setFill(Color.RED);
+        }
 
     }
+
 
     public void goBack(ActionEvent actionEvent) throws Exception {
         Scene moduleSelect = new Scene(FXMLLoader.load(getClass().getResource("ModuleSelection.fxml")));
@@ -273,9 +316,6 @@ public class TrainControllerController implements Initializable {
     }
 
     public void toggleDoor0(Event event) throws Exception{
-        if(tc == null){
-            return;
-        }
         boolean[] doors = tc.getDoorStatus();
         //System.out.println("you pressed it!");
         doors[0]=!doors[0];
@@ -286,12 +326,10 @@ public class TrainControllerController implements Initializable {
         } else {
             d1Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor1(Event event) throws Exception{
-        if(tc == null){
-            return;
-        }
         boolean[] doors = tc.getDoorStatus();
         doors[1]=!doors[1];
         tc.adjustDoors(doors);
@@ -301,12 +339,10 @@ public class TrainControllerController implements Initializable {
         } else {
             d2Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor2(Event event) throws Exception{
-        if(tc == null){
-            return;
-        }
         boolean[] doors = tc.getDoorStatus();
         doors[2]=!doors[2];
         tc.adjustDoors(doors);
@@ -316,12 +352,10 @@ public class TrainControllerController implements Initializable {
         } else {
             d3Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor3(Event event) throws Exception{
-        if(tc == null){
-            return;
-        }
         boolean[] doors = tc.getDoorStatus();
         doors[3]=!doors[3];
         tc.adjustDoors(doors);
@@ -331,12 +365,10 @@ public class TrainControllerController implements Initializable {
         } else {
             d4Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor4(Event event) throws Exception{
-        if(tc == null){
-            return;
-        }
         boolean[] doors = tc.getDoorStatus();
         doors[4]=!doors[4];
         tc.adjustDoors(doors);
@@ -345,12 +377,10 @@ public class TrainControllerController implements Initializable {
         } else {
             d5Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor5(Event event) throws Exception{
-        if(tc == null){
-            return;
-        }
         boolean[] doors = tc.getDoorStatus();
         doors[5]=!doors[5];
         tc.adjustDoors(doors);
@@ -359,12 +389,10 @@ public class TrainControllerController implements Initializable {
         } else {
             d6Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor6(Event event) throws Exception{
-        if(tc == null){
-            return;
-        }
         boolean[] doors = tc.getDoorStatus();
         doors[6]=!doors[6];
         tc.adjustDoors(doors);
@@ -373,12 +401,10 @@ public class TrainControllerController implements Initializable {
         } else {
             d7Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void toggleDoor7(Event event) throws Exception{
-        if(tc == null){
-            return;
-        }
         boolean[] doors = tc.getDoorStatus();
         doors[7]=!doors[7];
         tc.adjustDoors(doors);
@@ -387,6 +413,7 @@ public class TrainControllerController implements Initializable {
         } else {
             d8Status.setFill(Color.RED);
         }
+        tc.setDoors(doors);
     }
 
     public void initializeDoors(){
