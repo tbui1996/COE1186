@@ -226,6 +226,9 @@ public class CTC {
             else {
                 //Check block occupancy list to see if next stop block is currently occupied.  If so, a new request must be sent to keep train moving
                 if (dispatchList.get(i).getLine() == 1) {
+                    if (dispatchList.get(i).getCurrStop() == dispatchList.get(i).schedule.getStopNums()-1 && Integer.parseInt(dispatchList.get(i).getTrain().getBlock()) == 18) {
+                        Main.tc.switchRequest(lineToTc(dispatchList.get(i).getLine()), 16, 1);
+                    }
                     if (Integer.parseInt(dispatchList.get(i).getTrain().getBlock()) == 9 && dispatchList.get(i).getCurrStop() == dispatchList.get(i).schedule.getStopNums()-1) {
                         dispatchList.remove(dispatchList.get(i));
                         continue;
@@ -517,6 +520,17 @@ public class CTC {
         else {
             return null;
         }
+    }
+
+    /**
+     * Converts line to proper int for the Track Controller
+     * @return
+     */
+    public int lineToTc(int l) {
+        if (l == 1)
+            return l;
+        else
+            return 0;
     }
 
 }
