@@ -139,7 +139,17 @@ public class CTCController implements Initializable{
         //Block block = Main.ctc.getBlock(Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]));
 
         //Adds maintenance request to list in CTC
-        Main.ctc.addMaintenance(Integer.parseInt(mHour.getText()), Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]), Integer.parseInt(closeTime.getText()));
+        if (mHalf.getSelectionModel().getSelectedItem().equals("AM")) {
+            if (mHour.getText().equals("12")) {
+                Main.ctc.addMaintenance(0, Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]), Integer.parseInt(closeTime.getText()));
+            }
+        } else {
+            if (mHour.getText().equals("12")) {
+                Main.ctc.addMaintenance(12, Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]), Integer.parseInt(closeTime.getText()));
+            } else {
+                Main.ctc.addMaintenance(Integer.parseInt(mHour.getText()) + 12, Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]), Integer.parseInt(closeTime.getText()));
+            }
+        }
     }
 
     //Updates dispatch list periodically

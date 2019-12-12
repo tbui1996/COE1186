@@ -60,6 +60,11 @@ public class Schedule {
         return this.aMin.get(i);
     }
 
+    /**
+     * Returns string representation of the arrival time of a given stop, i
+     * @param i
+     * @return
+     */
     private String aTimeString(int i) {
         if (aHr.get(i) == 0) {
             if (aMin.get(i) < 10) {
