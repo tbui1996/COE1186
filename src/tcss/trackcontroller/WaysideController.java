@@ -225,16 +225,7 @@ public class WaysideController {
 
         return false;
     }
-
-    public boolean railroadCrossingRequest(int line, int blockId){
-        TrackController tc;
-        ArrayList<Integer> blocklist = new ArrayList<>();
-        blocklist.add(blockId);
-        tc = getTC(line,blocklist);
-        if(tc!=null)
-            return tc.railroadCrossingRequest(line,blockId);
-        return false;
-    }
+    
 
     public boolean switchRequest(int line, int blockId, int destinationId) {
         TrackController tc;
@@ -252,21 +243,6 @@ public class WaysideController {
             tc.switchRequest(line, blockId, destinationId);
         return false;
 
-    }
-    public boolean waysideLights(int line, int blockId, boolean occupancy) {
-        TrackController tc;
-        ArrayList<Integer> blocklist = new ArrayList<>();
-        int next = track.getBlockList().get(blockId).getNextBlock().getBlockNum();
-        int light = track.getBlockList().get(blockId).getBlockNum();
-
-        blocklist.add(next);
-        blocklist.add(light);
-        blocklist.add(blockId);
-
-        tc = getTC(line, blocklist);
-        if(tc!= null)
-            tc.waysideLights(line, blockId, occupancy);
-        return false;
     }
 
     public boolean getOccupied(int line, int blockId) {
