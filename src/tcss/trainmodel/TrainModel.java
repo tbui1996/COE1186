@@ -30,7 +30,7 @@ public class TrainModel {
 
 
 	// Static ArrayList of all trains
-	private static ArrayList<TrainModel> trains = new ArrayList<TrainModel>();
+	private static ArrayList<TrainModel> trains = new ArrayList<>();
 
 	// Instance variables
 	private TrainController controller;
@@ -99,7 +99,6 @@ public class TrainModel {
 		trains.add(this);
 		temp = 68f;
 
-		// TODO Delete this test
 		System.out.println("\nAll trains:\n");
 		for(TrainModel t: trains) {
 			System.out.println(t);
@@ -118,13 +117,12 @@ public class TrainModel {
 		this.suggestedSpeed = suggestedSpeed;
 		this.authority = authority;
 		this.id = id;
-		this.speedLimit = speedLimit;
+		this.speedLimit = speedLimit * KPH_TO_MPS;
 		this.eBrake = false;
 		this.underground = false;
 
 		controller = new TrainController(this);
-		//TODO Talk to Pat about speed limit
-//        controller.setSpeedLimit(speedLimit);
+        controller.setSpeedLimit(speedLimit);
 		mass = 409000;
 		curA = 0f;
 		curV = 0f;
@@ -254,7 +252,7 @@ public class TrainModel {
 
 			if(block != null) {
 				if(block.getBeacon() != null) {
-					curBeaconSignal = new String(block.getBeacon().getData());
+					curBeaconSignal = block.getBeacon().getData();
 				}
 			}
 		}
