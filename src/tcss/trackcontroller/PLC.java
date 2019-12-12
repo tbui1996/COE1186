@@ -49,14 +49,14 @@ public class PLC {
         return vitalProceed(nextBlock, destinationBlock);
     }
 
-    public boolean vitalProceed(Block nextBlock, Block destinationBlock){
+    private boolean vitalProceed(Block nextBlock, Block destinationBlock){
         boolean result = true;
 
         Expression expression = jexlEvaluator.createExpression(proceed);
 
         JexlContext jexlcontent = new MapContext();
 
-        for(int i=0; i < 7; i++){
+        for(int i=0; i < 5; i++){
             jexlcontent.set("Block 1 Occupied", nextBlock.isOccupied());
             jexlcontent.set("Block 2 Occupied", destinationBlock.isOccupied());
 

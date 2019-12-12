@@ -182,10 +182,10 @@ public class TrackController {
         boolean canswitch = plc.verifySwitch(nextBlock, destinationBlock);
         if (nextBlock.getSwitch() != null) {
             boolean switchposition = nextBlock.getSwitch().getStraight();
-            boolean isSwitch = switchposition == nextBlock.getSwitch().getStraight();
-            int nextBlockID = switchposition ? nextBlock.getSwitch().getStraightDest() : nextBlock.getSwitch().getBranchDest();
-            nextBlock.getNextBlock();
-            if ((destinationBlock.getBlockNum() != nextBlockID)) {
+            boolean isSwitch = blockId == nextBlock.getBlockNum();
+            int nextBlockID = switchposition ? nextBlock.getTail().getBlockNum() : nextBlock.getBranch().getBlockNum();
+            if ((destinationBlock.getBlockNum() != nextBlockID) || (isSwitch && (blockId != nextBlockID))) {
+                //toggle switch
                 if (currentBlock.getBlockNum() != nextBlockID) {
                     if (!switchRequest(line, nextBlock.getBlockNum(), destBlock)) {
                         currentBlock.setSuggSpeedAndAuth(0, 0);
@@ -208,7 +208,7 @@ public class TrackController {
             }
         }
 
-            boolean canProceed = plc.vitalProceed(nextBlock, destinationBlock);
+            boolean canProceed = plc.verifyProceed(nextBlock, destinationBlock);
             if (!canProceed) {
                 currentBlock.setSuggSpeedAndAuth(0, 0);
                 return false;
@@ -276,19 +276,6 @@ public class TrackController {
         return "open";
     }
 
-    public String blockState(int blockId){
-        Block newblock = block.get(blockId);
-        if(newblock==null)
-            return null;
-        boolean isOccupied = !newblock.isOccupied();
-        boolean isClosed = !newblock.isClosed();
-
-        if(isClosed)
-            return "closed";
-        if(isOccupied)
-            return "occupied";
-        return "open";
-    }
 
     public int getAuthority(){
         return this.auth;
