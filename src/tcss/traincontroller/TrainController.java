@@ -64,9 +64,11 @@ public class TrainController {
         System.out.println("Adding a new train controller for train model: " + model.getID());
         this.model = model;
         this.id = model.getID();
-        initialSpeedLimit(model.getSpeedLimit());
-        passCommands(model.getAuthority(), model.getSSpeed());
+        this.authority = 0;
+        this.suggestedSpeed = 0;
+        //passCommands(model.getAuthority(), model.getSSpeed());
         this.setpointSpeed = suggestedSpeed; //since we start in auto, we can set sps to the suggested
+        initialSpeedLimit(model.getSpeedLimit());
         this.underground = model.getUnderground();
         this.eBrake = model.getEBrake(); //gets the ebrake status from the model.
         this.lastVerrs = new float[]{0, 0, 0}; //for use in the vital pwrcmd calcs
@@ -203,8 +205,8 @@ public class TrainController {
         commandedSpeed = Math.min(setpointSpeed, suggestedSpeed);
         commandedSpeed = Math.min(commandedSpeed, speedLimit);
         commandedSpeed = Math.min(commandedSpeed, MAX_OPERATING_SPEED_MPH); //these should all be in km/hr
-        //System.out.println("comparing: " + setpointSpeed + " " + suggestedSpeed + " " + speedLimit + " " + MAX_OPERATING_SPEED_METERSPERSECOND);
-        //System.out.println("Commanded Speed in meters per second is: " + commandedSpeed);
+        System.out.println("comparing: " + setpointSpeed + " " + suggestedSpeed + " " + speedLimit + " " + MAX_OPERATING_SPEED_METERSPERSECOND);
+        System.out.println("Commanded Speed in meters per second is: " + commandedSpeed);
         if(eBrake){
             commandedSpeed = 0;
         }
@@ -346,9 +348,12 @@ public class TrainController {
 
     public void passCommands(int a, float ss){
         authority = a;
-        //System.out.println("SS from passCOmmands: " + ss);
-        suggestedSpeed = ss*1000/3600; //convert km/h to meters/second
-        //System.out.println("SS as mps: " + suggestedSpeed);
+        System.out.println("SS from passCOmmands: " + ss);
+        suggestedSpeed = ss;//*1000/3600; //convert km/h to meters/second
+        if(!opMode){
+            setpointSpeed = suggestedSpeed;
+        }
+        System.out.println("SS as mps: " + suggestedSpeed);
     }
 
     public int getID(){
@@ -443,12 +448,13 @@ public class TrainController {
     }
 
     public void initialSpeedLimit(float speedLimit){
-        //System.out.println("Set for speedlimit as: " + speedLimit);
+        System.out.println("Set for speedlimit as: " + speedLimit);
         this.speedLimit = speedLimit*1000/3600;
     }
 
 
     public void setSpeedLimit(float speedLimit){
+        System.out.println("assinging directly" + speedLimit);
         this.speedLimit = speedLimit;
     }
 
