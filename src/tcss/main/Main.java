@@ -83,6 +83,7 @@ public class Main extends Application {
         tm.updatePassengers();
         ctc.updateTrackState();
         ctc.checkDispatchList();
+        ctc.checkMaintenanceList();
         ctc.updateThroughput();
     }
 

@@ -39,6 +39,11 @@ public class CTCController implements Initializable{
     @FXML private Label locLabel;
     @FXML private Label occLabel;
     @FXML private Label stationLabel;
+    @FXML private Button closeBlockButton;
+    @FXML private TextField mHour;
+    @FXML private TextField mMin;
+    @FXML private ChoiceBox<String> mHalf;
+    @FXML private TextField closeTime;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -98,41 +103,42 @@ public class CTCController implements Initializable{
             Block temp = Main.ctc.getBlock(Main.ctc.lineStringToInt(lineSelector.getSelectionModel().getSelectedItem().toUpperCase()), block);
 
             //Fills labels with proper values
-            locLabel.setText(lineSelector.getSelectionModel().getSelectedItem() + " " + block);
+            locLabel.setText(lineSelector.getSelectionModel().getSelectedItem().toUpperCase() + " " + block);
             occLabel.setText("Occupied: " + temp.isOccupied());
-            if (temp.getStation() != null)
+            if (temp.getStation() != null) {
                 stationLabel.setText("Station: " + temp.getStation().getName());
-            else
+            } else {
                 stationLabel.setText("Station: N/A");
+            }
+
+            mHour.setDisable(false);
+            mMin.setDisable(false);
+            mHalf.setDisable(false);
+            closeTime.setDisable(false);
+            closeBlockButton.setDisable(false);
     }
 
-    /*//Closes a Block for Maintenance
+    //Closes a Block for Maintenance
     public void closeBlock(ActionEvent e) throws Exception {
-        System.out.println("Close block ");
+        //System.out.println("Close block ");
+        String [] loc = locLabel.getText().split(" ",2);
 
         //Finds what line is selected
-        int temp = tcss.main.Main.ctc.lineStringToInt(lineSelector.getSelectionModel().getSelectedItem().toUpperCase());
+        //Block block = Main.ctc.getBlock(Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]));
 
-        //Assigns temp to blockId
-        //Red Line
-        if (temp == 1) {
-            temp = blockSelector.getSelectionModel().getSelectedItem();
-        }
-        //Green Line
-        else {
-            temp = blockSelector.getSelectionModel().getSelectedItem() + tcss.main.Main.ctc.lineLength(1);
-        }
-
-        System.out.println(temp);
-        //tcss.main.Main.tc.getNextStop(-1,-1,temp)
-    }*/
+        //Adds maintenance request to list in CTC
+        Main.ctc.addMaintenance(Integer.parseInt(mHour.getText()), Integer.parseInt(mMin.getText()), Main.ctc.lineStringToInt(loc[0]), Integer.parseInt(loc[1]), Integer.parseInt(closeTime.getText()));
+    }
 
     //Updates dispatch list periodically
     private void updateView() {
 
         dispatchList.getItems().clear();
-        for (int i = 0; i < tcss.main.Main.ctc.numDispatches(); i++)
+        int selected = dispatchList.getSelectionModel().getSelectedIndex();
+        for (int i = 0; i < tcss.main.Main.ctc.numDispatches(); i++) {
             dispatchList.getItems().add(tcss.main.Main.ctc.getDispatch(i).getTrain());
+        }
+        dispatchList.getSelectionModel().select(selected);
     }
 
     public void closeWindow(ActionEvent actionEvent) throws Exception {
