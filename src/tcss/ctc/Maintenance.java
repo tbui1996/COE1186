@@ -53,7 +53,7 @@ public class Maintenance {
 
     public int getLength() { return this.length; }
 
-    public int getTimePassed() { return this.getTimePassed(); }
+    public int getTimePassed() { return this.timePassed; }
 
     public boolean isActive() {
         return this.active;

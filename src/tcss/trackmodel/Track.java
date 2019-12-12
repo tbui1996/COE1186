@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import tcss.trackmodel.Block.Direction;
 
 public class Track {
 
@@ -28,13 +29,13 @@ public class Track {
 
     public double distanceBetweenTwoBlocks(Block start, Block end, int unit){
 
-        double fromTailDistance = distanceHelper(start, end, Direction.FROM_TAIL, unit);
-        double fromHeadDistance = distanceHelper(start, end, Direction.FROM_HEAD, unit);
+        double fromTailDistance = distanceHelper(start, end, Block.Direction.FROM_TAIL, unit);
+        double fromHeadDistance = distanceHelper(start, end, Block.Direction.FROM_HEAD, unit);
 
         System.out.println("From Tail Distance: " + fromTailDistance + ", From Head Distance: " + fromHeadDistance);
 
         if(start.isOccupied()){
-            if(start.getDirection() == Direction.FROM_TAIL){
+            if(start.getDirection() == Block.Direction.FROM_TAIL){
                 return fromTailDistance;
             }else{
                 return fromHeadDistance;

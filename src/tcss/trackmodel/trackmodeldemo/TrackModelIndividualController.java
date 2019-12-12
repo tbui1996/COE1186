@@ -1,4 +1,4 @@
-package tcss.main;
+package tcss.trackmodel.trackmodeldemo;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -15,14 +15,12 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import tcss.trackmodel.Block;
-import tcss.trackmodel.Block.Failure;
 import tcss.trackmodel.Track;
 
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
-public class TrackModelController implements Initializable {
+public class TrackModelIndividualController implements Initializable {
 
     // UI variables
     @FXML private AnchorPane pane;
@@ -45,8 +43,6 @@ public class TrackModelController implements Initializable {
     @FXML private Label switchLabel;
     @FXML private Label rxrLabel;
     @FXML private Label beaconLabel;
-    @FXML private Label closedLabel;
-    @FXML private Label failureModeLabel;
 
     private Track currTrack;
 
@@ -99,24 +95,22 @@ public class TrackModelController implements Initializable {
 //                    System.out.println("ID: " + Main.trains.get((Integer)number2 - 1).getID());
 
                     Block cur = currTrack.getBlock((Integer) number2);
-                    DecimalFormat df = new DecimalFormat("#.##");
+
                     blockNumLabel.setText("Block #: " + cur.getBlockNum());
                     sectionLabel.setText("Section #: " + cur.getSection());
-                    sSpeedLabel.setText("Suggested Speed: " + Double.parseDouble(df.format(updateSuggestedSpeed(cur) * 0.621)) + " mph");
-                    authLabel.setText("Authority: " + updateAuth(cur) + " blocks");
-                    lengthLabel.setText("Length: " + Double.parseDouble(df.format(cur.getLength() * 3.28)) + " ft");
+                    sSpeedLabel.setText("Suggested Speed: " + cur.getSuggestedSpeed() * 0.621371 + " mph");
+                    authLabel.setText("Authority: " + cur.getAuthority() + " blocks");
+                    lengthLabel.setText("Length: " + cur.getLength() + " m");
                     gradeLabel.setText("Grade: " + cur.getGrade() + "%");
-                    speedLimitLabel.setText("Speed Limit: " + Double.parseDouble(df.format(cur.getSpeedLimit() * 0.621)) + " mph");
-                    elevLabel.setText("Elevation: " + Double.parseDouble(df.format(cur.getElevation() * 3.28)) + " ft");
-                    cumulativeElevLabel.setText("Cumulative Elevation: " + Double.parseDouble(df.format(cur.getCumulativeElevation() * 3.28)) + " ft");
+                    speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit() * 0.621371 + " mph");
+                    elevLabel.setText("Elevation: " + cur.getElevation() + " m");
+                    cumulativeElevLabel.setText("Cumulative Elevation: " + cur.getCumulativeElevation() + " m");
                     undergroundLabel.setText("Underground: " + updateUnderground(cur));
                     occupiedLabel.setText("Occupied: " + updateOccupied(cur));
                     stationLabel.setText("Station: " + updateStation(cur));
                     switchLabel.setText("Switch: " + updateSwitch(cur));
                     rxrLabel.setText("RXR: " + updateRXR(cur));
                     beaconLabel.setText("Beacon: " + updateBeacon(cur));
-                    closedLabel.setText("Closed: " + updateClosed(cur));
-                    failureModeLabel.setText("Failure Mode: " + updateFailureMode(cur));
 
                 } else {
                     blockNumLabel.setText("Block #: ");
@@ -132,27 +126,9 @@ public class TrackModelController implements Initializable {
                     stationLabel.setText("Station: ");
                     switchLabel.setText("Switch: ");
                     rxrLabel.setText("RXR: ");
-                    closedLabel.setText("Closed: ");
-                    failureModeLabel.setText("Failure Mode: ");
                 }
             }
         });
-    }
-
-    public float updateSuggestedSpeed(Block cur){
-        if(cur.isOccupied()){
-            return cur.getTrain().getSSpeed();
-        }else{
-            return 0;
-        }
-    }
-
-    public int updateAuth(Block cur){
-        if(cur.isOccupied()){
-            return cur.getTrain().getAuthority();
-        }else{
-            return 0;
-        }
     }
 
     public String updateUnderground(Block cur){
@@ -210,27 +186,6 @@ public class TrackModelController implements Initializable {
             return cur.getBeacon().getData().toString();
         }
     }
-
-    public String updateClosed(Block cur){
-        if(cur.isClosed()){
-            return "Yes";
-        }
-        return "No";
-    }
-
-    public String updateFailureMode(Block cur){
-        switch(cur.getFailure()){
-            case BROKEN_RAIL:
-                return "BROKEN RAIL";
-            case CIRCUIT_FAILURE:
-                return "CIRCUIT FAILURE";
-            case POWER_FAILURE:
-                return "POWER FAILURE";
-            default:
-                return "NONE";
-        }
-    }
-
 
     public void goBack(ActionEvent actionEvent) throws Exception {
 //        Parent trainModelParent = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));

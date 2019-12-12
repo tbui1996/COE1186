@@ -120,20 +120,24 @@ public class TrackController {
         this.plc = new PLC(switcheslogic, proceedlogic, maintenancelogic, RXRlogic, lightlogic);
         return true;
     }
-
-    public boolean maintenanceRequest(int line, int blockId){
+    //flag allows us to know whether or not to open or close block
+    public boolean maintenanceRequest(int line, int blockId, boolean flag){
         Block maintenanceBlock = track.getBlock(blockId);
         Block previousBlock = track.getBlock(maintenanceBlock.getPreviousBlock().getBlockNum());
         Block nextBlock = getBlock(maintenanceBlock.getNextBlock().getBlockNum());
 
         boolean maintenancemode = plc.verifyMaintenance(previousBlock, maintenanceBlock, nextBlock);
         //close
-        if(maintenancemode){
+        if(maintenancemode && flag){
             maintenanceBlock.setSuggSpeedAndAuth(-2,0);
+            maintenanceBlock.setOccupied(true);
             return true;
         }
         //open
-        maintenanceBlock.setSuggSpeedAndAuth(-2, 1);
+        if(flag == false && maintenancemode) {
+            maintenanceBlock.setSuggSpeedAndAuth(-2, 1);
+            maintenanceBlock.setOccupied(false);
+        }
         return false;
     }
 
@@ -148,9 +152,9 @@ public class TrackController {
         if(crossingMode){
             crossingBlock.setSuggSpeedAndAuth(-3,0);
             return true;
+        } else {
+            crossingBlock.setSuggSpeedAndAuth(-3, 1);
         }
-        //put it up
-        crossingBlock.setSuggSpeedAndAuth(-3, 1);
         return false;
     }
     //blockId: currentblock
@@ -241,7 +245,7 @@ public class TrackController {
 
             boolean canProceed = plc.verifyProceed(nextBlock, destinationBlock);
             if (!canProceed) {
-                //currentBlock.setSuggSpeedAndAuth(0, 0);
+                currentBlock.setSuggSpeedAndAuth(0, 0);
                 return false;
             }
 
@@ -268,6 +272,7 @@ public class TrackController {
         Block currentswitchblock = getBlock(blockId);
         Block nextBlock = getBlock(currentswitchblock.getNextBlock().getBlockNum());
         boolean switchposition = currentswitchblock.getSwitch().getStraight();
+
 
         boolean result = plc.vitalSwitch(currentswitchblock, nextBlock);
 

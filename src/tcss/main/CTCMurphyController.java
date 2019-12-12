@@ -20,12 +20,10 @@ import tcss.trackmodel.Block;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-
-
-public class CTCController implements Initializable{
-
+public class CTCMurphyController implements Initializable {
     // UI variables
-    @FXML private Label dispatch1;
+    @FXML
+    private Label dispatch1;
     @FXML private AnchorPane pane;
     @FXML private Button newDispatch;
     @FXML private ChoiceBox<String> lineSelector;
@@ -110,29 +108,37 @@ public class CTCController implements Initializable{
 
     //View a block, where you can close a block
     public void viewBlock(ActionEvent e) {
-            String [] split = blockSelector.getSelectionModel().getSelectedItem().split(": ",2);
+        String [] split = blockSelector.getSelectionModel().getSelectedItem().split(": ",2);
 
-            int block = Integer.parseInt(split[0]);
-            Block temp = Main.ctc.getBlock(Main.ctc.lineStringToInt(lineSelector.getSelectionModel().getSelectedItem().toUpperCase()), block);
+        int block = Integer.parseInt(split[0]);
+        Block temp = Main.ctc.getBlock(Main.ctc.lineStringToInt(lineSelector.getSelectionModel().getSelectedItem().toUpperCase()), block);
 
-            //Fills labels with proper values
-            locLabel.setText(lineSelector.getSelectionModel().getSelectedItem().toUpperCase() + " " + block);
-            occLabel.setText("Occupied: " + temp.isOccupied());
-            if (temp.getStation() != null) {
-                stationLabel.setText("Station: " + temp.getStation().getName());
-            } else {
-                stationLabel.setText("Station: N/A");
-            }
+        //Fills labels with proper values
+        locLabel.setText(lineSelector.getSelectionModel().getSelectedItem().toUpperCase() + " " + block);
+        occLabel.setText("Occupied: " + temp.isOccupied());
+        if (temp.getStation() != null) {
+            stationLabel.setText("Station: " + temp.getStation().getName());
+        } else {
+            stationLabel.setText("Station: N/A");
+        }
 
-            mHour.setDisable(false);
-            mMin.setDisable(false);
-            mHalf.setDisable(false);
-            closeTime.setDisable(false);
-            closeBlockButton.setDisable(false);
+        mHour.setDisable(false);
+        mMin.setDisable(false);
+        mHalf.setDisable(false);
+        closeTime.setDisable(false);
+        closeBlockButton.setDisable(false);
+    }
+
+    public void blockFailure() {
+        String [] split = blockSelector.getSelectionModel().getSelectedItem().split(": ",2);
+        if (lineSelector.getSelectionModel().getSelectedItem().toUpperCase().equals("RED")) {
+            Main.tc.maintenanceRequest(1, Integer.parseInt(split[0]),true);
+        } else {
+            Main.tc.maintenanceRequest(0, Integer.parseInt(split[0]), true);
+        }
     }
 
     //Closes a Block for Maintenance
-    @FXML
     public void closeBlock(ActionEvent e) throws Exception {
         //System.out.println("Close block ");
         String [] loc = locLabel.getText().split(" ",2);
