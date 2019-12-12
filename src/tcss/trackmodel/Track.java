@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import tcss.trackmodel.Block.Direction;
 
 public class Track {
 
@@ -28,19 +29,19 @@ public class Track {
 
     public double distanceBetweenTwoBlocks(Block start, Block end, int unit){
 
-        double fromTailDistance = distanceHelper(start, end, Direction.FROM_TAIL, unit);
-        double fromHeadDistance = distanceHelper(start, end, Direction.FROM_HEAD, unit);
+        double fromTailDistance = distanceHelper(start, end, Block.Direction.FROM_TAIL, unit);
+        double fromHeadDistance = distanceHelper(start, end, Block.Direction.FROM_HEAD, unit);
 
         System.out.println("From Tail Distance: " + fromTailDistance + ", From Head Distance: " + fromHeadDistance);
 
         if(start.isOccupied()){
-            if(start.getDirection() == Direction.FROM_TAIL){
+            if(start.getDirection() == Block.Direction.FROM_TAIL){
                 return fromTailDistance;
             }else{
                 return fromHeadDistance;
             }
         }else{
-            if(start.getBlockNum() == 7){
+            if(start.getBlockNum() == 7 || start.getBlockNum() == 9){
                 return fromHeadDistance;
             }
             return fromTailDistance;
@@ -57,7 +58,19 @@ public class Track {
         if(unit == 0){
             //distance in meters
             if(currBranch == endBranch){
-                return currBranch.getDistance(start.getBlockNum(), end.getBlockNum());
+                if(currBranch.getEnd() > currBranch.getStart()){
+                    if((initialDir == Direction.FROM_TAIL && start.getBlockNum() < end.getBlockNum()) ||
+                            (initialDir == Direction.FROM_HEAD && end.getBlockNum() < start.getBlockNum())){
+
+                        return currBranch.getDistance(start.getBlockNum(), end.getBlockNum());
+                    }
+                }else if((initialDir == Direction.FROM_HEAD && start.getBlockNum() < end.getBlockNum()) ||
+                        (initialDir == Direction.FROM_TAIL && end.getBlockNum() < start.getBlockNum())){
+
+                    return currBranch.getDistance(start.getBlockNum(), end.getBlockNum());
+                }
+                passFirst = true;
+
             }
 
             if(initialDir == Direction.FROM_TAIL){
@@ -67,7 +80,6 @@ public class Track {
             }
         }else{
             //distance in blocks
-            System.out.println("Block distance");
             if(currBranch == endBranch){
                 //if (from tail && )
                 if(currBranch.getEnd() > currBranch.getStart()){

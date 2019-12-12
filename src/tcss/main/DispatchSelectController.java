@@ -87,7 +87,7 @@ public class DispatchSelectController implements Initializable {
                     dMin.setDisable(true);
                     dHalf.setDisable(true);
                     stopSelector.setDisable(true);
-                    timeToStop.setDisable(true);
+                    //timeToStop.setDisable(true);
                     stopConfirm.setDisable(true);
                     browseSchedule.setDisable(false);
                 }
@@ -196,6 +196,8 @@ public class DispatchSelectController implements Initializable {
         }
 
         curr.setRequests();
+        curr.getTrain().setStation(curr.schedule.getStopName(0));
+        curr.getTrain().setDTime(curr.getDepartureHour(), curr.getDepartureMin());
 
 
         tcss.main.Main.ctc.addDispatch(curr);

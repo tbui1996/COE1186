@@ -3,15 +3,15 @@ package tcss.trackmodel;
 import javafx.util.Pair;
 import tcss.trainmodel.TrainModel;
 
-enum Failure{
-    BROKEN_RAIL, CIRCUIT_FAILURE, POWER_FAILURE, NONE;
-}
-
-enum Direction{
-    FROM_HEAD, FROM_TAIL, FROM_BRANCH, NONE;
-}
-
 public class Block{
+
+    public enum Failure{
+        BROKEN_RAIL, CIRCUIT_FAILURE, POWER_FAILURE, NONE;
+    }
+
+    public enum Direction{
+        FROM_HEAD, FROM_TAIL, FROM_BRANCH, NONE;
+    }
 
     private int line;
     private char section;
@@ -29,6 +29,7 @@ public class Block{
     private boolean occupied;
     private boolean closed;
     private boolean startBlock;
+    private boolean yardBlock;
     private boolean passengerUpdateDone;
 
     private Failure failure;
@@ -62,6 +63,7 @@ public class Block{
         setUnderground(false);
         setOccupied(false);
         setStartBlock(false);
+        setYardBlock(false);
         setPassengerUpdateDone(false);
 
         setFailure(Failure.NONE);
@@ -124,8 +126,15 @@ public class Block{
 
     public Block trainGetNextBlock(){
 
-        Block retBlock;
+        Block retBlock = getBlockAhead(1);
+        if(!moveTrain(retBlock)){
+            System.out.println("failed to move train");
+            return null;
+        }
 
+        return retBlock;
+
+        /*
         if(getBranch() == null){
 
             if(getDirection() == Direction.FROM_TAIL){
@@ -204,14 +213,21 @@ public class Block{
         }else{
             System.out.println("trainGetNextBlock(): no references on returned block point to current block");
             return null;
-        }
-
-        return retBlock;
+        }*/
     }
 
     public Block getNextBlock(){
-
+        if(getDirection() == Direction.NONE){
+            return getHead();
+        }
         return getBlockAhead(1);
+    }
+
+    public Block getPreviousBlock(){
+        if(getDirection() == Direction.NONE){
+            return getTail();
+        }
+        return getBlockBehind(1);
     }
 
     public Block getBlockAhead(int numAhead){
@@ -220,6 +236,12 @@ public class Block{
 
         if(numAhead <= 0){
             return currBlock;
+        }
+
+        if(!isOccupied()){
+            System.out.println("Train Direction == " + getDirection());
+            System.out.println("No train present on block " + getBlockNum());
+            return null;
         }
 
         Direction dir = getDirection();
@@ -309,11 +331,127 @@ public class Block{
         return retPair;
     }
 
-    public Block getPreviousBlock(){
-        return tail;
+    public Block getBlockBehind(int numBehind) {
+        Block currBlock = this;
+
+        if(numBehind <= 0){
+            return currBlock;
+        }
+
+        Direction dir = getOppositeDirection();
+
+        for(int i=0;i<numBehind;i++){
+            Pair<Block, Direction> currPair = getBlockAheadHelper(currBlock, dir);
+            currBlock = currPair.getKey();
+            dir = currPair.getValue();
+            System.out.println("=> " + currBlock.getBlockNum());
+        }
+
+        return currBlock;
     }
 
-    public boolean moveTrain(){
+    public Direction getOppositeDirection(){
+
+        if(getBranch() == null){
+            //no branch, only head and tail, direct opposites
+            if(getDirection() == Direction.FROM_TAIL){
+                return Direction.FROM_HEAD;
+            }else if(getDirection() == Direction.FROM_HEAD){
+                return Direction.FROM_HEAD;
+            }else{
+                System.out.println("getOppositeDirection(): current block has no valid direction specified 1");
+                return Direction.NONE;
+            }
+        }else{
+            if(this == getBranch().getHead()){
+
+                //branching into a head
+                if(getDirection() == Direction.FROM_BRANCH || getDirection() == Direction.FROM_HEAD){
+                    //if from branch or from head, from tail
+                    return Direction.FROM_TAIL;
+                }else if(getDirection() == Direction.FROM_TAIL){
+                    //if from tail
+
+                    if(!getSwitch().getStraight()){
+                        //if switch is branched, from branch
+                        return Direction.FROM_BRANCH;
+                    }else{
+                        //else, from head
+                        return Direction.FROM_HEAD;
+                    }
+                }else{
+                    System.out.println("getOppositeDirection(): current block has no valid direction specified 2");
+                    return Direction.NONE;
+                }
+
+            }else{
+                //branching into a tail
+                if(getDirection() == Direction.FROM_BRANCH || getDirection() == Direction.FROM_TAIL){
+                    //if from branch or from tail, from head
+                    return Direction.FROM_HEAD;
+                }else if(getDirection() == Direction.FROM_HEAD){
+
+                    //if from head
+                    if(!getSwitch().getStraight()){
+                        //if switch is branched, from branch
+                        return Direction.FROM_BRANCH;
+                    }else{
+                        //else, from tail
+                        return Direction.FROM_TAIL;
+                    }
+                }else{
+                    System.out.println("getOppositeDirection(): current block has no direction specified 3");
+                    return Direction.NONE;
+                }
+            }
+        }
+    }
+
+
+    public boolean moveTrain(Block nextBlock){
+
+        if(!isOccupied()){
+            System.out.println("Train Direction == " + getDirection());
+            System.out.println("No train present on block " + getBlockNum());
+            return false;
+        }else if(nextBlock.isOccupied()){
+            System.out.println("Trains crashed on block" + getBlockNum());
+            return false;
+        }else if(nextBlock.isYardBlock()){
+            getTrain().toYard();
+            setTrain(null);
+            setOccupied(false);
+            setDirection(Direction.NONE);
+            setPassengerUpdateDone(false);
+            return true;
+        }
+
+        //set train of next block to that of current block
+        nextBlock.setTrain(getTrain());
+        nextBlock.setOccupied(true);
+        setTrain(null);
+        setOccupied(false);
+        setDirection(Direction.NONE);
+        setPassengerUpdateDone(false);
+
+        //if next block has beacon, set train beacon data
+        if(nextBlock.getBeacon() != null){
+            nextBlock.getTrain().setBeacon(nextBlock.getBeacon().getData().toCharArray());
+        }
+
+        //set direction of next block
+        if(this == nextBlock.getHead()){
+            nextBlock.setDirection(Direction.FROM_HEAD);
+        }else if(this == nextBlock.getTail()){
+            nextBlock.setDirection(Direction.FROM_TAIL);
+            nextBlock.getTrain().setGrade(nextBlock.getGrade() * -1);
+        }else if(nextBlock.getBranch() != null){
+            nextBlock.setDirection(Direction.FROM_BRANCH);
+        }else{
+            System.out.println("moveTrain(): no references on next block point to current block");
+            return false;
+        }
+
         return true;
     }
 
@@ -380,11 +518,12 @@ public class Block{
             System.out.println("Failed to init, block is occupied");
             return false;
         }
-        System.out.println("Hello");
         TrainModel train = new TrainModel(suggSpeed, auth, id, this);
         setTrain(train);
         setOccupied(true);
         setDirection(Direction.FROM_HEAD);
+        setSuggestedSpeed(suggSpeed);
+        setAuthority(auth);
         return true;
     }
 
@@ -444,6 +583,10 @@ public class Block{
 
     public boolean isStartBlock(){
         return startBlock;
+    }
+
+    public boolean isYardBlock(){
+        return yardBlock;
     }
 
     public boolean isPassengerUpdateDone(){
@@ -546,6 +689,10 @@ public class Block{
 
     public void setStartBlock(boolean startBlock){
         this.startBlock = startBlock;
+    }
+
+    public void setYardBlock(boolean yardBlock){
+        this.yardBlock = yardBlock;
     }
 
     public void setPassengerUpdateDone(boolean passengerUpdateDone) {

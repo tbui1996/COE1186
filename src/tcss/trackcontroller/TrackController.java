@@ -120,20 +120,24 @@ public class TrackController {
         this.plc = new PLC(switcheslogic, proceedlogic, maintenancelogic, RXRlogic, lightlogic);
         return true;
     }
-
-    public boolean maintenanceRequest(int line, int blockId){
+    //flag allows us to know whether or not to open or close block
+    public boolean maintenanceRequest(int line, int blockId, boolean flag){
         Block maintenanceBlock = track.getBlock(blockId);
         Block previousBlock = track.getBlock(maintenanceBlock.getPreviousBlock().getBlockNum());
         Block nextBlock = getBlock(maintenanceBlock.getNextBlock().getBlockNum());
 
         boolean maintenancemode = plc.verifyMaintenance(previousBlock, maintenanceBlock, nextBlock);
         //close
-        if(maintenancemode){
+        if(maintenancemode && flag){
             maintenanceBlock.setSuggSpeedAndAuth(-2,0);
+            maintenanceBlock.setOccupied(true);
             return true;
         }
         //open
-        maintenanceBlock.setSuggSpeedAndAuth(-2, 1);
+        if(flag == false && maintenancemode) {
+            maintenanceBlock.setSuggSpeedAndAuth(-2, 1);
+            maintenanceBlock.setOccupied(false);
+        }
         return false;
     }
 
@@ -148,18 +152,26 @@ public class TrackController {
         if(crossingMode){
             crossingBlock.setSuggSpeedAndAuth(-3,0);
             return true;
+        } else {
+            crossingBlock.setSuggSpeedAndAuth(-3, 1);
         }
-        //put it up
-        crossingBlock.setSuggSpeedAndAuth(-3, 1);
         return false;
     }
     //blockId: currentblock
     //nexBlock: block after currentblock that train will proceed to
     //destBLock: block after nexBlock
     public boolean proceed(int line, int blockId, int nexBlock, int destBlock, int authority, float suggestedspeed) {
-        Block currentBlock = track.getBlock(blockId);
-        Block nextBlock = track.getBlock(currentBlock.getNextBlock().getBlockNum());
-        Block destinationBlock = track.getBlock(nextBlock.getNextBlock().getBlockNum());
+        Block currentBlock = this.track.getBlock(blockId);
+        Block nextBlock;
+        Block destinationBlock;
+        if(currentBlock.isOccupied()){
+            nextBlock = this.track.getBlock(currentBlock.getNextBlock().getBlockNum());
+            destinationBlock = this.track.getBlock(currentBlock.getBlockAhead(2).getBlockNum());
+
+        } else{
+            nextBlock = this.track.getBlock(currentBlock.getNextBlock().getBlockNum());
+            destinationBlock = this.track.getBlock(nextBlock.getNextBlock().getBlockNum());
+        }
 
         boolean reverse = currentBlock.getPreviousBlock().getBlockNum() == nexBlock;
         int prev = reverse ? currentBlock.getNextBlock().getBlockNum() : currentBlock.getBlockNum();
@@ -169,7 +181,7 @@ public class TrackController {
         //if next block is crossing enter RXR
         //need to know how next block is a light block
         if (nextBlock.getRXR() != null) {
-            nextBlock.setRXR(nextBlock.getRXR());
+            nextBlock.setSuggSpeedAndAuth(-3, 0);
             if (!(plc.verifyRXR(currentBlock.getPreviousBlock(),currentBlock,nextBlock))) {
                 currentBlock.setSuggSpeedAndAuth(0, 0);
                 return false;
@@ -179,36 +191,59 @@ public class TrackController {
 
         //if next block is a switch
         //need to know how next block is a switch block
-        boolean canswitch = plc.verifySwitch(nextBlock, destinationBlock);
+       // boolean canswitch = plc.verifySwitch(nextBlock, destinationBlock);
+       // boolean canswitch = plc.verifySwitch(nextBlock, destinationBlock);
         if (nextBlock.getSwitch() != null) {
+            boolean reversed = false;
             boolean switchposition = nextBlock.getSwitch().getStraight();
-            boolean isSwitch = switchposition == nextBlock.getSwitch().getStraight();
-            int nextBlockID = switchposition ? nextBlock.getSwitch().getStraightDest() : nextBlock.getSwitch().getBranchDest();
-            nextBlock.getNextBlock();
-            if ((destinationBlock.getBlockNum() != nextBlockID)) {
-                if (currentBlock.getBlockNum() != nextBlockID) {
-                    if (!switchRequest(line, nextBlock.getBlockNum(), destBlock)) {
-                        currentBlock.setSuggSpeedAndAuth(0, 0);
+            boolean isSwitch = blockId == nextBlock.getBlockNum();
+            int nextBlockID = switchposition ? nextBlock.getTail().getBlockNum() : nextBlock.getBranch().getBlockNum();
+            if ((destinationBlock.getBlockNum() != nextBlockID) || (isSwitch && (blockId != nextBlockID))) {
+                if (destinationBlock.getBlockNum() == nextBlock.getPreviousBlock().getBlockNum()) {
+                    //toggle switch
+                    reversed = true;
+                    if (currentBlock.getBlockNum() != nextBlockID) {
+                        if (!switchRequest(line, nextBlock.getBlockNum(), destBlock)) {
+                            currentBlock.setSuggSpeedAndAuth(0, 0);
+                            return false;
+                        }
+                    }
+                } else if (!switchRequest(line, nextBlock.getBlockNum(), nexBlock)) {
+                    destinationBlock = getBlock(nextBlockID);
+                }
+
+            }
+            if(!plc.verifySwitch(nextBlock,destinationBlock)){
+                if(!reverse && switchRequest(line, nextBlock.getBlockNum(),destBlock)){
+                    switchposition = nextBlock.getSwitch().getStraight();
+                    nexBlock = switchposition ? nextBlock.getSwitch().getStraightDest() : nextBlock.getSwitch().getStraightDest();
+                    nextBlock.getNextBlock();
+                    destinationBlock = this.track.getBlock(nexBlock);
+                    if(!plc.verifySwitch(nextBlock,destinationBlock)){
                         return false;
                     }
                 }
+                else{
+                    return false;
+                }
             }
         }
+
 
         //if curr block is a switch
         if (currentBlock.getSwitch()!=null) {
             boolean switchposition = currentBlock.getSwitch().getStraight();
             int nextBlockId = switchposition ? currentBlock.getBlockNum() : currentBlock.getNextBlock().getBlockNum();
             //switch changed
-            if (nextBlock.getBlockNum() != nextBlockId) {
+            if (destinationBlock.getBlockNum() != nextBlockId) {
                 nextBlock = getBlock(nextBlockId);
                 destBlock = reverse ? nextBlock.getPreviousBlock().getBlockNum() : nextBlock.getNextBlock().getBlockNum();
                 nextBlock.getNextBlock();
-                destinationBlock = track.getBlock(destBlock);
+                destinationBlock = getBlock(destBlock);
             }
         }
 
-            boolean canProceed = plc.vitalProceed(nextBlock, destinationBlock);
+            boolean canProceed = plc.verifyProceed(nextBlock, destinationBlock);
             if (!canProceed) {
                 currentBlock.setSuggSpeedAndAuth(0, 0);
                 return false;
@@ -238,13 +273,15 @@ public class TrackController {
         Block nextBlock = getBlock(currentswitchblock.getNextBlock().getBlockNum());
         boolean switchposition = currentswitchblock.getSwitch().getStraight();
 
+
         boolean result = plc.vitalSwitch(currentswitchblock, nextBlock);
 
         if(result){
-            currentswitchblock.getSwitch().setStraight(!switchposition);
+            currentswitchblock.setSuggSpeedAndAuth(-4,1);
             return true;
         } else{
             System.out.println("Cannot switch.");
+            currentswitchblock.setSuggSpeedAndAuth(-4,0);
         }
         return false;
 
@@ -275,19 +312,6 @@ public class TrackController {
         return "open";
     }
 
-    public String blockState(int blockId){
-        Block newblock = block.get(blockId);
-        if(newblock==null)
-            return null;
-        boolean isOccupied = !newblock.isOccupied();
-        boolean isClosed = !newblock.isClosed();
-
-        if(isClosed)
-            return "closed";
-        if(isOccupied)
-            return "occupied";
-        return "open";
-    }
 
     public int getAuthority(){
         return this.auth;
