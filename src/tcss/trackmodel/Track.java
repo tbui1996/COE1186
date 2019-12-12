@@ -47,6 +47,7 @@ public class Track {
     private double distanceHelper(Block start, Block end, Direction initialDir, int unit){
 
         double currDistance = 0.0;
+        boolean passFirst = false;
         Branch currBranch = getBranch(start.getBlockNum());
         Branch endBranch = getBranch(end.getBlockNum());
 
@@ -65,7 +66,19 @@ public class Track {
             //distance in blocks
             System.out.println("Block distance");
             if(currBranch == endBranch){
-                return Math.abs(start.getBlockNum() - end.getBlockNum());
+                //if (from tail && )
+                if(currBranch.getEnd() > currBranch.getStart()){
+                    if((initialDir == Direction.FROM_TAIL && start.getBlockNum() < end.getBlockNum()) ||
+                            (initialDir == Direction.FROM_HEAD && end.getBlockNum() < start.getBlockNum())){
+
+                        return Math.abs(start.getBlockNum() - end.getBlockNum());
+                    }
+                }else if((initialDir == Direction.FROM_HEAD && start.getBlockNum() < end.getBlockNum()) ||
+                        (initialDir == Direction.FROM_TAIL && end.getBlockNum() < start.getBlockNum())){
+
+                    return Math.abs(start.getBlockNum() - end.getBlockNum());
+                }
+                passFirst = true;
             }
 
             if(initialDir == Direction.FROM_TAIL){
@@ -77,8 +90,8 @@ public class Track {
 
 
         Direction dir = initialDir;
-        while(currBranch != endBranch){
-
+        while(currBranch != endBranch || passFirst){
+            passFirst = false;
             ArrayList<Branch> next;
             if (dir == Direction.FROM_TAIL){
                 next = currBranch.getHead();
