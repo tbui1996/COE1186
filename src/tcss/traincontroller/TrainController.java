@@ -46,8 +46,8 @@ public class TrainController {
     final private float T = 1; //sampling rate of trains - PWRCMD calculation rate
     private float PWRCMD;
     private boolean[] doors = {false, false, false, false, false, false, false, false};
-    private float SLOW_OPERATING_SPEED = 2.235f;
-    private float MAX_OPERATING_SPEED = 70f*1000f/3600f; //m/s
+    private float SLOW_OPERATING_SPEED = 2.235f; //~5 MPH but in meters/s
+    private float MAX_OPERATING_SPEED = 70f*1000f*100f/2.54f/12f/5280f; //km/h converted to miles/hours
 
 
 
@@ -84,13 +84,14 @@ public class TrainController {
         this.underground = underground;
         this.temp = temp;
         this.setpointSpeed = suggestedSpeed; //since we start in auto, we can set sps to the suggested
-        this.eBrake = true;
+        this.eBrake = false;
         this.lastVerrs = new float[]{0, 0, 0}; //for use in the vital pwrcmd calcs
         this.lastmuk = new float[]{0, 0, 0};
         this.PWRCMD = 0;
         this.ki = Main.kikp[0]; //get the current desired KI and KP
         this.kp = Main.kikp[1];
         TrainController.TrainControllerList.add(this);
+
     }
 
     /**
@@ -114,11 +115,6 @@ public class TrainController {
         this.kp = Main.kikp[1];
     }
 
-    /*
-    Method responsible for updating calculations for safe travel and operation
-    determines new commanded speed and
-     */
-
     /**
      * This method updates the train model and traincontroller so that all of the information between the modules are consistent
      * Updates the model, then updates the controller with relevant information from the model.
@@ -130,20 +126,23 @@ public class TrainController {
         // TODO Remove calls to update model; that's handled by SimTime
         currentSpeed = model.getCurV();
         if(model.getEBrake()){
+            System.out.println("EBRAKE SET TO TRUE BECAUSE IT WAS TRUE IN THE MODEL");
             eBrake = true;
         }
         if(eBrake) {
             this.PWRCMD = 0;
         }
-        /*
+
         System.out.println("THE CURRENT SUGGESTED SPEED: " + suggestedSpeed + " AND AUTHORITY " + authority);
         System.out.println("THE CURRENT SBRAKE: " + sBrake + " AND EBRAKE " + eBrake);
-        */
+
         prepareVoters();
         majorityVote();
         PWRCMD = RESOLVED_PWR_CMD;
         sBrake = RESOLVED_S_BRAKE;
-        eBrake = RESOLVED_E_BRAKE;
+        if(!eBrake) {
+            eBrake = RESOLVED_E_BRAKE;
+        }
         /*
         System.out.println("THE CALCED PWRCMD: " + PWRCMD);
         System.out.println("THE CALCED SBRAKE: " + sBrake);
@@ -186,6 +185,9 @@ public class TrainController {
         commandedSpeed = Math.min(setpointSpeed, suggestedSpeed);
         commandedSpeed = Math.min(commandedSpeed, speedLimit);
         commandedSpeed = Math.min(commandedSpeed, MAX_OPERATING_SPEED);
+        if(eBrake){
+            commandedSpeed = 0;
+        }
         for(int id = 0; id < 3; id++) {
             getPWRCMD(commandedSpeed, id);
         }
@@ -234,17 +236,22 @@ public class TrainController {
             lastmuk[id] = lastmuk[id] + T/2*(vErr + lastVerrs[id]);
         }
 
-        if(eBrake){
+        if(eBrake) {
             eBrakeVotes[id] = true;
             System.out.println("EBRAKEVOTE SET TO TRUE BECAUSE IT IS CURRENTLY ACTIVE");
-        }
-        if(authority == 1 && currentSpeed > SLOW_OPERATING_SPEED){ //manage speed down to safe slow speed
+        } else if(authority == 1 && currentSpeed > SLOW_OPERATING_SPEED){ //manage speed down to safe slow speed
            sBrakeVotes[id] = true;
            System.out.println("SBRAKEVOTE SET TO TRUE BECAUSE WE WANT TO SLOW THE TRAIN DOWN");
-        }
-        if(authority <= 0){
+        } else if(authority == 0){
             sBrakeVotes[id] = true;
             System.out.println("SBRAKEVOTE SET TO TRUE BECAUSE WE HAVE REACHED OUR DESTINATION");
+        } else if(authority < 0){
+            eBrakeVotes[id] = true;
+            System.out.println("EBRAKEVOTE SET TO TRUE BECAUSE WE HAVE PASSED OUR DESTINATION");
+        } else {
+            eBrakeVotes[id] = false;
+            sBrakeVotes[id] = false;
+            System.out.println("EBRAKEVOTE SET TO FALSE BECAUSE WE HAVE NO REASON TO EBRAKE");
         }
         //TODO: Find out what negative value is absurd to be sent and determine values where break is desired instead.
 

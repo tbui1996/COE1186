@@ -91,9 +91,9 @@ public class TrainControllerController implements Initializable {
                     tc = cur;
                     initializeDoors();
                     idLabel.setText("ID: " + tc.getID());
-                    suggestedSpeedLabel.setText("Suggested Speed: " + tc.getSSpeed());
-                    setPointInput.setPromptText("" + tc.getsetpointSpeed());
-                    setTempInput.setPromptText("" + tc.getTemp());
+                    suggestedSpeedLabel.setText("Suggested Speed: " + tc.getSuggestedSpeedInMPH() + " MPH");
+                    setPointInput.setPromptText("" + tc.getsetpointSpeed() + " MPH");
+                    setTempInput.setPromptText("" + tc.getTemp() + " F");
                     trainButton.setDisable(false);
                     update();
                 } else {
@@ -148,7 +148,7 @@ public class TrainControllerController implements Initializable {
         } else {
             opModeToggle.setText("Enter Manual Mode");
         }
-        authLabel.setText("Authority: " + tc.getAuthority());
+        authLabel.setText("Authority: " + tc.getAuthority() + "Blocks");
         if (tc.getUnderground()){
             lightsDisplay.setText("ON");
             lightsDisplay.setTextFill(Color.GREEN);
@@ -164,7 +164,7 @@ public class TrainControllerController implements Initializable {
             eBrakeToggle.setStyle("-fx-background-color: #dfdfdf; -fx-text-fill: rgb(43, 39, 49)");
         }
         opModeToggle.setSelected(tc.getOpMode()); //set toggle to true if it is in manual
-        powerCommandLabel.setText("Power: " + String.format("%.2f", tc.getPWRCMD()/100) + " KW");
+        powerCommandLabel.setText("Power: " + String.format("%.2f", tc.getPWRCMD()/1000) + " KW");
         kilabel.setText("Ki: " + tc.getKi());
         kplabel.setText("Kp: " + tc.getKp());
         currentSpeedLabel.setText("Current Speed: " + tc.getCurrentSpeedInCustomary() + " MPH");
