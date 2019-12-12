@@ -100,6 +100,8 @@ public class Dispatch {
         this.dHr = this.schedule.getStopHour(0) - (travelTime / 60);
         if ((this.schedule.getStopMin(0) - (travelTime % 60)) == 0) {
             this.dMin = 0;
+        } else if (this.dHr == 0) {
+            this.dMin = (this.schedule.getStopMin(0) - (travelTime % 60));
         } else {
             this.dMin = 60 - (this.schedule.getStopMin(0) - (travelTime % 60));
         }

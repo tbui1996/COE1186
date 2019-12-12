@@ -131,7 +131,31 @@ public class DispatchSelectController implements Initializable {
 
     //Approves each stop added to the Schedule
     public void confirmStop(ActionEvent e) throws Exception {
-        //curr.schedule.addStop(stopSelector.getSelectionModel().getSelectedItem(), Float.parseFloat(timeToStop.getText()) * 60);
+        //If it's a valid time
+        if (1 <= Integer.parseInt(dHour.getText()) && Integer.parseInt(dHour.getText()) <= 12 && Integer.parseInt(dMin.getText()) >= 1 && Integer.parseInt(dMin.getText()) <= 59) {
+            //if AM
+            if (dHalf.getSelectionModel().getSelectedItem().equals("AM")) {
+                if (dHour.getText().equals("12")) {
+                    curr.schedule.addStop(stopSelector.getSelectionModel().getSelectedItem(), 0, Integer.parseInt(dMin.getText()));
+                } else {
+                    //curr.setDepartureTime(Integer.parseInt(dHour.getText()), Integer.parseInt(dMin.getText()));
+                    curr.schedule.addStop(stopSelector.getSelectionModel().getSelectedItem(), Integer.parseInt(dHour.getText()), Integer.parseInt(dMin.getText()));
+
+                }
+                //if PM
+            } else {
+                if (dHour.getText().equals("12")) {
+                    //curr.setDepartureTime(12, Integer.parseInt(dMin.getText()));
+                    curr.schedule.addStop(stopSelector.getSelectionModel().getSelectedItem(), 12, Integer.parseInt(dMin.getText()));
+
+                } else {
+                    //curr.setDepartureTime(Integer.parseInt(dHour.getText()) + 12, Integer.parseInt(dMin.getText()));
+                    curr.schedule.addStop(stopSelector.getSelectionModel().getSelectedItem(), Integer.parseInt(dHour.getText()) + 12, Integer.parseInt(dMin.getText()));
+
+                }
+            }
+
+        }
     }
 
     //Approves overall dispatch and adds it to the CTC list
