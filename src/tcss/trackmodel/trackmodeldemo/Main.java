@@ -1,63 +1,63 @@
 package tcss.trackmodel.trackmodeldemo;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
-import tcss.ctc.CTC;
+import javafx.stage.WindowEvent;
 import tcss.trackmodel.TrackModel;
 import tcss.trackmodel.Track;
 import tcss.trackmodel.Block;
-import tcss.trackcontroller.TrackController;
-import tcss.trainmodel.TrainModel;
+import tcss.trackmodel.trackmodeldemo.TrackModelIndividualController;
 
-import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main extends Application {
 
-    // Testing Train Model UI
-    static ArrayList<TrainModel> trains = new ArrayList<TrainModel>();
-
-    // Testing Track Model UI
-    static ArrayList<Block> blocks = new ArrayList<Block>();
-    static Track track;
-
-    static TrackController tc;
-    static CTC ctc;
+    static TrackModel tkm;
+    static Track redLine;
+    static Track greenLine;
+    static TrackModelIndividualController controller;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        //tc = new TrackController();
-        //ctc = new CTC(tc);
-        Parent root = FXMLLoader.load(getClass().getResource("ModuleSelection.fxml"));
-        primaryStage.setTitle("Module Selection");
+    public void start(Stage primaryStage) throws Exception {
+
+        tkm = new TrackModel();
+        redLine = tkm.getRedLine();
+        greenLine = tkm.getGreenLine();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("TrackModelIndividual.fxml"));
+        Parent root = loader.load();
+//        Parent root = FXMLLoader.load(getClass().getResource("TrainModel.fxml"));
+        primaryStage.setTitle("Track Model Individual");
         primaryStage.setScene(new Scene(root));
+
+        controller = loader.<TrackModelIndividualController>getController();
+        primaryStage.setResizable(true);
+        primaryStage.getIcons().add(new Image("file:resources/train.png"));
         primaryStage.show();
 
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                System.exit(4);
+            }
+        });
 
-        // Testing Train Model UI
-//        TrainModel t1 = new TrainModel(22.0f, 2, 4, 25.0f);
-//        TrainModel t2 = new TrainModel(17.0f, 13, 82, 43.5f);
-//        trains.add(t1);
-//        trains.add(t2);
+        //controller.update();
 
-        // Testing TrackModel UI
-        TrackModel tm = new TrackModel();
-        track = tm.getTrack();
-        //tc.setTrack(track);
+//        TimeUnit.SECONDS.sleep(3);
+//        controller.update();
 
-        /*Block b1 = track.getBlock(1);
-        Block b2 = track.getBlock(2);
-        blocks.add(b1);
-        blocks.add(b2);*/
-
+        // Create Timer to update TrainModel in background
+        //Timer t = new Timer();
     }
 
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         launch(args);
     }
 }
-

@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
 
 <AnchorPane fx:id="pane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" styleClass="body" stylesheets="@TrackModel.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tcss.trackmodel.trackmodeldemo.TrackModelIndividualController">
     <children>
-        <VBox alignment="CENTER_LEFT" layoutY="62.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="398.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="62.0">
+        <VBox alignment="CENTER_LEFT" layoutY="62.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="398.0" prefWidth="242.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="358.0" AnchorPane.topAnchor="62.0">
             <children>
             <ChoiceBox fx:id="lineChoice" minHeight="2.0" minWidth="2.0" prefHeight="35.0" prefWidth="154.0">
                <VBox.margin>
@@ -30,25 +32,92 @@
                 <Label id="authLabel" fx:id="authLabel" text="Authority:" />
                 <Label fx:id="lengthLabel" text="Length:" />
             <Label fx:id="gradeLabel" text="Grade:" />
+            <Label fx:id="elevLabel" text="Elevation:" />
+            <Label fx:id="cumulativeElevLabel" text="Cumulative Elevation:" />
+            <Label fx:id="occupiedLabel" text="Occupied:" />
             <Label fx:id="speedLimitLabel" text="Speed Limit:" />
             </children>
             <padding>
                 <Insets left="25.0" />
             </padding>
         </VBox>
-        <Button layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#goBack" prefHeight="55.0" prefWidth="70.0" styleClass="backButton" />
-      <VBox alignment="CENTER_LEFT" layoutX="300.0" layoutY="62.0" prefHeight="398.0" prefWidth="300.0">
+      <VBox alignment="CENTER_LEFT" layoutX="219.0" layoutY="62.0" prefHeight="398.0" prefWidth="242.0">
          <children>
-            <Label fx:id="elevLabel" text="Elevation:" />
-            <Label fx:id="cumulativeElevLabel" text="Cumulative Elevation:" />
             <Label fx:id="undergroundLabel" text="Underground:" />
-            <Label fx:id="occupiedLabel" text="Occupied:" />
             <Label fx:id="stationLabel" text="Station:" />
             <Label fx:id="switchLabel" text="Switch:" />
             <Label fx:id="rxrLabel" text="RXR:" />
             <Label fx:id="beaconLabel" text="Beacon:" />
+            <Label fx:id="closedLabel" text="Closed:" />
+            <Label fx:id="failureModeLabel" text="Failure Mode:" />
          </children>
       </VBox>
       <Label fx:id="titleLabel" layoutX="250.0" layoutY="25.0" text="Track Model" />
+      <VBox alignment="CENTER_LEFT" layoutX="467.0" layoutY="62.0" prefHeight="398.0" prefWidth="133.0">
+         <children>
+            <RadioButton fx:id="switchStraightButton" mnemonicParsing="false" text="Straight Switch">
+               <textFill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="WHITE" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </textFill>
+            </RadioButton>
+            <RadioButton fx:id="switchBranchButton" mnemonicParsing="false" text="Branch Switch">
+               <textFill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="WHITE" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </textFill>
+            </RadioButton>
+            <RadioButton fx:id="openRadButton" mnemonicParsing="false" text="Open Block">
+               <textFill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="WHITE" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </textFill>
+            </RadioButton>
+            <RadioButton fx:id="closeRadButton" mnemonicParsing="false" text="Close Block">
+               <textFill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="WHITE" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </textFill>
+            </RadioButton>
+            <RadioButton fx:id="rxrRaiseButton" mnemonicParsing="false" text="Raise RXR">
+               <textFill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="WHITE" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </textFill>
+            </RadioButton>
+            <RadioButton fx:id="rxrLowerButton" mnemonicParsing="false" text="Lower RXR">
+               <textFill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="WHITE" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </textFill>
+            </RadioButton>
+            <Label fx:id="closedLabel1" />
+            <ChoiceBox fx:id="failureChoice" minHeight="2.0" minWidth="2.0" prefHeight="35.0" prefWidth="119.0" />
+         </children>
+      </VBox>
     </children>
 </AnchorPane>

@@ -8,16 +8,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import tcss.trackmodel.Block;
+import tcss.trackmodel.Block.Failure;
 import tcss.trackmodel.Track;
 
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 public class TrackModelIndividualController implements Initializable {
@@ -27,6 +27,7 @@ public class TrackModelIndividualController implements Initializable {
 
     @FXML private ChoiceBox lineChoice;
     @FXML private ChoiceBox blockChoice;
+    @FXML private ChoiceBox failureChoice;
 
     @FXML private Label blockNumLabel;
     @FXML private Label sectionLabel;
@@ -43,8 +44,23 @@ public class TrackModelIndividualController implements Initializable {
     @FXML private Label switchLabel;
     @FXML private Label rxrLabel;
     @FXML private Label beaconLabel;
+    @FXML private Label closedLabel;
+    @FXML private Label failureModeLabel;
+
+    @FXML private RadioButton rxrRaiseButton;
+    @FXML private RadioButton rxrLowerButton;
+    @FXML private RadioButton switchStraightButton;
+    @FXML private RadioButton switchBranchButton;
+    @FXML private RadioButton closeRadButton;
+    @FXML private RadioButton openRadButton;
+
+    // Radio button groups
+    private ToggleGroup rxrGroup = new ToggleGroup();
+    private ToggleGroup switchGroup = new ToggleGroup();
+    private ToggleGroup maintenanceGroup = new ToggleGroup();
 
     private Track currTrack;
+    private Block cur;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -54,8 +70,22 @@ public class TrackModelIndividualController implements Initializable {
 
         blockChoice.getItems().add("Select Block");
 
-        Track redLine = tcss.main.Main.redLine;
-        Track greenLine = tcss.main.Main.greenLine;
+        Track redLine = tcss.trackmodel.trackmodeldemo.Main.redLine;
+        Track greenLine = tcss.trackmodel.trackmodeldemo.Main.greenLine;
+
+        // Add radio buttons to groups
+        rxrRaiseButton.setToggleGroup(rxrGroup);
+        rxrLowerButton.setToggleGroup(rxrGroup);
+        switchStraightButton.setToggleGroup(switchGroup);
+        switchBranchButton.setToggleGroup(switchGroup);
+        closeRadButton.setToggleGroup(maintenanceGroup);
+        openRadButton.setToggleGroup(maintenanceGroup);
+
+        failureChoice.getItems().add("Select Failure");
+        failureChoice.getItems().add("BROKEN RAIL");
+        failureChoice.getItems().add("CIRCUIT FAILURE");
+        failureChoice.getItems().add("POWER FAILURE");
+        failureChoice.getItems().add("NONE");
 
 
         lineChoice.setValue("Select Line");
@@ -94,23 +124,25 @@ public class TrackModelIndividualController implements Initializable {
 //                    System.out.println(trainChoice.getItems().get((Integer) number2));
 //                    System.out.println("ID: " + Main.trains.get((Integer)number2 - 1).getID());
 
-                    Block cur = currTrack.getBlock((Integer) number2);
-
+                    cur = currTrack.getBlock((Integer) number2);
+                    DecimalFormat df = new DecimalFormat("#.##");
                     blockNumLabel.setText("Block #: " + cur.getBlockNum());
                     sectionLabel.setText("Section #: " + cur.getSection());
-                    sSpeedLabel.setText("Suggested Speed: " + cur.getSuggestedSpeed() * 0.621371 + " mph");
-                    authLabel.setText("Authority: " + cur.getAuthority() + " blocks");
-                    lengthLabel.setText("Length: " + cur.getLength() + " m");
+                    sSpeedLabel.setText("Suggested Speed: " + Double.parseDouble(df.format(updateSuggestedSpeed(cur) * 0.621)) + " mph");
+                    authLabel.setText("Authority: " + updateAuth(cur) + " blocks");
+                    lengthLabel.setText("Length: " + Double.parseDouble(df.format(cur.getLength() * 3.28)) + " ft");
                     gradeLabel.setText("Grade: " + cur.getGrade() + "%");
-                    speedLimitLabel.setText("Speed Limit: " + cur.getSpeedLimit() * 0.621371 + " mph");
-                    elevLabel.setText("Elevation: " + cur.getElevation() + " m");
-                    cumulativeElevLabel.setText("Cumulative Elevation: " + cur.getCumulativeElevation() + " m");
+                    speedLimitLabel.setText("Speed Limit: " + Double.parseDouble(df.format(cur.getSpeedLimit() * 0.621)) + " mph");
+                    elevLabel.setText("Elevation: " + Double.parseDouble(df.format(cur.getElevation() * 3.28)) + " ft");
+                    cumulativeElevLabel.setText("Cumulative Elevation: " + Double.parseDouble(df.format(cur.getCumulativeElevation() * 3.28)) + " ft");
                     undergroundLabel.setText("Underground: " + updateUnderground(cur));
                     occupiedLabel.setText("Occupied: " + updateOccupied(cur));
                     stationLabel.setText("Station: " + updateStation(cur));
                     switchLabel.setText("Switch: " + updateSwitch(cur));
                     rxrLabel.setText("RXR: " + updateRXR(cur));
                     beaconLabel.setText("Beacon: " + updateBeacon(cur));
+                    closedLabel.setText("Closed: " + updateClosed(cur));
+                    failureModeLabel.setText("Failure Mode: " + updateFailureMode(cur));
 
                 } else {
                     blockNumLabel.setText("Block #: ");
@@ -126,9 +158,117 @@ public class TrackModelIndividualController implements Initializable {
                     stationLabel.setText("Station: ");
                     switchLabel.setText("Switch: ");
                     rxrLabel.setText("RXR: ");
+                    closedLabel.setText("Closed: ");
+                    failureModeLabel.setText("Failure Mode: ");
                 }
             }
         });
+
+        rxrGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>()
+        {
+            public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n){
+
+
+                RadioButton rb = (RadioButton)rxrGroup.getSelectedToggle();
+
+                if (rb != null) {
+                    System.out.println();
+                    String s = rb.getText();
+                    if(cur.getRXR() != null) {
+                        if (rb.getText().equals("Raise RXR")) {
+                            cur.getRXR().setDown(false);
+                            rxrLabel.setText("RXR: " + updateRXR(cur));
+                        } else if (rb.getText().equals("Lower RXR")) {
+                            cur.getRXR().setDown(true);
+                            rxrLabel.setText("RXR: " + updateRXR(cur));
+                        }
+                    }
+                }
+            }
+        });
+
+        switchGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>()
+        {
+            public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n){
+
+                RadioButton rb = (RadioButton)rxrGroup.getSelectedToggle();
+
+                if (rb != null) {
+                    String s = rb.getText();
+                    if(cur.getSwitch() != null) {
+                        if (rb.getText().equals("Branch Switch")) {
+                            cur.getSwitch().setStraight(false);
+                            switchLabel.setText("Switch: " + updateSwitch(cur));
+                        } else if (rb.getText().equals("Straight Switch")) {
+                            cur.getSwitch().setStraight(true);
+                            switchLabel.setText("Switch: " + updateSwitch(cur));
+                        }
+                    }
+                }
+            }
+        });
+
+        maintenanceGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>()
+        {
+            public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n){
+
+                RadioButton rb = (RadioButton)rxrGroup.getSelectedToggle();
+
+                if (rb != null) {
+                    String s = rb.getText();
+                    if (rb.getText().equals("Open Block")) {
+                        cur.setClosed(false);
+                        closedLabel.setText("Closed: " + updateClosed(cur));
+                    } else if (rb.getText().equals("Close Block")) {
+                        cur.setClosed(true);
+                        closedLabel.setText("Closed: " + updateClosed(cur));
+                    }
+                }
+            }
+        });
+
+        failureChoice.setValue("Select Failure");
+        failureChoice.setTooltip(new Tooltip("Set a failure mode"));
+        failureChoice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+                if((Integer) number2 > 0) {
+//                    System.out.println(trainChoice.getItems().get((Integer) number2));
+//                    System.out.println("ID: " + Main.trains.get((Integer)number2 - 1).getID());
+
+                    switch((int) number2 - 1){
+                        case 0:
+                            cur.setFailure(Failure.BROKEN_RAIL);
+                            break;
+                        case 1:
+                            cur.setFailure(Failure.CIRCUIT_FAILURE);
+                            break;
+                        case 2:
+                            cur.setFailure(Failure.POWER_FAILURE);
+                            break;
+                        default:
+                            cur.setFailure(Failure.NONE);
+                    }
+                    failureModeLabel.setText("Failure Mode: " + updateFailureMode(cur));
+                }
+            }
+        });
+    }
+
+    public float updateSuggestedSpeed(Block cur){
+        if(cur.isOccupied()){
+            return cur.getTrain().getSSpeed();
+        }else{
+            return 0;
+        }
+    }
+
+    public int updateAuth(Block cur){
+        if(cur.isOccupied()){
+            return cur.getTrain().getAuthority();
+        }else{
+            return 0;
+        }
     }
 
     public String updateUnderground(Block cur){
@@ -184,6 +324,26 @@ public class TrackModelIndividualController implements Initializable {
             return "N/A";
         }else{
             return cur.getBeacon().getData().toString();
+        }
+    }
+
+    public String updateClosed(Block cur){
+        if(cur.isClosed()){
+            return "Yes";
+        }
+        return "No";
+    }
+
+    public String updateFailureMode(Block cur){
+        switch(cur.getFailure()){
+            case BROKEN_RAIL:
+                return "BROKEN RAIL";
+            case CIRCUIT_FAILURE:
+                return "CIRCUIT FAILURE";
+            case POWER_FAILURE:
+                return "POWER FAILURE";
+            default:
+                return "NONE";
         }
     }
 
