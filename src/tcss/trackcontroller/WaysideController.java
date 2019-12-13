@@ -174,13 +174,15 @@ public class WaysideController {
             } else {
                 upcomingBlock = greenTrack.getBlock(ID).getNextBlock().getNextBlock().getBlockNum();
             }
-            this.ss = SS;
-            this.auth = auth;
             canProceed = proceed(0, this.blockId,nextBlock, upcomingBlock,auth,SS);
             if(canProceed) {
+                greenTrack.getBlock(ID).setAuthority(auth);
+                greenTrack.getBlock(ID).setSuggestedSpeed(ss);
                 greenTrack.getBlock(ID).setSuggSpeedAndAuth(ss, auth);
             } else {
-                greenTrack.getBlock(ID).setSuggSpeedAndAuth(0, 0);
+                greenTrack.getBlock(ID).setSuggestedSpeed(0);
+                greenTrack.getBlock(ID).setAuthority(0);
+                greenTrack.getBlock(ID).setSuggSpeedAndAuth(0,0);
             }
         }
         if(this.line==1){
@@ -203,6 +205,7 @@ public class WaysideController {
             } else{
                 redTrack.getBlock(ID).setSuggestedSpeed(0);
                 redTrack.getBlock(ID).setAuthority(0);
+                redTrack.getBlock(ID).setSuggSpeedAndAuth(0,0);
             }
 
         }
@@ -248,10 +251,10 @@ public class WaysideController {
 
         if(line == 0){
             this.line = 0;
-            curBlock = track.getBlockList().get(blockId);
+            curBlock = greenTrack.getBlockList().get(blockId);
         }
         if(line == 1){
-            this.line = redTrack.getBlockList().get(blockId).getLine();
+            this.line = 1;
             curBlock = redTrack.getBlockList().get(blockId);
         }
         int next = curBlock.getNextBlock().getBlockNum();
