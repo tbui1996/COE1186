@@ -1,17 +1,17 @@
 package tcss.trackmodel;
 
+import tcss.trackmodel.Block.Direction;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import tcss.trackmodel.Block.Direction;
 
 public class Track {
 
     Map<Integer, Block> blockHashMap;
     Map<Integer, Branch> branchMap;
 
-    private LinkedList<Block> blockList;
+    private ArrayList<Block> blockList;
 
     ArrayList<Block> stationBlocks;
     ArrayList<Block> rxrBlocks;
@@ -23,7 +23,7 @@ public class Track {
         blockHashMap = new HashMap<>();
         branchMap = new HashMap<>();
         startBlock = null;
-        blockList = new LinkedList<Block>();
+        blockList = new ArrayList<Block>();
         stationBlocks = new ArrayList<Block>();
     }
 
@@ -214,7 +214,7 @@ public class Track {
         startBlock.setStartBlock(true);
     }
 
-    public LinkedList<Block> getBlockList(){
+    public ArrayList<Block> getBlockList(){
         return this.blockList;
     }
 

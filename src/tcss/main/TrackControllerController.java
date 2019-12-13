@@ -322,7 +322,7 @@ public class TrackControllerController implements Initializable {
   }
   @FXML
   void setRed(ActionEvent event){
-      outputLights.setText("Red");
+      manualRedLabel.setText("Red");
       currTrack.getBlock(blockId).getSwitch().setLights(false);
   }
   @FXML
