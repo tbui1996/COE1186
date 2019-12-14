@@ -198,9 +198,8 @@ public class TrackController {
             boolean reversed = false;
             boolean notToggled = nextBlock.getSwitch().getStraight();
             boolean isSwitch = false;
-            if(nextBlock.getSwitch()!=null){
-                isSwitch = blockId == currentBlock.getNextBlock().getBlockNum();
-            }
+            isSwitch = blockId == currentBlock.getNextBlock().getBlockNum();
+
 
             int nextBlockID = notToggled ? nextBlock.getBlockNum() : nextBlock.getSwitch().getBranchDest() ;
             if ((destinationBlock.getBlockNum() != nextBlockID) || (isSwitch && (blockId != nextBlockID))) {
@@ -247,21 +246,22 @@ public class TrackController {
             if (nextBlock.getBlockNum() != nextBlockId) {
                 nextBlock = getBlock(nextBlockId);
                 destBlock = reverse ? nextBlock.getPreviousBlock().getBlockNum() : nextBlock.getNextBlock().getBlockNum();
-                nextBlock.getNextBlock();
                 destinationBlock = getBlock(destBlock);
             }
         }
 
-            boolean canProceed = plc.verifyProceed(nextBlock, destinationBlock);
-            if (!canProceed) {
-                currentBlock.setSuggestedSpeed(0);
-                currentBlock.setAuthority(0);
-                return false;
-            }
+
+        boolean canProceed = plc.verifyProceed(nextBlock, destinationBlock);
+        if (!canProceed) {
+            currentBlock.setSuggestedSpeed(0);
+            currentBlock.setAuthority(0);
+            return false;
+        }
 
 
             currentBlock.setAuthority(authority);
             currentBlock.setSuggestedSpeed(suggestedspeed);
+            currentBlock.setSuggSpeedAndAuth(suggestedspeed,authority);
         return true;
     }
 
