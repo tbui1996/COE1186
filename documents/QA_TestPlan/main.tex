@@ -1,0 +1,539 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{graphicx,lipsum,afterpage,subcaption}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{longtable}
+
+\title{\textbf{Quality Assurance and Test Plan}}
+
+\begin{document}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=5cm,width=5cm]{pitt-min.jpg}
+\end{figure}
+
+\author{Thomas Bui, Justin Carter, Patrick Flaherty, Wesley Miller Philip Seitz}
+
+\date{}
+
+\maketitle
+
+\newenvironment{subs}
+  {\adjustwidth{3em}{0pt}}
+  {\endadjustwidth}
+
+\pagebreak 
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+    \subsection{Purpose}
+    \paragraph{}
+    The purpose of this document is to outline the procedure for testing the Train Control Signaling System software, including lists of all unit tests to be run with the conditions for passing said tests.
+    
+    \subsection{Scope}
+    \paragraph{}
+    The  purpose  of  this  project  is  to  design  and  implement  a  new  Centralized Traffic  Control  Center  and  Signaling  System  for  Light  Rail  Transit  system. Due to the safety-centric nature of this system, the testing plan will attempt to provide as near to total coverage as possible.
+    
+    \subsection{Definitions, Acronyms, and Abbreviations}
+    \paragraph{} The following are a list of terms, each followed by synonyms and abbreviations. A definition of each of the terms then follows:
+    \begin{itemize}
+        \item Train Control Signaling System - TCSS
+            \begin{itemize}
+            \item The Train Signaling System is the complete deliverable which this SRS shall specify.
+            \end{itemize}
+        \item Centralized Traffic Control - CTC
+            \begin{itemize}
+            \item The Central Office is one of the major modules of the TCSS. The CTC is able to track the locations of the trains in the railway, as well as communicate to these trains important and vital information.
+            \end{itemize}
+        \item Operation Control Center - OCC
+            \begin{itemize}
+            \item See \emph{Centralized Traffic Control}
+            \end{itemize}
+        \item Central Office
+            \begin{itemize}
+            \item See \emph{Centralized Traffic Control}
+            \end{itemize}
+
+        \item Track Controller
+            \begin{itemize}
+            \item This is a major module of the TCSS. The Track Controller is responsible for sending important information to both the CTC and the Train Controller (Through the Track and Train Models). It also is responsible for controlling the state of the tracks, such as track switching and railway crossing. This runs a PLC and is configurable on a per-Track Controller basis.
+            \end{itemize}
+        \item Train Controller
+            \begin{itemize}
+            \item This is a vital  \emph{(See Vital)} component of the TCSS. It is responsible for regulating the speed of the train. It is also responsible for controlling various other features of the Train Model. It is directly interface-able by the train driver, and will be capable of being controlled in both automatic and manual modes. 
+            \end{itemize}
+        \item Track Model
+            \begin{itemize}
+            \item This is a major component of the TCSS\index{TCSS}. It is a digital representation of the track with which the Train Model rides over, and the model which the Track Controller is responsible for. This is configurable via a formatted csv file that will allow the user to simulate and control over any track diagram.
+            \end{itemize}
+        \item Train Model
+            \begin{itemize}
+            \item This is a major component of the TCSS. It is a digital representation of the Train with which the Train Controller is responsible for. Furthermore it is a representation of the effect of Newtonian physics on the TCSS decision making.
+            \end{itemize}
+        \item Port Authority of Allegheny County - PAAC
+            \begin{itemize}
+            \item A public transit agency within Pennsylvania.
+            \end{itemize}    
+        \item Programmable Logic Controller - PLC
+            \begin{itemize}
+            \item This is a logic controller that is specially programmable on a per-device basis. It is often adapted for the control of systems and devices that require a high reliability and ease of programming.
+            \end{itemize}
+        \item Vital
+            \begin{itemize}
+            \item Safety-Critical
+            \end{itemize}
+        \item Graphic User Interface - GUI
+            \begin{itemize}
+                \item An electronic user interface displayed through a screen so that a user may interact with software.
+            \end{itemize}
+    \end{itemize}
+    
+    \subsection{References}
+    \begin{itemize}
+        \item Blackpool Flexity Tram Specifications, Bombardier Inc., 2009. Contained in professor-supplied Project Information directory.
+    \end{itemize}
+    
+    \subsection{Overview}
+    \parargraph{}
+    The rest of this document will go into more detail in how tests will be conducted. Section 2 will discuss Quality Management issues such as team member roles, problem reporting procedures, and risks and assumptions. Section 3 will discuss testing strategies, section 4 will outline environment requirements, section 5 is features not to be tested (there are none), and section 6 lays out tests to be run for each individual module.
+
+\section{Quality Management}
+
+    \subsection{Resources, Roles, and Responsibilities}
+    \begin{longtable}{
+            || >{\raggedright\arraybackslash}m{3.3cm} 
+            | >{\raggedright\arraybackslash}m{3.3cm} 
+            || } 
+            \hline
+            \textbf{Name} & \textbf{Role/Responsibility}\\
+            \hhline{#==#}
+            \endfirsthead
+            
+            \hline
+            \hline
+            \centering \textbf{Name} & \centering \textbf{Role/Responsibility}\\ 
+            \hhline{#==#}
+            \endhead
+            \hline
+            Thomas Bui & Track Controller Developer\\
+            \hline
+            Justin Carter & Track Model Developer\\
+            \hline
+            Patrick Flaherty & Train Controller Developer\\
+            \hline
+            Wesley Miller & Train Model Developer\\
+            \hline
+            Phil Seitz & CTC Developer\\
+            \hline
+        \end{longtable}
+        \parargraph{}
+        The software developer is responsible for writing the unit test cases for each testable component of the software. The author shall be responsible for writing the module test cases document. A developer other than the author shall be responsible for verifying the completeness and correctness of the unit tests and module test document. The same developer is responsible for executing the unit test program and module test and composing a test report for each. The software team is collectively responsible for deciding on actions to be taken in the event that one or more test cases fail.
+    
+    \subsection{Schedules}
+    \parargraph{}
+    TeamGantt and Microsoft Azure DevOps will be used to plan sprints and deadlines for development and testing.
+    
+    \subsection{Control Procedures}
+    \parargraph{}
+    A GitHub repository will hold the code base for the TCSS, allowing version control to be managed by through Git's commit system.
+    
+    
+    \subsubsection{Problem Reporting}
+    \parargraph{}
+    Git and Github will be utilized for defect tracking.
+    
+    \subsubsection{Change Request}
+    Changes and version control will be managed through GitHub in the form of pull requests and merging of branches.
+    
+    \subsection{Dependencies}
+    \begin{itemize}
+        \item The host system for testing the TCSS shall utilize the Windows 10 operating system.
+        \item The host system for testing the TCSS shall have the specified version of the JRE installed.
+    \end{itemize}
+    
+    \subsection{Risks and Assumptions}
+    \parargraph{}
+    The TCSS is a large system, thus it is impossible to test every possible configuration. As a result, the assumption will be made that the designed test suite will be comprehensive enough to cover enough cases to confirm acceptable functionality. This assumption presents a risk of under testing with regards to the number of configurations testing.
+    
+\section{Testing Strategy}
+
+    \subsection{Unit Testing}
+    \paragraph{}
+    Unit testing shall be conducted by the developer during code development to ensure proper functionality. The following are examples areas of the project that must be unit-tested and signed-off before component testing:
+        \begin{itemize}
+            \item Loading a PLC File
+            \item Loading a Track Layout
+            \item Initializing a train
+        \end{itemize}
+    
+        
+        
+    \subsection{Component Testing}
+    \paragraph{}
+    Component Testing shall occur after all unit tests have been run. Component testing shall be run by testers for each individual module separately without integrating with other modules. The following are example areas of the project that must be component-tested and signed-off before Performance and Stress Testing:
+    \begin{itemize}
+        \item Parsing a PLC file
+        \item View Block attributes
+        \end{itemize}
+            
+
+    \subsection{Performance and Stress Testing}
+    \paragraph{}
+    Performance and Stress Testing shall occur after component testing has been completed. This shall be done when all modules have been integrated together. The following are example areas of the project that must be component-tested and signed-off before Regression Testing:
+    \begin{itemize}
+        \item Test the interfaces between modules heavily
+        \item Add as many trains as possible to the system
+        \item Break rails and trains and see how the system responds
+    \end{itemize}
+    \subsection{Automated Regression Testing}
+    \parargraph{}
+    Automated Regression testing shall be performed to verify that previously tested features and functions do not have any new defects introduced, while correcting other problems or adding and modifying other features. Important deliverable required for acceptance into Beta Testing include:
+    \begin{itemize}
+        \item Application TCSS.EXE
+        \item All seperate module .EXE files
+        \item Installation instructions
+        \item All documentation
+    \end{itemize}
+    \subsection{Beta Testing}
+    \paragraph{}
+        Once Performance and Stress Testing have been completed, beta testing shall begin. Beta Testing shall be tested by the intended audience for the software. Once the experiences by the users are forwarded back to the developers, the developers will make final changes for User Acceptance Testing.
+    \subsection{User Acceptance Testing}
+    \paragraph{}
+    User Acceptance Testing shall be the final stage of testing. The software shall be tested in the real world by the intended audience. The goal of User Acceptance Testing is to ensure the software can both handle real-world tasks and perform up to development specifications. 
+    
+\section{Environment Requirements}
+    
+    \subsection{Hardware Requirements}
+    \paragraph{}
+    This section is not applicable.
+    
+    \subsection{Software Requirements}
+    \begin{itemize}
+        \item Windows Operating System\textregistered\; by Microsoft\textregistered, version 10, from Microsoft\textregistered
+        \begin{itemize}
+            \item The host system of the TCSS\index{TCSS} must operate within a Windows operating system for the purpose of file navigation and management.
+        \end{itemize}
+        \item Java\texttrademark \;Runtime Environment (JRE) by Oracle\textregistered, version 8, from Oracle\textregistered.
+        \begin{itemize}
+            \item The host system of the TCSS\index{TCSS} must have the specified installation of the JRE to execute the program.
+        \end{itemize}
+    \end{itemize}
+    
+    \subsection{Tools Required}
+    \begin{itemize}
+        \item JUnit 5
+        \begin{itemize}
+            \item Used for designing and executing tests
+        \end{itemize}
+        \item IntelliJ IDEA Commmunity Edition 2019.2.3
+        \begin{itemize}
+            \item IDE used to build project and manage packages.
+        \end{itemize}
+        \item Git
+        \begin{itemize}
+            \item Used for version control, defect tracking, and development workflow
+        \end{itemize}
+    \end{itemize}
+    
+\section{Features Not To be Tested}
+\parargraph{}
+This section does not apply.
+
+\section{Test Procedure}
+\subsubsection{Central Office}
+            \begingroup
+        \setlength{\LTleft}{-20cm plus -1fill}
+        \setlength{\LTright}{\LTleft}
+        \begin{longtable}{
+            || >{\raggedright\arraybackslash}m{1.5cm} 
+            | >{\raggedright\arraybackslash}m{3.3cm} 
+            | >{\raggedright\arraybackslash}m{3.3cm} 
+            | m{1.5cm} | >{\raggedright\arraybackslash}m{3cm} | c | c || } 
+            \caption{CTC test cases\label{ctc_table}} \\
+            \hline
+            \centering \textbf{Test Case} & \centering \textbf{Inputs} &  \textbf{Expected Outputs} &  \textbf{Pass/Fail} & \textbf{Failure Description} & \textbf{Tester} & \textbf{Date} \\
+            \hhline{#=======#}
+            \endfirsthead
+            
+            \hline
+            \multicolumn{7}{||c||}{Continuation of CTC} \\
+            \hline
+            \centering \textbf{Test Case} & \centering \textbf{Inputs} &  \textbf{Expected Outputs} &  \textbf{Pass/Fail} & \textbf{Failure Description} & \textbf{Tester} & \textbf{Date} \\* 
+            \hhline{#=======#}
+            \endhead
+            
+            \multicolumn{7}{||c||}{\textbf{Send a Maintenance Request}}\\*
+            \hline
+            Request sent to an empty block & 1) Click on block ready for maintenance \newline 2) Click on maintenance button, select a start time and duration, and send request. & Block is flagged for maintenance at designated time, and it is reopened after a successful repair & FAIL & The request is successfully transmitted and the block is successfully close but the block never reopens. & PATRICK & 12/11/19\\
+            \hline
+            Request sent to an occupied block & 1) Click on block ready for maintenance \newline 2) Click on maintenance button, select a start time and duration, and send request. & Block is flagged for maintenance at designated time, and it is reopened after a successful repair (request will delay until occupied block opens) & FAIL & The request is successfully transmitted and the block is successfully close but the block never reopens. & PATRICK & 12/11/19\\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{Dispatch a Train}}\\*
+            \hline
+            Send a Dispatch request in Manual Mode & 1) Start a new dispatch and select manual mode \newline 2) Add stops to the schedule and choose an arrival time for the last station \newline 3) Dispatcher confirms dispatch. & Dispatch request is delayed to be sent until the appropriate calculated time based on the schedule and arrival time.  A suggested speed and authority are sent to the starting block at the correct time&PASS&&JUSTIN&12/11/19 \\
+            \hline
+            Send a Dispatch Request in Automatic Mode &
+            1) Start a new dispatch and select automatic mode \newline 2) Import a schedule file for the current dispatch \newline 3) Dispatcher confirms dispatch. &
+            Dispatch request is delayed to be sent until the appropriate calculated time based on the schedule and arrival time. A suggested speed and authority are sent to the starting block at the correct time&FAIL&When timer starts, an error is thrown with the Wayside Controller&JUSTIN&12/11/19 \\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{Viewing Map Information}}\\
+            \hline
+            Updating CTC view of train system & 1) Block occupancy, switch conditions, and light state returned by track controllers \newline 2) Values in track model object in CTC updated to new values \newline 3) GUI of map view updated based on new track model values & After updating the internal representation of the track layout, the GUI view of the track is updated to view the current track conditions&FAIL&Map does not update, however the background data does update properly and can be displayed through viewing a train or track block&JUSTIN&12/11/19\\
+            \hline
+            Updating Train Locations & 1) New occupied block locations compared to old locations \newline 2) The trains assigned to each dispatch are assigned to a current occupied block based on CTC calculations & Train locations of each train in each dispatch are updated to reflect the current track conditions&PASS&&JUSTIN&12/11/19\\
+            \hline
+            Viewing Current Block Info & 1) Dispatcher selects a track section to view \newline 2) Dispatcher selects a specific block from that section to view \newline 3) Formatted block information is displayed to the screen  & Formatted block information is added to the GUI and displayed on the screen&PASS&&JUSTIN&12/11/19\\
+            \hline
+            Viewing Current Train Info & 1) Dispatcher selects an active dispatch to view \newline 2) Dispatcher selects the train from that dispatch to view \newline 3) Formatted train information is displayed to the screen & Formatted train information is added to the GUI and displayed on the screen&PASS&&JUSTIN&12/12/19\\
+            \hline
+        \end{longtable}
+        
+        \subsubsection{Track Controller}
+       
+        \begingroup
+        \setlength{\LTleft}{-20cm plus -1fill}
+        \setlength{\LTright}{\LTleft}
+        \begin{longtable}{
+            || >{\raggedright\arraybackslash}m{1.5cm} 
+            | >{\raggedright\arraybackslash}m{3.3cm} 
+            | >{\raggedright\arraybackslash}m{3.3cm} 
+            | m{1.5cm} | >{\raggedright\arraybackslash}m{3cm} | c | c || } 
+            \caption{Track Controller test cases\label{track_controller_table}} \\
+            \hline
+            \centering \textbf{Test Case} & \centering \textbf{Inputs} &  \textbf{Expected Outputs} &  \textbf{Pass/Fail} & \textbf{Failure Description} & \textbf{Tester} & \textbf{Date} \\
+            \hhline{#=======#}
+            \endfirsthead
+            
+            \hline
+            \multicolumn{7}{||c||}{Continuation of Track Controller} \\
+            \hline
+            \centering \textbf{Test Case} & \centering \textbf{Inputs} &  \textbf{Expected Outputs} &  \textbf{Pass/Fail} & \textbf{Failure Description} & \textbf{Tester} & \textbf{Date} \\* 
+            \hhline{#=======#}
+            \endhead
+            
+            \multicolumn{7}{||c||}{\textbf{The CTC sends suggested speed and dispatch}}\\*
+            \hline
+            Get suggested speed and dispatch & 1) Track Controller calls the sendDispatch method with arguments of suggested speed and authority & The Track Controller stores the values locally and also passes them on to the Track Model &PASS&&PHIL &12/12/19 \\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{The Track Engineer uploads a PLC file}}\\*
+            \hline
+            Upload a PLC file & 1) Track Controller shall parse the PLC file.
+            \newline
+            2) Assert that the array list returned is not null.
+            & The Track Controller shall update the values for switches, lights, and railroad crossing &PASS&&PHIL&12/12/19\\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{The Track Engineer toggles a switch}}\\*
+            \hline
+            Track Engineer changes a switch & 1)Track Engineer changes the switch positioning on a block & The switch positioning shall update.
+            &PASS&&PHIL&12/12/19\\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{The Track Engineer toggles a railroad crossing}}\\*
+            \hline
+            Track Engineer changes railroad crossing & 1)Track Engineer changes the railroad crossing positioning on a block & The railroad crossing positioning shall update.
+            &PASS&&PHIL&12/12/19\\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{The Track Engineer toggles lights}}\\*
+            \hline
+            Track Engineer changes lights on the wayside controller & 1)Track Engineer toggles the lights & The lights shall update to red or green.
+            &PASS&&PHIL&12/12/19\\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{Close block for maintenance}}\\*
+            \hline
+            CTC sends a valid speed and authority to the Track Controller & 
+            1)Track Controller sends authority to Track Model to close a block
+            \newline
+            2) Track Model returns boolean back to Track Controller and updates block value & The block will be closed for maintenance
+            &FAIL&Able to close, but not open.&PHIL&12/12/19\\
+            \hline
+        \end{longtable}
+            
+
+        \subsubsection{Track Model}
+            \begingroup
+        \setlength{\LTleft}{-20cm plus -1fill}
+        \setlength{\LTright}{\LTleft}
+        \begin{longtable}{
+            || >{\raggedright\arraybackslash}m{1.5cm} 
+            | >{\raggedright\arraybackslash}m{3.3cm} 
+            | >{\raggedright\arraybackslash}m{3.3cm} 
+            | m{1.5cm} | >{\raggedright\arraybackslash}m{3cm} | c | c || } 
+            \caption{Track Model test cases\label{track_model_table}} \\
+            \hline
+            \centering \textbf{Test Case} & \centering \textbf{Inputs} &  \textbf{Expected Outputs} &  \textbf{Pass/Fail} & \textbf{Failure Description} & \textbf{Tester} & \textbf{Date} \\
+            \hhline{#=======#}
+            \endfirsthead
+            
+            \hline
+            \multicolumn{7}{||c||}{Continuation of Track Model} \\
+            \hline
+            \centering \textbf{Test Case} & \centering \textbf{Inputs} &  \textbf{Expected Outputs} &  \textbf{Pass/Fail} & \textbf{Failure Description} & \textbf{Tester} & \textbf{Date} \\* 
+            \hhline{#=======#}
+            \endhead
+            
+            \multicolumn{7}{||c||}{\textbf{Track Builder uploads track file}}\\*
+            \hline
+            Invalid Track File Input & 1) Formatted .xlsx file for building track & System should inform the user (track builder) that the inputted file is invalid along with a reason&FAIL&Track file is automatically uploaded into the system&PHIL&12/11/19\\
+            \hline
+            Valid Track File Input & 1) Formatted .xlsx file for building track & System allow the user to confirm that the track built by the system is correct, then continue with execution&PASS&&PHIL&12/11/19\\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{Train Model requests next block in route}}\\*
+            \hline
+            Train Model requests properties of next block & 
+            1) Train model\newline2) Current block object occupied by Train Model\newline3) Track object & The next block along the train’s path should be returned, properly accounting for the train’s current direction of travel&PASS&&PHIL&12/11/19 \\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{Track Controller sends suggested speed and authority to block}}\\
+            \hline
+            Track Controller gives command to initialize train & 1) Train calculates current forces on it based on physical states such as grade \newline 2) Train Model calculates its acceleration based on the force produced by the power command\newline 3) Train Model calculates its current velocity based on acceleration & Train Model will update its current acceleration and speed fields &PASS&&PHIL&12/11/19\\
+            \hline
+            Track Controller gives command to close block & 1) Train calculates current forces on it based on physical states such as grade \newline 2) Train Model calculates its acceleration based on the force produced by the power command\newline 3) Train Model calculates its current velocity based on acceleration & Train Model will update its current acceleration and speed fields &PASS&&PHIL&12/11/19\\
+            \hline
+            Track Controller sends suggested speed and authority to dispatch train & 1) Train calculates current forces on it based on physical states such as grade \newline 2) Train Model calculates its acceleration based on the force produced by the power command\newline 3) Train Model calculates its current velocity based on acceleration & Train Model will update its current acceleration and speed fields &PASS&&PHIL&12/11/19\\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{The Track Controller controls peripheral track features}}\\
+            \hline 
+            Control Railroad Crossing & 1) Block on which RXR is located\newline2) Boolean input to specify commanded state of railroad crossing signal (up/down) & Railroad crossing state reflects commanded state&&&& \\
+            \hline 
+            Control Switches and Wayside Lights & 1) Block on which switch is located\newline2) Boolean input to specify commanded orientation of switch (straight/curved)\newline3) Boolean input to specify state of lights (red/green) & State of switch and wayside lights reflects commanded state&&&& \\
+            \hline 
+            \multicolumn{7}{||c||}{\textbf{Murphy causes track failure}}\\
+            \hline 
+            Create block failure & 1) Murphy calls method on specific track block to set failure state & Block state indicates failure&FAIL&Murphy implementation is not complete for each module&PHIL&12/11/19 \\
+            \hline
+            
+        \end{longtable}
+            
+        \subsubsection{Train Model} 
+        \begingroup
+        \setlength{\LTleft}{-20cm plus -1fill}
+        \setlength{\LTright}{\LTleft}
+        \begin{longtable}{
+            || >{\raggedright\arraybackslash}m{1.5cm} 
+            | >{\raggedright\arraybackslash}m{3.3cm} 
+            | >{\raggedright\arraybackslash}m{3.3cm} 
+            | m{1.5cm} | >{\raggedright\arraybackslash}m{3cm} | c | c || } 
+            \caption{Train Model test cases\label{train_model_table}} \\
+            \hline
+            \centering \textbf{Test Case} & \centering \textbf{Inputs} &  \textbf{Expected Outputs} &  \textbf{Pass/Fail} & \textbf{Failure Description} & \textbf{Tester} & \textbf{Date} \\
+            \hhline{#=======#}
+            \endfirsthead
+            
+            \hline
+            \multicolumn{7}{||c||}{Continuation of Train Model} \\
+            \hline
+            \centering \textbf{Test Case} & \centering \textbf{Inputs} &  \textbf{Expected Outputs} &  \textbf{Pass/Fail} & \textbf{Failure Description} & \textbf{Tester} & \textbf{Date} \\* 
+            \hhline{#=======#}
+            \endhead
+            
+            \multicolumn{7}{||c||}{\textbf{The Track Model sends a new Suggested Speed and Authority}}\\*
+            \hline
+            Without antenna failure & 1) Track Model calls the passCommand method with arguments of suggested speed and authority & The Train Model stores the values locally and also passes them on to the Train Controller& PASS &&PATRICK&12/11/19 \\
+            \hline
+            With antenna failure & 1) Track model attempts to call the passCommand method & Values for Suggested Speed and Authority remain unchanged in both the Train Model and Train Controller &PASS & & PATRICK & 12/11/19\\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{The Track Model tells the Train Model to update the number of passengers}}\\*
+            \hline
+            Train has no passengers & 
+            1) Train Model tells the Track Model how much free space it has \newline 2) Track Model adds a random number of passengers equal to or less than that number &
+            Train Model will update its passenger field to that number and update mass& PASS && PATRICK& 12/11/19 \\
+            \hline
+            Train has some passengers &
+            1) Train Model removes a random number of passengers less than or equal to its current number of passengers \newline 2) Train Model tells Track Model how much free space it has \newline 3) Track Model adds a random number less than or equal to the free space &
+            Train Model will update its passenger field to reflect both changes and update mass & FAIL & The train model does not correctly change the number of passengers after it already has some. Unclear if this is caused by the track modules or the train modules. & PATRICK & 12/11/19 \\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{The Train Controller sends a power command to the train}}\\
+            \hline
+            No engine failure & 1) Train calculates current forces on it based on physical states such as grade \newline 2) Train Model calculates its acceleration based on the force produced by the power command\newline 3) Train Model calculates its current velocity based on acceleration & Train Model will update its current acceleration and speed fields & PASS && PATRICK & 12/11/19\\
+            \hline
+            With Engine Failure & 1) Train takes power command but makes no updates to its acceleration & Train will not accelerate & PASS & Train still changes acceleration if it was moving when the engine failed. e.g. to decelerate from friction & PATRICK & 12/11/19 \\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{The Train Controller activates the service brake.}}\\
+            \hline 
+            Without brake failure & 1) Train Controller calls method to activate service brake & Train Model begins to decelerate at max safe rate (see Blackpool specifications document) & PASS &&PATRICK& 12/11/19 \\
+            \hline 
+            With brake failure & 1) Service brake failure state set to true \newline 2) Train controller calls method to activate service brake & Train's speed and acceleration go unchanged &&&& \\
+            \hline 
+            \multicolumn{7}{||c||}{\textbf{The Train Controller activates the emergency brake.}}\\
+            \hline 
+            Without brake failure & 1) Train Controller calls method to activate emergency brake & Train Model begins to decelerate at max safe rate (see Blackpool specifications document) & PASS &&PATRICK& 12/11/19 \\
+            \hline 
+            With brake failure & 1) Emergency brake failure state set to true \newline 2) Train controller calls method to activate emergency brake & Train's speed and acceleration go unchanged &PASS & Acceleration still changes as with engine failure above due to environment but not from power command. & PATRICK & 12/11/19 \\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{The Train Controller opens or closes a door}}\\
+            \hline
+            Train Controller calls method to open or close a certain door & 1) Method is called with arguments indicating which door and the desired state of the door & Train Model will update its local door fields &PASS&&PATRICK& 12/11/19 \\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{Train Controller sets state of lights}} \\
+            \hline 
+            Train Controller sets lights & 1) Train Controller calls method to set state of lights & Train Model sets its lights field to the given value &PASS&&PATRICK&12/11/19 \\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{Murphy sets a failure state}} \\
+            \hline 
+            Murphy sets failure state & 1) Murphy calls the method to set a chosen failure state to a given boolean & Train Model updates the appropriate failure state field & PASS &&PATRICK FLAHERTY& 12/11/19 \\
+            \hline 
+            
+        \end{longtable}
+        \subsubsection{Train Controller}
+        \begingroup
+        \setlength{\LTleft}{-20cm plus -1fill}
+        \setlength{\LTright}{\LTleft}
+        \begin{longtable}{
+            || >{\raggedright\arraybackslash}m{1.5cm} 
+            | >{\raggedright\arraybackslash}m{3.3cm} 
+            | >{\raggedright\arraybackslash}m{3.3cm} 
+            | m{1.5cm} | >{\raggedright\arraybackslash}m{3cm} | c | c || } 
+            \caption{Train Controller test cases\label{train_controller_table}} \\
+            \hline
+            \centering \textbf{Test Case} & \centering \textbf{Inputs} &  \textbf{Expected Outputs} &  \textbf{Pass/Fail} & \textbf{Failure Description} & \textbf{Tester} & \textbf{Date} \\
+            \hhline{#=======#}
+            \endfirsthead
+            
+            \hline
+            \multicolumn{7}{||c||}{Continuation of Train Controller} \\
+            \hline
+            \centering \textbf{Test Case} & \centering \textbf{Inputs} &  \textbf{Expected Outputs} &  \textbf{Pass/Fail} & \textbf{Failure Description} & \textbf{Tester} & \textbf{Date} \\* 
+            \hhline{#=======#}
+            \endhead
+            
+            \multicolumn{7}{||c||}{\textbf{The Train Driver sets a new setpoint speed}}\\*
+            \hline
+            Current Speed is less than setpoint speed or suggested speed. E-Brake is False & 1) Suggested Speed \n 2) Authority \newline 3) Brake Status \newline 4) Current Speed \newline 5) Engine Status & The Train Controller Outputs a positive power command to the train model.& PASS &&WESLEY& 12/11/19\\
+            \hline
+            Current Speed is more than setpoint speed or suggested speed. E-Brake is false & 1) Suggested Speed \n 2) Authority \n 3) Brake Status \n 4) Current Speed \n 5) Engine Status & Service break is set to true. & PASS & & WESLEY & 12/11/19\\
+            \hline
+            E-Brake is true & 1) Suggested Speed \n 2) Authority \n 3) Brake Status \n 4) Current Speed \n 5) Engine Status & The Train controller outputs a power command of 0. E-Brake remains true. & FAIL & Power command does not always return zero. & WESLEY & 12/11/19\\
+            \hline
+            Engine Failure & 1) Suggested Speed \n 2) Authority \n 3) Brake Status \n 4) Current Speed \n 5) Engine Status & The Train controller outputs a power command of 0. E-Brake is set to true. & FAIL & The train controller outputs the same value as prior, and does not adapt for the engine status & WESLEY & 12/11/19\\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{The Train Model is operating in automatic mode and E-Brake is false}}\\*
+            \hline
+            Authority is greater than 1, Current Speed is less than suggested speed & 1) Suggested Speed \n2) Authority \n3) Current Speed & The Train Controller Outputs a positive power command and the train model reacts accordingly. & PASS && WESLEY & 12/11/19\\
+            \hline
+            Authority is greater than 1, Current Speed is greater than suggested speed & 1) Suggested Speed \n 2) Authority \n 3) Current Speed & The Train Controller Outputs a S-Brake command and the train model reacts accordingly.& FAIL &The train controller does not always immediately send an sbrake command to the train &WESLEY& 12/11/19\\
+            \hline
+            Authority is less than 1 & 1) Suggested Speed \n 2) Authority \n 3) Current Speed & The Train Controller Outputs a S-Brake command and the train model.&PASS&&WESLEY& 12/11/19\\
+            \hline
+            Engine Failure & 1) Suggested Speed \n 2) Authority \n 3) Brake Status \n 4) Current Speed \n 5) Engine Status & The Train controller outputs a power command of 0. E-Brake is set to true. & FAIL & The train controller does not always output a power command of 0 & WESLEY & 12/11/19\\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{E-Brake is True}}\\*
+            \hline
+            E-Brake remains true & None & The Train controller outputs only an E-Brake signal to the the train model.& PASS && PATRICK & 12/11/19\\
+            \hline
+            E-Brake is turned off & E-Brake is Toggled Off & The Train Controller returns to the operating mode it was in before the E-Brake was activated and behaves appropriately.&PASS&& WESLEY & 12/11/19\\
+            \hline
+            \multicolumn{7}{||c||}{\textbf{Fault Detected}}\\*
+            \hline
+            Any fault is detected by the train model & Fault Notification & The Train Controller sets E-Brake to true, updates the display accordingly, and engages the E-Brake of the train model.& FAIL & The train controller does not properly detect failure states of the train model & WESLEY & 12/11/19\\
+            \hline
+        \end{longtable}
+\end{document}
